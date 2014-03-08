@@ -1,3 +1,6 @@
+fast string compare - hash
+priority queue for events (order on racetime) also have duration for firing and scaling.
+witty web toolkit c++
 runat() (boost appdev) for async tasks and exception wrapping
 swmr shared_ptr for accessing containers in pub sub
 progit/dive into html5/pro html5/send to kindle chrome app
