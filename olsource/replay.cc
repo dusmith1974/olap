@@ -1,5 +1,7 @@
 #include <algorithm>
+#include <chrono>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <limits>
 #include <map>
@@ -146,7 +148,7 @@ std::istream& operator>>(std::istream& is, Lap& lap) {
   if (boost::regex_search(str, m, boost::regex(R"(^\d+)")))
     lap.competitor_num_ = boost::lexical_cast<int>(m.str());
 
-  if (boost::regex_search(str, m, boost::regex(R"(((?<= )\d+\.\d+)|(\d+ LAPS?)|(PIT))")))
+  if (boost::regex_search(str, m, boost::regex(R"(((?<=\s)\d+\.\d+)|(\d+ LAPS?)|(PIT))")))
     lap.gap_ = m.str();
   else
     lap.gap_ = "0.000";
@@ -158,11 +160,12 @@ std::istream& operator>>(std::istream& is, Lap& lap) {
 }
 
 std::ostream& operator<<(std::ostream& os, const Lap& lap) {
-  os << "lap," << "RT," << lap.competitor_num_ << "," << lap.gap_ << "," << lap.time_ << std::endl;
+  os << "lap," << "RT," << lap.competitor_num_ << "," << lap.num_ << ","
+     << lap.gap_ << "," << lap.time_ << std::endl;
   return os;
 }
 
-void ReadRaceHist(LapVec* laps) {
+void ReadRaceHistory(LapVec* laps) {
   if (!laps) return;
 
   std::ifstream file;
@@ -173,6 +176,7 @@ void ReadRaceHist(LapVec* laps) {
 
   std::string line;
   std::map<int,int> competitor_lap_count;
+  std::map<int,int> competitor_race_time;
   boost::sregex_token_iterator end;
   while (std::getline(file, line)) {
     boost::sregex_token_iterator iter(line.cbegin(), line.cend(), rgx, 0);
@@ -182,6 +186,68 @@ void ReadRaceHist(LapVec* laps) {
       laps->push_back(lap);
     }
   }
+}
+
+class Interval {
+ public:
+  Interval() : milliseconds_(0) {};
+  explicit Interval(long val) : milliseconds_(val) {};
+
+  operator long() const { return milliseconds_.count(); }
+  operator std::chrono::milliseconds() const { return milliseconds_; }
+
+ protected:
+  std::chrono::milliseconds milliseconds_;
+
+ private:
+  friend std::istream& operator>>(std::istream& is, Interval& interval);
+  friend std::ostream& operator<<(std::ostream& os, const Interval& interval);
+
+};
+
+std::istream& operator>>(std::istream& is, Interval& interval) {
+  std::string str;
+  std::getline(is, str);
+
+  interval.milliseconds_ = std::chrono::milliseconds(9999);
+
+  return is;
+}
+
+std::ostream& operator<<(std::ostream& os, const Interval& interval) {
+  os << std::chrono::duration_cast<
+    std::chrono::seconds>(interval.milliseconds_).count();
+
+  os << "." << std::setw(3) << std::setfill('0')
+     << std::chrono::duration_cast<std::chrono::milliseconds>(
+      interval.milliseconds_ % std::chrono::seconds(1)).count();
+
+  return os;
+}
+
+class LongInterval : public Interval {
+ public:
+  LongInterval() : Interval(0) {};
+  explicit LongInterval(long val) : Interval(val) {};
+
+ private:
+  friend std::ostream& operator<<(std::ostream& os,
+                                  const LongInterval& long_interval);
+};
+
+std::ostream& operator<<(std::ostream& os, const LongInterval& long_interval) {
+  os << std::chrono::duration_cast<
+    std::chrono::minutes>(long_interval.milliseconds_).count();
+
+  os << ":" << std::setw(2) << std::setfill('0')
+    << std::chrono::duration_cast<std::chrono::seconds>(
+        long_interval.milliseconds_ % std::chrono::minutes(1)).count();
+
+  os << "." << std::setw(3)
+     << std::chrono::duration_cast<std::chrono::milliseconds>(
+      long_interval.milliseconds_ % std::chrono::seconds(1)).count();
+
+  return os;
 }
 
 int main() {
@@ -196,7 +262,7 @@ int main() {
   boost::copy(competitors | adaptors::map_values,
               std::back_inserter(msgs));
 
-  ReadRaceHist(&laps);
+  ReadRaceHistory(&laps);
   std::copy(laps.begin(), laps.end(), std::back_inserter(msgs));
 
   std::copy(msgs.begin(), msgs.end(),
@@ -206,4 +272,13 @@ int main() {
     std::cout << events.top().first << " " << events.top().second;
     events.pop();
   }
+
+  Interval interval(1014);
+  LongInterval long_interval(1014);
+
+  std::cout << "interval: " << interval << std::endl;
+  std::cout << "long_interval: " << long_interval << std::endl;
+
+  auto i = boost::lexical_cast<LongInterval>("8888");
+  std::cout << i << std::endl;
 }
