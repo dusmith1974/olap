@@ -36,8 +36,8 @@ typedef std::priority_queue<Event, std::vector<Event>,
                             EventPQueueSortCriterion> EventPQueue;
 
 template <typename charT, typename traits>
-inline std::basic_istream<charT,traits>&ignore_line (std::basic_istream<charT,traits>& strm)
-{
+inline std::basic_istream<charT,traits>&ignore_line(
+    std::basic_istream<charT,traits>& strm) {
    strm.ignore(std::numeric_limits<std::streamsize>::max(),
                strm.widen('\n'));
 
@@ -110,94 +110,24 @@ void ReadCompetitors(CompetitorMap* competitors) {
   }
 }
 
-class Lap {
- public:
-  Lap()
-    : num_(0),
-      competitor_num_(0),
-      gap_(""),
-      time_("") {
- }
-
- public:
-  void set_num(int val) { num_ = val; }
-  int competitor_num() const { return competitor_num_; }
-
-  operator std::string() const {
-    std::stringstream ss;
-    ss << *this;
-
-    return ss.str();
-  }
-
- private:
-  friend std::istream& operator>>(std::istream& is, Lap& lap);
-  friend std::ostream& operator<<(std::ostream& os, const Lap& lap);
-
-  int num_;
-  int competitor_num_;
-  std::string gap_;
-  std::string time_;
-};
-
-std::istream& operator>>(std::istream& is, Lap& lap) {
-  std::string str;
-  std::getline(is, str);
-
-  boost::smatch m;
-  if (boost::regex_search(str, m, boost::regex(R"(^\d+)")))
-    lap.competitor_num_ = boost::lexical_cast<int>(m.str());
-
-  if (boost::regex_search(str, m, boost::regex(R"(((?<=\s)\d+\.\d+)|(\d+ LAPS?)|(PIT))")))
-    lap.gap_ = m.str();
-  else
-    lap.gap_ = "0.000";
-
-  if (boost::regex_search(str, m, boost::regex(R"(\d+:\d+\.\d+)")))
-    lap.time_ = m.str();
-
-  return is;
-}
-
-std::ostream& operator<<(std::ostream& os, const Lap& lap) {
-  os << "lap," << "RT," << lap.competitor_num_ << "," << lap.num_ << ","
-     << lap.gap_ << "," << lap.time_ << std::endl;
-  return os;
-}
-
-void ReadRaceHistory(LapVec* laps) {
-  if (!laps) return;
-
-  std::ifstream file;
-  file.open("race_hist.txt");
-
-  // Competitor num followed by any other data (upto the next competitor num).
-  boost::regex rgx(R"(((?<=\s)[0-9]+\s)(.(?!(?1)))*)");
-
-  std::string line;
-  std::map<int,int> competitor_lap_count;
-  std::map<int,int> competitor_race_time;
-  boost::sregex_token_iterator end;
-  while (std::getline(file, line)) {
-    boost::sregex_token_iterator iter(line.cbegin(), line.cend(), rgx, 0);
-    for (; iter != end; ++iter) {
-      auto lap = boost::lexical_cast<Lap>(boost::trim_copy(iter->str()));
-      lap.set_num(++competitor_lap_count[lap.competitor_num()]);
-      laps->push_back(lap);
-    }
-  }
-}
-
 class Interval {
  public:
   Interval() : milliseconds_(0) {};
   explicit Interval(long val) : milliseconds_(val) {};
+  explicit Interval(const std::chrono::milliseconds& val) : milliseconds_(val) {
+  }
 
   operator long() const { return milliseconds_.count(); }
   operator std::chrono::milliseconds() const { return milliseconds_; }
 
+  const Interval& operator +=(const Interval& interval) {
+    milliseconds_ += interval.milliseconds_;
+    return *this;
+  }
+
  protected:
   std::chrono::milliseconds milliseconds_;
+  std::string str_;
 
  private:
   friend std::istream& operator>>(std::istream& is, Interval& interval);
@@ -209,12 +139,39 @@ std::istream& operator>>(std::istream& is, Interval& interval) {
   std::string str;
   std::getline(is, str);
 
-  interval.milliseconds_ = std::chrono::milliseconds(9999);
+  interval.str_ = "";
+  interval.milliseconds_ = std::chrono::milliseconds();
+
+  boost::smatch m;
+  // TODO(ds) handle hours on input too.
+  if (boost::regex_search(str, m, boost::regex(R"((\d+):(\d+)\.(\d+))"))) {
+    interval.milliseconds_ += std::chrono::minutes(
+        boost::lexical_cast<int>(m[1].str()));
+
+    interval.milliseconds_ += std::chrono::seconds(
+        boost::lexical_cast<int>(m[2].str()));
+
+    interval.milliseconds_ += std::chrono::milliseconds(
+        boost::lexical_cast<int>(m[3].str()));
+  } else if (boost::regex_search(str, m, boost::regex(R"((\d+)\.(\d+))"))) {
+    interval.milliseconds_ += std::chrono::seconds(
+        boost::lexical_cast<int>(m[1].str()));
+
+    interval.milliseconds_ += std::chrono::milliseconds(
+        boost::lexical_cast<int>(m[2].str()));
+  } else {
+    interval.str_ = str;  // 1 LAP, 2 LAPS etc.
+  }
 
   return is;
 }
 
 std::ostream& operator<<(std::ostream& os, const Interval& interval) {
+  if (!interval.str_.empty()) {
+    os << interval.str_;
+    return os;
+  }
+
   os << std::chrono::duration_cast<
     std::chrono::seconds>(interval.milliseconds_).count();
 
@@ -236,18 +193,119 @@ class LongInterval : public Interval {
 };
 
 std::ostream& operator<<(std::ostream& os, const LongInterval& long_interval) {
+  std::chrono::hours hours = std::chrono::duration_cast<std::chrono::hours>(
+      long_interval.milliseconds_);
+
+  if (hours.count()) {
+    os << hours.count() << ":";
+    os << std::setw(2) << std::setfill('0');
+  }
+
   os << std::chrono::duration_cast<
-    std::chrono::minutes>(long_interval.milliseconds_).count();
+    std::chrono::minutes>((hours.count())
+        ? long_interval.milliseconds_ % std::chrono::hours(1)
+        : long_interval.milliseconds_).count();
 
   os << ":" << std::setw(2) << std::setfill('0')
     << std::chrono::duration_cast<std::chrono::seconds>(
-        long_interval.milliseconds_ % std::chrono::minutes(1)).count();
+      long_interval.milliseconds_ % std::chrono::minutes(1)).count();
 
   os << "." << std::setw(3)
-     << std::chrono::duration_cast<std::chrono::milliseconds>(
+    << std::chrono::duration_cast<std::chrono::milliseconds>(
       long_interval.milliseconds_ % std::chrono::seconds(1)).count();
 
   return os;
+}
+
+class Lap {
+ public:
+  Lap()
+    : num_(0),
+      competitor_num_(0),
+      race_time_(Interval()),
+      gap_(Interval()),
+      time_(LongInterval()) {
+ }
+
+ public:
+  void set_num(int val) { num_ = val; }
+  void set_race_time(const Interval& val) { race_time_ = val; }
+  int competitor_num() const { return competitor_num_; }
+
+  operator std::string() const {
+    std::stringstream ss;
+    ss << *this;
+
+    return ss.str();
+  }
+
+  operator Interval() const { return gap_; }
+  operator LongInterval() const { return time_; };
+
+ private:
+  friend std::istream& operator>>(std::istream& is, Lap& lap);
+  friend std::ostream& operator<<(std::ostream& os, const Lap& lap);
+
+  int num_;
+  int competitor_num_;
+  Interval race_time_;
+  Interval gap_;
+  LongInterval time_;
+};
+
+std::istream& operator>>(std::istream& is, Lap& lap) {
+  std::string str;
+  std::getline(is, str);
+
+  boost::smatch m;
+  if (boost::regex_search(str, m, boost::regex(R"(^\d+)")))
+    lap.competitor_num_ = boost::lexical_cast<int>(m.str());
+
+  if (boost::regex_search(str, m, boost::regex(
+                                    R"(((?<=\s)\d+\.\d+)|(\d+ LAPS?)|(PIT))")))
+    lap.gap_ = boost::lexical_cast<Interval>(m.str());
+  else
+    lap.gap_ = Interval();
+
+  if (boost::regex_search(str, m, boost::regex(R"(\d+:\d+\.\d+)")))
+    lap.time_ = boost::lexical_cast<LongInterval>(m.str());
+
+  return is;
+}
+
+std::ostream& operator<<(std::ostream& os, const Lap& lap) {
+  os << "lap," << static_cast<long>(lap.race_time_) << ","
+    << lap.competitor_num_ << "," << lap.num_ << "," << lap.gap_ << ","
+    << lap.time_ << std::endl;
+
+  return os;
+}
+
+void ReadRaceHistory(LapVec* laps) {
+  if (!laps) return;
+
+  std::ifstream file;
+  file.open("race_hist.txt");
+
+  // Competitor num followed by any other data (upto the next competitor num).
+  boost::regex rgx(R"(((?<=\s)[0-9]+\s)(.(?!(?1)))*)");
+
+  std::string line;
+  std::map<int,int> competitor_lap_count;
+  std::map<int,Interval> competitor_race_time;
+  boost::sregex_token_iterator end;
+  while (std::getline(file, line)) {
+    boost::sregex_token_iterator iter(line.cbegin(), line.cend(), rgx, 0);
+    for (; iter != end; ++iter) {
+      auto lap = boost::lexical_cast<Lap>(boost::trim_copy(iter->str()));
+
+      lap.set_num(++competitor_lap_count[lap.competitor_num()]);
+      lap.set_race_time(competitor_race_time[lap.competitor_num()]
+          += static_cast<LongInterval>(lap));
+
+      laps->push_back(lap);
+    }
+  }
 }
 
 int main() {
@@ -273,12 +331,12 @@ int main() {
     events.pop();
   }
 
-  Interval interval(1014);
-  LongInterval long_interval(1014);
-
-  std::cout << "interval: " << interval << std::endl;
-  std::cout << "long_interval: " << long_interval << std::endl;
-
-  auto i = boost::lexical_cast<LongInterval>("8888");
-  std::cout << i << std::endl;
+  // TODO(ds)
+  // race start time = lowest fastlap on lap - laps to 0
+  // pit in = tod - race start time
+  // pit out = pit in + duration
+  // pit message
+  // add all messages to events order by race time
+  // re-write as service
+  // fire callback to publish
 }
