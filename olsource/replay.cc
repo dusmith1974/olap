@@ -1,3 +1,20 @@
+// Copyright 2013 Duncan Smith
+// https://github.com/dusmith1974/olap
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Recreates an events timing messages from the results.
+
 #include <algorithm>
 #include <chrono>
 #include <fstream>
@@ -10,106 +27,41 @@
 #include <string>
 
 #include "boost/algorithm/string.hpp"
+#include "boost/asio.hpp"
 #include "boost/lexical_cast.hpp"
+#include "boost/ptr_container/ptr_map.hpp"
 #include "boost/range/adaptor/map.hpp"
 #include "boost/range/algorithm/copy.hpp"
 #include "boost/regex.hpp"
 
 namespace adaptors = boost::adaptors;
 
-class Competitor;
 class Lap;
+class Competitor;
+class Interval;
+class Message;
 
 typedef std::vector<std::string> MsgVec;
 typedef std::map<int, Competitor> CompetitorMap;
 typedef std::vector<Lap> LapVec;
 
-typedef std::pair<int, std::string> Event;
-
-struct EventPQueueSortCriterion {
-  bool operator()(const Event& a, const Event& b) const {
-    return a.first > b.first;
-  }
-};
-
-typedef std::priority_queue<Event, std::vector<Event>,
-                            EventPQueueSortCriterion> EventPQueue;
 
 template <typename charT, typename traits>
-inline std::basic_istream<charT,traits>&ignore_line(
-    std::basic_istream<charT,traits>& strm) {
-   strm.ignore(std::numeric_limits<std::streamsize>::max(),
-               strm.widen('\n'));
+inline std::basic_istream<charT,traits>&ignore_line(std::basic_istream<
+    charT,traits>& strm) {
+  strm.ignore(std::numeric_limits<std::streamsize>::max(),
+              strm.widen('\n'));
 
    return strm;
 }
 
-class Competitor {
- public:
-  Competitor()
-    : num_(0),
-      grid_pos_(0),
-      short_name_(""),
-      name_(""),
-      team_("") {
- }
-
- public:
-  void set_grid_pos(int val) { grid_pos_ = val; }
-  int num() const { return num_; }
-
-  operator std::string() const {
-    std::stringstream ss;
-    ss << *this;
-
-    return ss.str();
-  }
-
- private:
-  friend std::istream& operator>>(std::istream& is, Competitor& competitor);
-  friend std::ostream& operator<<(std::ostream& os,
-                                  const Competitor& competitor);
-  int num_;
-  int grid_pos_;
-  std::string short_name_;
-  std::string name_;
-  std::string team_;
-};
-
-std::istream& operator>>(std::istream& is, Competitor& competitor) {
-  is >> competitor.num_;
-  is.ignore();
-
-  std::getline(is, competitor.short_name_, ',');
-  std::getline(is, competitor.name_, ',');
-  std::getline(is, competitor.team_, ',');
-
-  return is;
+void MessageHandler(const boost::system::error_code&) {
+  std::cout << "MSG: " << std::endl;
 }
 
-std::ostream& operator<<(std::ostream& os, const Competitor& competitor) {
-  os << "comp," << "0," << competitor.num_ << "," << competitor.grid_pos_ << ","
-     << competitor.short_name_ << "," << competitor.name_ << ","
-     << competitor.team_ << std::endl;
-
-  return os;
+void MessageHandler2(const boost::system::error_code&) {
+  std::cout << "MSG2: " << std::endl;
 }
-
-void ReadCompetitors(CompetitorMap* competitors) {
-  if (!competitors) return;
-
-  std::ifstream file;
-  file.open("competitors.txt");
-
-  int grid_pos = 0;
-  std::string line;
-  while (std::getline(file, line)) {
-    auto competitor = boost::lexical_cast<Competitor>(line);
-    competitor.set_grid_pos(++grid_pos);
-    (*competitors)[competitor.num()] = competitor;
-  }
-}
-
 class Interval {
  public:
   Interval() : milliseconds_(0) {};
@@ -217,20 +169,24 @@ std::ostream& operator<<(std::ostream& os, const LongInterval& long_interval) {
   return os;
 }
 
-class Lap {
+class Message {
  public:
-  Lap()
-    : num_(0),
-      competitor_num_(0),
-      race_time_(Interval()),
-      gap_(Interval()),
-      time_(LongInterval()) {
- }
+  Message() : race_time_(Interval()) {
+  }
 
- public:
-  void set_num(int val) { num_ = val; }
-  void set_race_time(const Interval& val) { race_time_ = val; }
-  int competitor_num() const { return competitor_num_; }
+  virtual ~Message() {
+  }
+
+  virtual Message* Clone() const = 0;
+
+  void set_timer(boost::asio::io_service* service) {
+    if (!service) return;
+    timer_ = std::shared_ptr<boost::asio::deadline_timer>(new boost::asio::deadline_timer(*service, boost::posix_time::milliseconds(race_time())));
+  }
+
+  void start_timer() {
+    timer_->async_wait(&MessageHandler2);
+  }
 
   operator std::string() const {
     std::stringstream ss;
@@ -239,16 +195,125 @@ class Lap {
     return ss.str();
   }
 
+  Interval race_time() const { return race_time_; }
+  void set_race_time(const Interval& val) { race_time_ = val; }
+
+ protected:
+  Interval race_time_;
+
+ private:
+  friend std::ostream& operator<<(std::ostream& os, const Message& message);
+
+  virtual void Print(std::ostream& os) const = 0;
+
+  std::shared_ptr<boost::asio::deadline_timer> timer_;
+};
+
+std::ostream& operator<<(std::ostream& os, const Message& message) {
+  message.Print(os);
+  return os;
+}
+
+class Competitor final : public Message {
+ public:
+  Competitor()
+    : num_(0),
+      grid_pos_(0),
+      short_name_(""),
+      name_(""),
+      team_("") {
+  }
+
+  Message* Clone() const { return new Competitor(*this); }
+
+  operator std::string() const {
+    std::stringstream ss;
+    ss << *this;
+
+    return ss.str();
+  }
+
+  void set_grid_pos(int val) { grid_pos_ = val; }
+  int num() const { return num_; }
+
+ private:
+  friend std::istream& operator>>(std::istream& is, Competitor& competitor);
+
+  void Print(std::ostream& os) const {
+    os << "comp," << "0," << num_ << "," << grid_pos_ << "," << short_name_
+      << "," << name_ << "," << team_ << std::endl;
+  }
+
+  int num_;
+  int grid_pos_;
+  std::string short_name_;
+  std::string name_;
+  std::string team_;
+};
+
+std::istream& operator>>(std::istream& is, Competitor& competitor) {
+  is >> competitor.num_;
+  is.ignore();
+
+  std::getline(is, competitor.short_name_, ',');
+  std::getline(is, competitor.name_, ',');
+  std::getline(is, competitor.team_, ',');
+
+  return is;
+}
+
+void ReadCompetitors(CompetitorMap* competitors) {
+  if (!competitors) return;
+
+  std::ifstream file;
+  file.open("competitors.txt");
+
+  int grid_pos = 0;
+  std::string line;
+  while (std::getline(file, line)) {
+    auto competitor = boost::lexical_cast<Competitor>(line);
+    competitor.set_grid_pos(++grid_pos);
+    (*competitors)[competitor.num()] = competitor;
+  }
+}
+
+// TODO(ds) Message base class with race_time?
+class Lap final : public Message {
+ public:
+  Lap()
+    : num_(0),
+      competitor_num_(0),
+      gap_(Interval()),
+      time_(LongInterval()) {
+  }
+
+  Message* Clone() const { return new Lap(*this); }
+
+  operator std::string() const {
+    std::stringstream ss;
+    ss << *this;
+
+    return ss.str();
+  }
+
+ public:
+  void set_num(int val) { num_ = val; }
+
+  int competitor_num() const { return competitor_num_; }
+
   operator Interval() const { return gap_; }
   operator LongInterval() const { return time_; };
 
  private:
   friend std::istream& operator>>(std::istream& is, Lap& lap);
-  friend std::ostream& operator<<(std::ostream& os, const Lap& lap);
+
+  void Print(std::ostream& os) const {
+    os << "lap," << static_cast<long>(race_time_) << "," << competitor_num_
+      << "," << num_ << "," << gap_ << "," << time_ << std::endl;
+  }
 
   int num_;
   int competitor_num_;
-  Interval race_time_;
   Interval gap_;
   LongInterval time_;
 };
@@ -261,8 +326,8 @@ std::istream& operator>>(std::istream& is, Lap& lap) {
   if (boost::regex_search(str, m, boost::regex(R"(^\d+)")))
     lap.competitor_num_ = boost::lexical_cast<int>(m.str());
 
-  if (boost::regex_search(str, m, boost::regex(
-                                    R"(((?<=\s)\d+\.\d+)|(\d+ LAPS?)|(PIT))")))
+  if (boost::regex_search(str, m,
+                        boost::regex(R"(((?<=\s)\d+\.\d+)|(\d+ LAPS?)|(PIT))")))
     lap.gap_ = boost::lexical_cast<Interval>(m.str());
   else
     lap.gap_ = Interval();
@@ -271,14 +336,6 @@ std::istream& operator>>(std::istream& is, Lap& lap) {
     lap.time_ = boost::lexical_cast<LongInterval>(m.str());
 
   return is;
-}
-
-std::ostream& operator<<(std::ostream& os, const Lap& lap) {
-  os << "lap," << static_cast<long>(lap.race_time_) << ","
-    << lap.competitor_num_ << "," << lap.num_ << "," << lap.gap_ << ","
-    << lap.time_ << std::endl;
-
-  return os;
 }
 
 void ReadRaceHistory(LapVec* laps) {
@@ -308,6 +365,31 @@ void ReadRaceHistory(LapVec* laps) {
   }
 }
 
+
+typedef std::pair<long, std::unique_ptr<Message>> Event;
+
+struct EventPQueueSortCriterion {
+  bool operator()(const Event& a, const Event& b) const {
+    return a.first > b.first;
+  }
+};
+
+typedef boost::ptr_multimap<Interval, Message> MessageMap;
+
+typedef std::priority_queue<Event, std::vector<Event>,
+                            EventPQueueSortCriterion> EventPQueue;
+namespace {
+template<typename T>
+void AddMessages(T coll, MessageMap* message_map) {
+  if (!message_map) return;
+
+  for (const auto& msg : coll) {
+    Interval race_time = msg.race_time();
+    message_map->insert(race_time, msg.Clone());
+  }
+}
+}  // namespace
+
 int main() {
   MsgVec msgs;
   EventPQueue events;
@@ -320,16 +402,52 @@ int main() {
   boost::copy(competitors | adaptors::map_values,
               std::back_inserter(msgs));
 
+  MessageMap message_map;
+  AddMessages(competitors | adaptors::map_values, &message_map);
+
   ReadRaceHistory(&laps);
   std::copy(laps.begin(), laps.end(), std::back_inserter(msgs));
 
-  std::copy(msgs.begin(), msgs.end(),
-      std::ostream_iterator<std::string>(std::cout));
+  //Event ev = std::make_pair(laps[0].race_time(), std::unique_ptr<Message>(new Lap(laps[0])));
+  //events.push(std::move(ev));
 
+  AddMessages(laps, &message_map);
+
+  std::copy(msgs.begin(), msgs.end(),
+            std::ostream_iterator<std::string>(std::cout));
+
+  /*std::cout << events.size() << std::endl;
   while (!events.empty()) {
-    std::cout << events.top().first << " " << events.top().second;
+    std::cout << events.top().first << " " << *events.top().second);
     events.pop();
+  }*/
+
+  boost::asio::io_service service;
+
+  std::cout << message_map.size() << std::endl;
+  for (const auto& message : message_map) {
+    std::cout << "msg " << *message.second;
+    message.second->set_timer(&service);
   }
+
+  // repeat every second to show time, see timer in osoa comms
+  boost::asio::deadline_timer t(service, boost::posix_time::milliseconds(1000));
+  t.async_wait(&MessageHandler);
+
+  for (const auto& message : message_map) {
+    message.second->start_timer();
+  }
+
+  // base class msg, msgvec on event not string (eg with racetime), deadline timer in event or shared ptr here.
+  // show racetime every second
+  // bind msg string to handler
+  /*for (const auto& lap : laps) {
+    long l = lap.race_time();
+    boost::asio::deadline_timer* tl = new boost::asio::deadline_timer(service, boost::posix_time::milliseconds(l));
+    tl->async_wait(&MessageHandler2);
+  }*/
+
+  service.run();
 
   // TODO(ds)
   // race start time = lowest fastlap on lap - laps to 0
