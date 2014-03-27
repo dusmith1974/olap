@@ -28,6 +28,7 @@
 
 #include "boost/algorithm/string.hpp"
 #include "boost/asio.hpp"
+#include "boost/bind.hpp"
 #include "boost/lexical_cast.hpp"
 #include "boost/ptr_container/ptr_map.hpp"
 #include "boost/range/adaptor/map.hpp"
@@ -59,9 +60,10 @@ void MessageHandler(const boost::system::error_code&) {
   std::cout << "MSG: " << std::endl;
 }
 
-void MessageHandler2(const boost::system::error_code&) {
-  std::cout << "MSG2: " << std::endl;
+void PublishMessage(const boost::system::error_code&, const std::string& message) {
+  std::cout << message;
 }
+
 class Interval {
  public:
   Interval() : milliseconds_(0) {};
@@ -185,7 +187,7 @@ class Message {
   }
 
   void start_timer() {
-    timer_->async_wait(&MessageHandler2);
+    timer_->async_wait(boost::bind(PublishMessage, boost::asio::placeholders::error, static_cast<std::string>(*this)));
   }
 
   operator std::string() const {
@@ -338,6 +340,7 @@ std::istream& operator>>(std::istream& is, Lap& lap) {
   return is;
 }
 
+// TODO(ds) make lapvec a map keyed on driver
 void ReadRaceHistory(LapVec* laps) {
   if (!laps) return;
 
@@ -357,6 +360,8 @@ void ReadRaceHistory(LapVec* laps) {
       auto lap = boost::lexical_cast<Lap>(boost::trim_copy(iter->str()));
 
       lap.set_num(++competitor_lap_count[lap.competitor_num()]);
+
+      // TODO(ds) do once after all laps, work down not across!
       lap.set_race_time(competitor_race_time[lap.competitor_num()]
           += static_cast<LongInterval>(lap));
 
@@ -434,9 +439,8 @@ int main() {
   boost::asio::deadline_timer t(service, boost::posix_time::milliseconds(1000));
   t.async_wait(&MessageHandler);
 
-  for (const auto& message : message_map) {
+  for (const auto& message : message_map)
     message.second->start_timer();
-  }
 
   // base class msg, msgvec on event not string (eg with racetime), deadline timer in event or shared ptr here.
   // show racetime every second
