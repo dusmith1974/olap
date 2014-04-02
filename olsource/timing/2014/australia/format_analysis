@@ -1,0 +1,37 @@
+#! /bin/bash
+pdftotext -layout RaceLapAnalysis.pdf
+
+# Remove the blank lines.
+sed -i '/^$/d' RaceLapAnalysis.txt
+
+# Get the timing lines.
+sed -i '/^\s*[0-9].*/!d' RaceLapAnalysis.txt
+
+# Insert page markers and split the file into pages.
+sed -ie '1iEOL' RaceLapAnalysis.txt
+sed -i 's/^.*\([0-9][0-9][0-9][0-9]\).*/EOL/' RaceLapAnalysis.txt
+awk '/EOL/{x="MultiPage"++i;next}{print > x;}' RaceLapAnalysis.txt
+rm RaceLapAnalysis.txt
+
+# Split each page into separate competitors.
+for f in MultiPage*; do 
+  num=$(echo $f |grep -Po '\d+$')
+
+  grep -Po '^(.?){70}' MultiPage$num |tr -s ' ' > Page$num.1
+  grep -Po '(?<=^.{70})(.?){70}' MultiPage$num |tr -s ' ' > Page$num.2
+  grep -Po '(?<=^.{140}).*' MultiPage$num |tr -s ' ' > Page$num.3
+
+  # Collapse the two columns into one and add the competitor number to each row.
+  for i in `seq 1 3`; do
+    grep -Po '^\s?\d+(\sP)?\s\d+:\d+[\.:]\d+' Page$num.$i > Page$num.$i.tmp
+    grep -Po '(?<!^)\s\d+\s.*' Page$num.$i >> Page$num.$i.tmp
+    sed -i 's/^/'"$(head -n1 Page$num.$i |grep -Po '\d+')"'/' Page$num.$i.tmp
+    cat Page$num.$i.tmp >> RaceLapAnalysis.txt
+  done
+done
+
+# Simplify parsing by removing the pits, we can get these from the PitStopSummary.
+sed -i 's/ P//' RaceLapAnalysis.txt
+
+# Clean up the working files.
+rm MultiPage* Page* *.txte

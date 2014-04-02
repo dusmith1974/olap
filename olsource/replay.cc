@@ -74,7 +74,7 @@ class Interval {
   operator long() const { return milliseconds_.count(); }
   operator std::chrono::milliseconds() const { return milliseconds_; }
 
-  const Interval& operator +=(const Interval& interval) {
+  const Interval& operator+=(const Interval& interval) {
     milliseconds_ += interval.milliseconds_;
     return *this;
   }
@@ -88,6 +88,11 @@ class Interval {
   friend std::ostream& operator<<(std::ostream& os, const Interval& interval);
 
 };
+
+inline Interval operator+(Interval lhs, const Interval& rhs) {
+  lhs += rhs;
+  return lhs;
+}
 
 std::istream& operator>>(std::istream& is, Interval& interval) {
   std::string str;
@@ -298,10 +303,14 @@ class Lap final : public Message {
     return ss.str();
   }
 
+
  public:
+  int num() const { return num_; }
   void set_num(int val) { num_ = val; }
 
   int competitor_num() const { return competitor_num_; }
+
+  LongInterval time() const { return time_; }
 
   operator Interval() const { return gap_; }
   operator LongInterval() const { return time_; };
@@ -319,6 +328,30 @@ class Lap final : public Message {
   Interval gap_;
   LongInterval time_;
 };
+
+inline bool operator<(const Lap& lhs, const Lap& rhs) {
+  return lhs.num() < rhs.num();
+}
+
+inline bool operator>(const Lap& lhs, const Lap& rhs) {
+  return rhs < lhs;
+}
+
+inline bool operator<=(const Lap& lhs, const Lap& rhs) {
+  return !(lhs > rhs);
+}
+
+inline bool operator>=(const Lap& lhs, const Lap& rhs) {
+  return !(lhs < rhs);
+}
+
+inline bool operator==(const Lap& lhs, const Lap& rhs) {
+  return lhs.num() == rhs.num();
+}
+
+inline bool operator!=(const Lap& lhs, const Lap& rhs) {
+  return !(lhs == rhs);
+}
 
 std::istream& operator>>(std::istream& is, Lap& lap) {
   std::string str;
@@ -340,9 +373,11 @@ std::istream& operator>>(std::istream& is, Lap& lap) {
   return is;
 }
 
+typedef std::map<int, LapVec> CompetitorLapMap;
+
 // TODO(ds) make lapvec a map keyed on driver
-void ReadRaceHistory(LapVec* laps) {
-  if (!laps) return;
+void ReadRaceHistory(CompetitorLapMap* competitor_laps) {
+  if (!competitor_laps) return;
 
   std::ifstream file;
   file.open("race_hist.txt");
@@ -354,22 +389,44 @@ void ReadRaceHistory(LapVec* laps) {
   std::map<int,int> competitor_lap_count;
   std::map<int,Interval> competitor_race_time;
   boost::sregex_token_iterator end;
+
+  int page = 1;
   while (std::getline(file, line)) {
     boost::sregex_token_iterator iter(line.cbegin(), line.cend(), rgx, 0);
+    if (iter == end)
+      ++page;
+    std::cout << "page=" << page << std::endl;
+    int lap_no = 1 + ((page - 1) * 5);
     for (; iter != end; ++iter) {
       auto lap = boost::lexical_cast<Lap>(boost::trim_copy(iter->str()));
 
-      lap.set_num(++competitor_lap_count[lap.competitor_num()]);
+      std::cout << "lap_no=" << lap_no << std::endl;
+      lap.set_num(lap_no++/*++competitor_lap_count[lap.competitor_num()]*/);
 
       // TODO(ds) do once after all laps, work down not across!
-      lap.set_race_time(competitor_race_time[lap.competitor_num()]
-          += static_cast<LongInterval>(lap));
+      //lap.set_race_time(competitor_race_time[lap.competitor_num()]
+      //    += static_cast<LongInterval>(lap));
 
-      laps->push_back(lap);
+      //laps->push_back(lap);
+
+      (*competitor_laps)[lap.competitor_num()].push_back(lap);
+    }
+  }
+
+  // Sort the laps by lap number for each competitor.
+  for (auto& laps : (*competitor_laps | adaptors::map_values))
+    std::sort(laps.begin(), laps.end());
+
+  // Calculate the race time for each lap.
+  for (auto& laps : (*competitor_laps | adaptors::map_values)) {
+    std::cout << "laps = " << std::endl;
+    Interval race_time;
+    for (auto& lap : laps) {
+      lap.set_race_time(race_time += lap.time());
+      std::cout << "lap = " << lap << std::endl;
     }
   }
 }
-
 
 typedef std::pair<long, std::unique_ptr<Message>> Event;
 
@@ -389,6 +446,7 @@ void AddMessages(T coll, MessageMap* message_map) {
   if (!message_map) return;
 
   for (const auto& msg : coll) {
+    std::cout << "msg = " << msg << std::endl;
     Interval race_time = msg.race_time();
     message_map->insert(race_time, msg.Clone());
   }
@@ -399,7 +457,7 @@ int main() {
   MsgVec msgs;
   EventPQueue events;
   CompetitorMap competitors;
-  LapVec laps;
+  CompetitorLapMap competitor_laps;
 
   ReadCompetitors(&competitors);
   /*boost::copy(competitors | adaptors::map_values,
@@ -410,13 +468,16 @@ int main() {
   MessageMap message_map;
   AddMessages(competitors | adaptors::map_values, &message_map);
 
-  ReadRaceHistory(&laps);
-  std::copy(laps.begin(), laps.end(), std::back_inserter(msgs));
+  ReadRaceHistory(&competitor_laps);
+  for (const auto& laps : competitor_laps | adaptors::map_values) {
+    std::copy(laps.begin(), laps.end(), std::back_inserter(msgs));
+    AddMessages(laps, &message_map);
+  }
 
   //Event ev = std::make_pair(laps[0].race_time(), std::unique_ptr<Message>(new Lap(laps[0])));
   //events.push(std::move(ev));
 
-  AddMessages(laps, &message_map);
+  // TODO(ds) add msgs for drivers
 
   std::copy(msgs.begin(), msgs.end(),
             std::ostream_iterator<std::string>(std::cout));
