@@ -361,6 +361,10 @@ std::istream& operator>>(std::istream& is, Lap& lap) {
   if (boost::regex_search(str, m, boost::regex(R"(^\d+)")))
     lap.competitor_num_ = boost::lexical_cast<int>(m.str());
 
+  // TODO(ds) optional lap number,
+  if (boost::regex_search(str, m, boost::regex(R"(^\d+\s(\d+)\s)")))
+    lap.num_ = boost::lexical_cast<int>(m[1].str());
+
   if (boost::regex_search(str, m,
                         boost::regex(R"(((?<=\s)\d+\.\d+)|(\d+ LAPS?)|(PIT))")))
     lap.gap_ = boost::lexical_cast<Interval>(m.str());
@@ -375,12 +379,26 @@ std::istream& operator>>(std::istream& is, Lap& lap) {
 
 typedef std::map<int, LapVec> CompetitorLapMap;
 
-// TODO(ds) make lapvec a map keyed on driver
-void ReadRaceHistory(CompetitorLapMap* competitor_laps) {
-  if (!competitor_laps) return;
+void ReadLapAnalysis(CompetitorLapMap* lap_analysis) {
+  if (!lap_analysis) return;
 
   std::ifstream file;
-  file.open("race_hist.txt");
+  file.open("RaceLapAnalysis.txt");
+
+  std::string line;
+  while (std::getline(file, line)) {
+    auto lap = boost::lexical_cast<Lap>(line);
+    if (lap.num() > 1)
+      (*lap_analysis)[lap.competitor_num()].push_back(lap);
+  }
+}
+
+// TODO(ds) make lapvec a map keyed on driver
+void ReadLapHistory(CompetitorLapMap* lap_history) {
+  if (!lap_history) return;
+
+  std::ifstream file;
+  file.open("RaceHist.txt");
 
   // Competitor num followed by any other data (upto the next competitor num).
   boost::regex rgx(R"(((?<=\s)[0-9]+\s)(.(?!(?1)))*)");
@@ -395,12 +413,10 @@ void ReadRaceHistory(CompetitorLapMap* competitor_laps) {
     boost::sregex_token_iterator iter(line.cbegin(), line.cend(), rgx, 0);
     if (iter == end)
       ++page;
-    std::cout << "page=" << page << std::endl;
     int lap_no = 1 + ((page - 1) * 5);
     for (; iter != end; ++iter) {
       auto lap = boost::lexical_cast<Lap>(boost::trim_copy(iter->str()));
 
-      std::cout << "lap_no=" << lap_no << std::endl;
       lap.set_num(lap_no++/*++competitor_lap_count[lap.competitor_num()]*/);
 
       // TODO(ds) do once after all laps, work down not across!
@@ -409,21 +425,19 @@ void ReadRaceHistory(CompetitorLapMap* competitor_laps) {
 
       //laps->push_back(lap);
 
-      (*competitor_laps)[lap.competitor_num()].push_back(lap);
+      (*lap_history)[lap.competitor_num()].push_back(lap);
     }
   }
 
   // Sort the laps by lap number for each competitor.
-  for (auto& laps : (*competitor_laps | adaptors::map_values))
+  for (auto& laps : (*lap_history | adaptors::map_values))
     std::sort(laps.begin(), laps.end());
 
   // Calculate the race time for each lap.
-  for (auto& laps : (*competitor_laps | adaptors::map_values)) {
-    std::cout << "laps = " << std::endl;
+  for (auto& laps : (*lap_history | adaptors::map_values)) {
     Interval race_time;
     for (auto& lap : laps) {
       lap.set_race_time(race_time += lap.time());
-      std::cout << "lap = " << lap << std::endl;
     }
   }
 }
@@ -441,15 +455,17 @@ typedef boost::ptr_multimap<Interval, Message> MessageMap;
 typedef std::priority_queue<Event, std::vector<Event>,
                             EventPQueueSortCriterion> EventPQueue;
 namespace {
+void AddMessage(const Message& msg, MessageMap* message_map) {
+  Interval race_time = msg.race_time();
+  message_map->insert(race_time, msg.Clone());
+}
+
 template<typename T>
 void AddMessages(T coll, MessageMap* message_map) {
   if (!message_map) return;
 
-  for (const auto& msg : coll) {
-    std::cout << "msg = " << msg << std::endl;
-    Interval race_time = msg.race_time();
-    message_map->insert(race_time, msg.Clone());
-  }
+  for (const auto& msg : coll)
+    AddMessage(msg, message_map);
 }
 }  // namespace
 
@@ -457,7 +473,9 @@ int main() {
   MsgVec msgs;
   EventPQueue events;
   CompetitorMap competitors;
-  CompetitorLapMap competitor_laps;
+  CompetitorLapMap lap_history;
+  CompetitorLapMap lap_analysis;
+  CompetitorLapMap all_laps;;
 
   ReadCompetitors(&competitors);
   /*boost::copy(competitors | adaptors::map_values,
@@ -468,8 +486,19 @@ int main() {
   MessageMap message_map;
   AddMessages(competitors | adaptors::map_values, &message_map);
 
-  ReadRaceHistory(&competitor_laps);
-  for (const auto& laps : competitor_laps | adaptors::map_values) {
+  ReadLapHistory(&lap_history);
+  for (const auto& laps : lap_history | adaptors::map_values)
+    all_laps[laps.begin()->competitor_num()].push_back(*laps.begin());
+
+  ReadLapAnalysis(&lap_analysis);
+  for (const auto& laps : lap_analysis | adaptors::map_values)
+    std::copy(laps.begin(), laps.end(), std::back_inserter(all_laps[laps.begin()->competitor_num()]));
+
+  // TODO(ds) update all_laps 2..n with gap from race_hist (where avail..)
+  // accumulate race_time
+  cxv
+
+  for (const auto& laps : all_laps | adaptors::map_values) {
     std::copy(laps.begin(), laps.end(), std::back_inserter(msgs));
     AddMessages(laps, &message_map);
   }
@@ -479,8 +508,8 @@ int main() {
 
   // TODO(ds) add msgs for drivers
 
-  std::copy(msgs.begin(), msgs.end(),
-            std::ostream_iterator<std::string>(std::cout));
+  //std::copy(msgs.begin(), msgs.end(),
+    //        std::ostream_iterator<std::string>(std::cout));
 
   /*std::cout << events.size() << std::endl;
   while (!events.empty()) {
@@ -490,15 +519,14 @@ int main() {
 
   boost::asio::io_service service;
 
-  std::cout << message_map.size() << std::endl;
   for (const auto& message : message_map) {
     std::cout << "msg " << *message.second;
     message.second->set_timer(&service);
   }
 
   // repeat every second to show time, see timer in osoa comms
-  boost::asio::deadline_timer t(service, boost::posix_time::milliseconds(1000));
-  t.async_wait(&MessageHandler);
+  //boost::asio::deadline_timer t(service, boost::posix_time::milliseconds(1000));
+  //t.async_wait(&MessageHandler);
 
   for (const auto& message : message_map)
     message.second->start_timer();
@@ -512,7 +540,7 @@ int main() {
     tl->async_wait(&MessageHandler2);
   }*/
 
-  service.run();
+  //service.run();
 
   // TODO(ds)
   // race start time = lowest fastlap on lap - laps to 0
