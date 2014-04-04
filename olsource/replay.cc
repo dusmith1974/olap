@@ -308,6 +308,9 @@ class Lap final : public Message {
   int num() const { return num_; }
   void set_num(int val) { num_ = val; }
 
+  Interval gap() const { return gap_; }
+  void set_gap(Interval val) { gap_ = val; }
+
   int competitor_num() const { return competitor_num_; }
 
   LongInterval time() const { return time_; }
@@ -496,7 +499,24 @@ int main() {
 
   // TODO(ds) update all_laps 2..n with gap from race_hist (where avail..)
   // accumulate race_time
-  cxv
+  for (auto& laps : lap_analysis) {
+    auto other = lap_history.find(laps.first);
+    if (other != lap_history.end()) {
+      auto iter = laps.second.begin();
+      auto iter_other = other->second.begin();
+
+      if (other->second.size() > 1)
+        std::advance(iter_other, 1);
+
+      std::transform(laps.second.begin(), laps.second.end(),
+                     iter_other,
+                     laps.second.begin(),
+                     [] (Lap& a, Lap& b) {
+                       a.set_gap(b.gap());
+                       return a;
+                     });
+    }
+  }
 
   for (const auto& laps : all_laps | adaptors::map_values) {
     std::copy(laps.begin(), laps.end(), std::back_inserter(msgs));
