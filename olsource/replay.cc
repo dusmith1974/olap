@@ -494,28 +494,35 @@ int main() {
     all_laps[laps.begin()->competitor_num()].push_back(*laps.begin());
 
   ReadLapAnalysis(&lap_analysis);
-  for (const auto& laps : lap_analysis | adaptors::map_values)
-    std::copy(laps.begin(), laps.end(), std::back_inserter(all_laps[laps.begin()->competitor_num()]));
 
   // TODO(ds) update all_laps 2..n with gap from race_hist (where avail..)
   // accumulate race_time
   for (auto& laps : lap_analysis) {
-    auto other = lap_history.find(laps.first);
-    if (other != lap_history.end()) {
-      auto iter = laps.second.begin();
-      auto iter_other = other->second.begin();
+    const auto other = lap_history.find(laps.first);
+    if (other != lap_history.end() && other->second.size()) {
+        //std::cout << "laps: " << laps.first << " " << laps.second.size() << std::endl;
+        //std::cout << "other: " << other->first << " " << other->second.size() << std::endl;
+        std::transform(laps.second.begin(), std::next(laps.second.begin(), other->second.size() - 1),
+                       std::next(other->second.begin()),
+                       laps.second.begin(),
+                       [] (Lap& a, const Lap& b) {
+                         a.set_gap(b.gap());
+                         return a;
+                       });
 
-      if (other->second.size() > 1)
-        std::advance(iter_other, 1);
-
-      std::transform(laps.second.begin(), laps.second.end(),
-                     iter_other,
-                     laps.second.begin(),
-                     [] (Lap& a, Lap& b) {
-                       a.set_gap(b.gap());
-                       return a;
-                     });
     }
+  }
+
+  for (const auto& laps : lap_analysis | adaptors::map_values)
+    std::copy(laps.begin(), laps.end(), std::back_inserter(all_laps[laps.begin()->competitor_num()]));
+
+  for (auto& laps : all_laps) {
+    const auto other = lap_history.find(laps.first);
+        std::partial_sum(laps.second.begin(), laps.second.end(), laps.second.begin(),
+                         [] (Lap&a, Lap&b) {
+                           b.set_race_time(a.race_time() + b.time());
+                           return b;
+                         });
   }
 
   for (const auto& laps : all_laps | adaptors::map_values) {
@@ -560,7 +567,7 @@ int main() {
     tl->async_wait(&MessageHandler2);
   }*/
 
-  //service.run();
+  service.run();
 
   // TODO(ds)
   // race start time = lowest fastlap on lap - laps to 0
