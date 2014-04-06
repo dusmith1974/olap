@@ -1,7 +1,24 @@
 #! /bin/bash
+# Parses the Race History pdf into a csv file.
+
+# Get the raw data.
 pdftotext -layout RaceHistoryChart.pdf
-sed -i '/^$/d' RaceHistoryChart.txt
-sed -i '/^\s\+[0-9]/!d' RaceHistoryChart.txt && rm RaceHistoryChart.txt
+mv RaceHistoryChart.txt RaceHist.txt
+
+# Remove empty lines.
+sed -i '/^$/d' RaceHist.txt
+
+# Remove any non-timing lines.
+sed -i '/^\s\+[0-9]/!d' RaceHist.txt
+
+# Set a page marker on each page.
 sed -i 's/^.*\([0-9][0-9][0-9][0-9]\).*/EOL/' RaceHist.txt
+
+# Space out the competitor number and gap (when the gap is >= 100s).
+perl -p -i -e 's/^\s*(\d{2})(\d{3}\.)/ $1 $2/' RaceHist.txt
+
+# Add some left padding where data is missing from the first few columns.
 perl -p -i -e 's/\s{44}/ 00 00.000 0:00.000/g' RaceHist.txt
+
+# Shrink multiple spaces.
 perl -p -i -e 's/  */ /g' RaceHist.txt

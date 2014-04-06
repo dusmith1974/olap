@@ -1,17 +1,21 @@
 #! /bin/bash
+# Parses the Pit Stop Summary pdf into a csv file.
 pdftotext -layout PitStopSummary.pdf
 
-# Remove the blank lines.
+# Remove empty lines.
 sed -i '/^$/d' PitStopSummary.txt
 
-# Get the timing lines.
+# Remove any non-timing lines.
 sed -i '/^\s*[0-9].*/!d' PitStopSummary.txt
 
+# Remove other comment lines, e.g. 2014...
 sed -i '/^.*[0-9][0-9][0-9][0-9]/d' PitStopSummary.txt
+
+# Shrink first multiple space.
 sed -i 's/  */ /' PitStopSummary.txt
 
-perl -i.bak -e 'while (<>) { if (/^\s*(\d+).*?\s{5}.*?\w.*?\s{5}(.*)/) { print "$1$2\n"; }  }' PitStopSummary.txt
-sed -i 's/  */ /g' PitStopSummary.txt
+# Remove certain fields, e.g. team name.
+perl -i -e 'while (<>) { if (/^\s*(\d+).*?\s{5}.*?\w.*?\s{5}(.*)/) { print "$1$2\n"; }  }' PitStopSummary.txt
 
-# Clean up the working files.
-rm *.bak
+# Shrink remaining multiple spaces.
+sed -i 's/  */ /g' PitStopSummary.txt

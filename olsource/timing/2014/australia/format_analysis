@@ -1,10 +1,13 @@
 #! /bin/bash
+# Parses the Race Lap Analysis pdf into a csv file.
+
+# Get the raw data.
 pdftotext -layout RaceLapAnalysis.pdf
 
-# Remove the blank lines.
+# Remove empty lines.
 sed -i '/^$/d' RaceLapAnalysis.txt
 
-# Get the timing lines.
+# Remove any non-timing lines.
 sed -i '/^\s*[0-9].*/!d' RaceLapAnalysis.txt
 
 # Insert page markers and split the file into pages.
