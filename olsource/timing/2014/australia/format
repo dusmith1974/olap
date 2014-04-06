@@ -1,9 +1,7 @@
 #! /bin/bash
 pdftotext -layout RaceHistoryChart.pdf
 sed -i '/^$/d' RaceHistoryChart.txt
-grep '^\s\+[0-9]' RaceHistoryChart.txt > tmp.txt
-cat tmp.txt |tr -s ' ' > RaceHist.txt
-rm RaceHistoryChart.txt
+sed -i '/^\s\+[0-9]/!d' RaceHistoryChart.txt && rm RaceHistoryChart.txt
 sed -i 's/^.*\([0-9][0-9][0-9][0-9]\).*/EOL/' RaceHist.txt
-
-rm tmp.txt
+perl -p -i -e 's/\s{44}/ 00 00.000 0:00.000/g' RaceHist.txt
+perl -p -i -e 's/  */ /g' RaceHist.txt

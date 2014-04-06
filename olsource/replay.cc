@@ -46,9 +46,9 @@ typedef std::vector<std::string> MsgVec;
 typedef std::map<int, Competitor> CompetitorMap;
 typedef std::vector<Lap> LapVec;
 
-
+// TODO(ds) rm or mv to utils.
 template <typename charT, typename traits>
-inline std::basic_istream<charT,traits>&ignore_line(std::basic_istream<
+inline std::basic_istream<charT,traits>& ignore_line(std::basic_istream<
     charT,traits>& strm) {
   strm.ignore(std::numeric_limits<std::streamsize>::max(),
               strm.widen('\n'));
@@ -56,18 +56,19 @@ inline std::basic_istream<charT,traits>&ignore_line(std::basic_istream<
    return strm;
 }
 
-void MessageHandler(const boost::system::error_code&) {
-  std::cout << "MSG: " << std::endl;
-}
-
-void PublishMessage(const boost::system::error_code&, const std::string& message) {
+void PublishMessage(const boost::system::error_code&,
+                    const std::string& message) {
   std::cout << message;
 }
 
 class Interval {
  public:
-  Interval() : milliseconds_(0) {};
-  explicit Interval(long val) : milliseconds_(val) {};
+  Interval() : milliseconds_(0) {
+  };
+
+  explicit Interval(long val) : milliseconds_(val) {
+  };
+
   explicit Interval(const std::chrono::milliseconds& val) : milliseconds_(val) {
   }
 
@@ -86,7 +87,6 @@ class Interval {
  private:
   friend std::istream& operator>>(std::istream& is, Interval& interval);
   friend std::ostream& operator<<(std::ostream& os, const Interval& interval);
-
 };
 
 inline Interval operator+(Interval lhs, const Interval& rhs) {
@@ -143,8 +143,11 @@ std::ostream& operator<<(std::ostream& os, const Interval& interval) {
 
 class LongInterval : public Interval {
  public:
-  LongInterval() : Interval(0) {};
-  explicit LongInterval(long val) : Interval(val) {};
+  LongInterval() : Interval(0) {
+  };
+
+  explicit LongInterval(long val) : Interval(val) {
+  };
 
  private:
   friend std::ostream& operator<<(std::ostream& os,
@@ -188,11 +191,16 @@ class Message {
 
   void set_timer(boost::asio::io_service* service) {
     if (!service) return;
-    timer_ = std::shared_ptr<boost::asio::deadline_timer>(new boost::asio::deadline_timer(*service, boost::posix_time::milliseconds(race_time())));
+
+    timer_ = std::shared_ptr<boost::asio::deadline_timer>(
+      new boost::asio::deadline_timer(*service,
+                                 boost::posix_time::milliseconds(race_time())));
   }
 
   void start_timer() {
-    timer_->async_wait(boost::bind(PublishMessage, boost::asio::placeholders::error, static_cast<std::string>(*this)));
+    timer_->async_wait(boost::bind(PublishMessage,
+                       boost::asio::placeholders::error,
+                       static_cast<std::string>(*this)));
   }
 
   operator std::string() const {
@@ -421,13 +429,6 @@ void ReadLapHistory(CompetitorLapMap* lap_history) {
       auto lap = boost::lexical_cast<Lap>(boost::trim_copy(iter->str()));
 
       lap.set_num(lap_no++/*++competitor_lap_count[lap.competitor_num()]*/);
-
-      // TODO(ds) do once after all laps, work down not across!
-      //lap.set_race_time(competitor_race_time[lap.competitor_num()]
-      //    += static_cast<LongInterval>(lap));
-
-      //laps->push_back(lap);
-
       (*lap_history)[lap.competitor_num()].push_back(lap);
     }
   }
@@ -495,30 +496,28 @@ int main() {
 
   ReadLapAnalysis(&lap_analysis);
 
-  // TODO(ds) update all_laps 2..n with gap from race_hist (where avail..)
-  // accumulate race_time
   for (auto& laps : lap_analysis) {
     const auto other = lap_history.find(laps.first);
     if (other != lap_history.end() && other->second.size()) {
-        //std::cout << "laps: " << laps.first << " " << laps.second.size() << std::endl;
-        //std::cout << "other: " << other->first << " " << other->second.size() << std::endl;
-        std::transform(laps.second.begin(), std::next(laps.second.begin(), other->second.size() - 1),
+        std::transform(laps.second.begin(), std::next(laps.second.begin(),
+                       other->second.size() - 1),
                        std::next(other->second.begin()),
                        laps.second.begin(),
                        [] (Lap& a, const Lap& b) {
                          a.set_gap(b.gap());
                          return a;
                        });
-
     }
   }
 
   for (const auto& laps : lap_analysis | adaptors::map_values)
-    std::copy(laps.begin(), laps.end(), std::back_inserter(all_laps[laps.begin()->competitor_num()]));
+    std::copy(laps.begin(), laps.end(), std::back_inserter(
+          all_laps[laps.begin()->competitor_num()]));
 
   for (auto& laps : all_laps) {
     const auto other = lap_history.find(laps.first);
-        std::partial_sum(laps.second.begin(), laps.second.end(), laps.second.begin(),
+        std::partial_sum(laps.second.begin(), laps.second.end(),
+                         laps.second.begin(),
                          [] (Lap&a, Lap&b) {
                            b.set_race_time(a.race_time() + b.time());
                            return b;
@@ -532,8 +531,6 @@ int main() {
 
   //Event ev = std::make_pair(laps[0].race_time(), std::unique_ptr<Message>(new Lap(laps[0])));
   //events.push(std::move(ev));
-
-  // TODO(ds) add msgs for drivers
 
   //std::copy(msgs.begin(), msgs.end(),
     //        std::ostream_iterator<std::string>(std::cout));
@@ -551,25 +548,13 @@ int main() {
     message.second->set_timer(&service);
   }
 
-  // repeat every second to show time, see timer in osoa comms
-  //boost::asio::deadline_timer t(service, boost::posix_time::milliseconds(1000));
-  //t.async_wait(&MessageHandler);
-
   for (const auto& message : message_map)
     message.second->start_timer();
-
-  // base class msg, msgvec on event not string (eg with racetime), deadline timer in event or shared ptr here.
-  // show racetime every second
-  // bind msg string to handler
-  /*for (const auto& lap : laps) {
-    long l = lap.race_time();
-    boost::asio::deadline_timer* tl = new boost::asio::deadline_timer(service, boost::posix_time::milliseconds(l));
-    tl->async_wait(&MessageHandler2);
-  }*/
 
   service.run();
 
   // TODO(ds)
+  // team names from pits
   // race start time = lowest fastlap on lap - laps to 0
   // pit in = tod - race start time
   // pit out = pit in + duration
@@ -577,4 +562,5 @@ int main() {
   // add all messages to events order by race time
   // re-write as service
   // fire callback to publish
+  // write some clients, ncurses, web, native?
 }
