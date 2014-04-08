@@ -30,12 +30,15 @@
 #include "boost/asio.hpp"
 #include "boost/bind.hpp"
 #include "boost/lexical_cast.hpp"
+#include "boost/optional.hpp"
 #include "boost/ptr_container/ptr_map.hpp"
 #include "boost/range/adaptor/map.hpp"
 #include "boost/range/algorithm/copy.hpp"
 #include "boost/regex.hpp"
 
 namespace adaptors = boost::adaptors;
+
+using boost::optional;
 
 class Lap;
 class Competitor;
@@ -102,16 +105,26 @@ std::istream& operator>>(std::istream& is, Interval& interval) {
   interval.milliseconds_ = std::chrono::milliseconds();
 
   boost::smatch m;
-  // TODO(ds) handle hours on input too.
-  if (boost::regex_search(str, m, boost::regex(R"((\d+):(\d+)\.(\d+))"))) {
-    interval.milliseconds_ += std::chrono::minutes(
-        boost::lexical_cast<int>(m[1].str()));
+  if (boost::regex_search(str, m, boost::regex(R"((\d+):(\d+)[\.:](\d+))"))) {
+    if (std::count(str.begin(), str.end(), ':') > 1) {
+      interval.milliseconds_ += std::chrono::hours(
+          boost::lexical_cast<int>(m[1].str()));
 
-    interval.milliseconds_ += std::chrono::seconds(
-        boost::lexical_cast<int>(m[2].str()));
+      interval.milliseconds_ += std::chrono::minutes(
+          boost::lexical_cast<int>(m[2].str()));
 
-    interval.milliseconds_ += std::chrono::milliseconds(
-        boost::lexical_cast<int>(m[3].str()));
+      interval.milliseconds_ += std::chrono::seconds(
+          boost::lexical_cast<int>(m[3].str()));
+    } else {
+      interval.milliseconds_ += std::chrono::minutes(
+          boost::lexical_cast<int>(m[1].str()));
+
+      interval.milliseconds_ += std::chrono::seconds(
+          boost::lexical_cast<int>(m[2].str()));
+
+      interval.milliseconds_ += std::chrono::milliseconds(
+          boost::lexical_cast<int>(m[3].str()));
+    }
   } else if (boost::regex_search(str, m, boost::regex(R"((\d+)\.(\d+))"))) {
     interval.milliseconds_ += std::chrono::seconds(
         boost::lexical_cast<int>(m[1].str()));
@@ -248,7 +261,10 @@ class Competitor final : public Message {
     return ss.str();
   }
 
+  int grid_pos() const { return grid_pos_; }
   void set_grid_pos(int val) { grid_pos_ = val; }
+
+  std::string name() const { return name_; }
   int num() const { return num_; }
 
  private:
@@ -290,6 +306,18 @@ void ReadCompetitors(CompetitorMap* competitors) {
     competitor.set_grid_pos(++grid_pos);
     (*competitors)[competitor.num()] = competitor;
   }
+}
+
+const optional<CompetitorMap::mapped_type&> FindPole(CompetitorMap* competitors) {
+  if (!competitors) return optional<CompetitorMap::mapped_type&>();
+
+  auto pole = std::find_if(competitors->begin(), competitors->end(),
+                           [] (const std::pair<int, Competitor>& elem) {
+                             return elem.second.grid_pos() == 1;
+                           });
+
+  return (pole == competitors->end()) ? optional<CompetitorMap::mapped_type&>()
+    : optional<CompetitorMap::mapped_type&>(pole->second);
 }
 
 // TODO(ds) Message base class with race_time?
@@ -382,7 +410,7 @@ std::istream& operator>>(std::istream& is, Lap& lap) {
   else
     lap.gap_ = Interval();
 
-  if (boost::regex_search(str, m, boost::regex(R"(\d+:\d+\.\d+)")))
+  if (boost::regex_search(str, m, boost::regex(R"((\d+:)\d+[\.:]\d+)")))
     lap.time_ = boost::lexical_cast<LongInterval>(m.str());
 
   return is;
@@ -390,21 +418,25 @@ std::istream& operator>>(std::istream& is, Lap& lap) {
 
 typedef std::map<int, LapVec> CompetitorLapMap;
 
-void ReadLapAnalysis(CompetitorLapMap* lap_analysis) {
-  if (!lap_analysis) return;
+LongInterval ReadLapAnalysis(int pole_num, CompetitorLapMap* lap_analysis) {
+  if (!lap_analysis) return LongInterval(0);
 
   std::ifstream file;
   file.open("RaceLapAnalysis.txt");
 
+  LongInterval race_start_time;
   std::string line;
   while (std::getline(file, line)) {
     auto lap = boost::lexical_cast<Lap>(line);
     if (lap.num() > 1)
       (*lap_analysis)[lap.competitor_num()].push_back(lap);
+    else if (lap.competitor_num() == pole_num)
+      race_start_time = lap.time();
   }
+
+  return race_start_time;
 }
 
-// TODO(ds) make lapvec a map keyed on driver
 void ReadLapHistory(CompetitorLapMap* lap_history) {
   if (!lap_history) return;
 
@@ -428,8 +460,10 @@ void ReadLapHistory(CompetitorLapMap* lap_history) {
     for (; iter != end; ++iter) {
       auto lap = boost::lexical_cast<Lap>(boost::trim_copy(iter->str()));
 
-      lap.set_num(lap_no++/*++competitor_lap_count[lap.competitor_num()]*/);
-      (*lap_history)[lap.competitor_num()].push_back(lap);
+      if (lap.competitor_num()) {
+        lap.set_num(lap_no++);
+        (*lap_history)[lap.competitor_num()].push_back(lap);
+      }
     }
   }
 
@@ -490,23 +524,29 @@ int main() {
   MessageMap message_map;
   AddMessages(competitors | adaptors::map_values, &message_map);
 
+  optional<CompetitorMap::mapped_type&> pole = FindPole(&competitors);
+
   ReadLapHistory(&lap_history);
   for (const auto& laps : lap_history | adaptors::map_values)
     all_laps[laps.begin()->competitor_num()].push_back(*laps.begin());
 
-  ReadLapAnalysis(&lap_analysis);
+  std::cout << "pole: " << (*pole).num() << " " << (*pole).name() << std::endl;
+
+  LongInterval race_start_time = ReadLapAnalysis((pole) ? (*pole).num() : 0,
+                                                 &lap_analysis);
+  std::cout << "RST: " << race_start_time << std::endl;
 
   for (auto& laps : lap_analysis) {
     const auto other = lap_history.find(laps.first);
     if (other != lap_history.end() && other->second.size()) {
-        std::transform(laps.second.begin(), std::next(laps.second.begin(),
-                       other->second.size() - 1),
-                       std::next(other->second.begin()),
-                       laps.second.begin(),
-                       [] (Lap& a, const Lap& b) {
-                         a.set_gap(b.gap());
-                         return a;
-                       });
+      std::transform(laps.second.begin(), std::next(laps.second.begin(),
+                     other->second.size() - 1),
+                     std::next(other->second.begin()),
+                     laps.second.begin(),
+                     [] (Lap& a, const Lap& b) {
+                       a.set_gap(b.gap());
+                       return a;
+                     });
     }
   }
 
