@@ -19,3 +19,6 @@ perl -i -e 'while (<>) { if (/^\s*(\d+).*?\s{5}.*?\w.*?\s{5}(.*)/) { print "$1$2
 
 # Shrink remaining multiple spaces.
 sed -i 's/  */ /g' PitStopSummary.txt
+
+# Convert to CSV.
+sed -i 's/ /,/g' PitStopSummary.txt

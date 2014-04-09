@@ -44,10 +44,12 @@ class Lap;
 class Competitor;
 class Interval;
 class Message;
+class Pit;
 
 typedef std::vector<std::string> MsgVec;
 typedef std::map<int, Competitor> CompetitorMap;
 typedef std::vector<Lap> LapVec;
+typedef std::vector<Pit> PitVec;
 
 // TODO(ds) rm or mv to utils.
 template <typename charT, typename traits>
@@ -270,7 +272,7 @@ class Competitor final : public Message {
  private:
   friend std::istream& operator>>(std::istream& is, Competitor& competitor);
 
-  void Print(std::ostream& os) const {
+  void Print(std::ostream& os) const override {
     os << "comp," << "0," << num_ << "," << grid_pos_ << "," << short_name_
       << "," << name_ << "," << team_ << std::endl;
   }
@@ -320,7 +322,6 @@ const optional<CompetitorMap::mapped_type&> FindPole(CompetitorMap* competitors)
     : optional<CompetitorMap::mapped_type&>(pole->second);
 }
 
-// TODO(ds) Message base class with race_time?
 class Lap final : public Message {
  public:
   Lap()
@@ -328,6 +329,9 @@ class Lap final : public Message {
       competitor_num_(0),
       gap_(Interval()),
       time_(LongInterval()) {
+  }
+
+  virtual ~Lap() {
   }
 
   Message* Clone() const { return new Lap(*this); }
@@ -339,8 +343,6 @@ class Lap final : public Message {
     return ss.str();
   }
 
-
- public:
   int num() const { return num_; }
   void set_num(int val) { num_ = val; }
 
@@ -357,7 +359,7 @@ class Lap final : public Message {
  private:
   friend std::istream& operator>>(std::istream& is, Lap& lap);
 
-  void Print(std::ostream& os) const {
+  void Print(std::ostream& os) const override {
     os << "lap," << static_cast<long>(race_time_) << "," << competitor_num_
       << "," << num_ << "," << gap_ << "," << time_ << std::endl;
   }
@@ -416,6 +418,70 @@ std::istream& operator>>(std::istream& is, Lap& lap) {
   return is;
 }
 
+class Pit final : public Message {
+ public:
+  Pit()
+    : competitor_num_(0),
+      lap_num_(0),
+      time_of_day_(LongInterval()),
+      num_(0),
+      time_(Interval()),
+      total_time_(Interval()) {
+  }
+
+  virtual ~Pit() {
+  }
+
+  Message* Clone() const { return new Pit(*this); }
+
+  operator std::string() const {
+    std::stringstream ss;
+    ss << *this;
+
+    return ss.str();
+  }
+
+  LongInterval time_of_day() const { return time_of_day_; }
+
+ private:
+  friend std::istream& operator>>(std::istream& is, Pit& pit);
+
+  void Print(std::ostream& os) const override {
+    os << "pit," << static_cast<long>(race_time_) << "," << competitor_num_
+      << "," << lap_num_ << "," << time_of_day_ << "," << num_ << "," << time_
+      << "," << total_time_ << std::endl;
+  }
+
+  int competitor_num_;
+  int lap_num_;
+  LongInterval time_of_day_;
+  int num_;
+  Interval time_;
+  Interval total_time_;
+};
+
+std::istream& operator>>(std::istream& is, Pit& pit) {
+  std::string str;
+
+  is >> pit.competitor_num_, is.ignore();
+  is >> pit.lap_num_, is.ignore();
+
+  std::getline(is, str, ',');
+  pit.time_of_day_ = boost::lexical_cast<LongInterval>(str);
+
+  is >> pit.num_, is.ignore();
+
+  std::getline(is, str, ',');
+  pit.time_ = boost::lexical_cast<LongInterval>(str);
+
+  std::getline(is, str, ',');
+  pit.total_time_ = boost::lexical_cast<LongInterval>(str);
+
+  pit.race_time_ = Interval(1);
+
+  return is;
+}
+
 typedef std::map<int, LapVec> CompetitorLapMap;
 
 LongInterval ReadLapAnalysis(int pole_num, CompetitorLapMap* lap_analysis) {
@@ -430,6 +496,7 @@ LongInterval ReadLapAnalysis(int pole_num, CompetitorLapMap* lap_analysis) {
     auto lap = boost::lexical_cast<Lap>(line);
     if (lap.num() > 1)
       (*lap_analysis)[lap.competitor_num()].push_back(lap);
+    // TODO(ds) use lowest time not pole.
     else if (lap.competitor_num() == pole_num)
       race_start_time = lap.time();
   }
@@ -477,6 +544,19 @@ void ReadLapHistory(CompetitorLapMap* lap_history) {
     for (auto& lap : laps) {
       lap.set_race_time(race_time += lap.time());
     }
+  }
+}
+
+void ReadPits(const Interval& race_start_time, PitVec* pits) {
+  if (!pits) return;
+
+  std::ifstream file;
+  file.open("PitStopSummary.txt");
+
+  std::string str;
+  while (std::getline(file, str)) {
+    Pit pit = boost::lexical_cast<Pit>(str);
+    pits->push_back(pit);
   }
 }
 
@@ -568,6 +648,15 @@ int main() {
     std::copy(laps.begin(), laps.end(), std::back_inserter(msgs));
     AddMessages(laps, &message_map);
   }
+
+  PitVec pits;
+  pits.reserve(50);
+  ReadPits(race_start_time, &pits);
+  std::for_each(pits.begin(), pits.end(),
+                 [=] (Pit& elem) {
+                   elem.set_race_time(LongInterval(elem.time_of_day() - race_start_time));
+                 });
+  AddMessages(pits, &message_map);
 
   //Event ev = std::make_pair(laps[0].race_time(), std::unique_ptr<Message>(new Lap(laps[0])));
   //events.push(std::move(ev));
