@@ -228,21 +228,37 @@ class Message {
     return ss.str();
   }
 
+  static LongInterval race_start_time() { return race_start_time_; }
+
+  static void set_race_start_time(const LongInterval& val) {
+    race_start_time_ = val;
+  }
+
+  LongInterval time_of_day() const { return time_of_day_; }
+  void set_time_of_day(const LongInterval& val) { time_of_day_ = val; }
+
   Interval race_time() const { return race_time_; }
-  void set_race_time(const Interval& val) { race_time_ = val; }
+
+  void set_race_time(const Interval& val) {
+    race_time_ = val;
+    time_of_day_ = LongInterval(Message::race_start_time() + race_time());
+  }
 
  protected:
   Interval race_time_;
-  LongInterval time_of_day() const { return time_of_day_; }
+  LongInterval time_of_day_;
 
  private:
   friend std::ostream& operator<<(std::ostream& os, const Message& message);
 
+  static LongInterval race_start_time_;
+
   virtual void Print(std::ostream& os) const = 0;
 
-  LongInterval time_of_day_;
   std::shared_ptr<boost::asio::deadline_timer> timer_;
 };
+
+LongInterval Message::race_start_time_;
 
 std::ostream& operator<<(std::ostream& os, const Message& message) {
   message.Print(os);
@@ -365,7 +381,8 @@ class Lap final : public Message {
   friend std::istream& operator>>(std::istream& is, Lap& lap);
 
   void Print(std::ostream& os) const override {
-    os << "lap," << static_cast<LongInterval>(race_time_) << "," << competitor_num_
+    os << "lap," << static_cast<LongInterval>(race_time_)
+      << "," << time_of_day_ << "," << competitor_num_
       << "," << num_ << "," << gap_ << "," << time_ << std::endl;
   }
 
@@ -428,7 +445,6 @@ class Pit : public Message {
   Pit()
     : competitor_num_(0),
       lap_num_(0),
-      time_of_day_(LongInterval()),
       num_(0) {
   }
 
@@ -684,12 +700,10 @@ int main() {
 
   std::cout << "pole: " << (*pole).num() << " " << (*pole).name() << std::endl;
 
-  LongInterval race_start_time = ReadLapAnalysis((pole) ? (*pole).num() : 0,
-                                                 &lap_analysis);
+  Message::set_race_start_time(ReadLapAnalysis((pole) ? (*pole).num() : 0,
+                                                 &lap_analysis));
 
-  // add race_start_time as static member of msg or singleton
-  x
-  std::cout << "RST: " << race_start_time << std::endl;
+  std::cout << "RST: " << Message::race_start_time << std::endl;
 
   for (auto& laps : lap_analysis) {
     const auto other = lap_history.find(laps.first);
@@ -719,6 +733,18 @@ int main() {
                          });
   }
 
+  // Set the time of day on the first laps.
+  for (auto& laps : all_laps) {
+    decltype(laps.second)::iterator iter = std::next(laps.second.begin());
+    iter = (iter > laps.second.end()) ? laps.second.end() : iter;
+
+    std::for_each(laps.second.begin(), iter,
+                  [] (Lap& lap) {
+                    lap.set_time_of_day(LongInterval(
+                        lap.time_of_day() + Message::race_start_time()));
+                  });
+  }
+
   for (const auto& laps : all_laps | adaptors::map_values) {
     std::copy(laps.begin(), laps.end(), std::back_inserter(msgs));
     AddMessages(laps, &message_map);
@@ -728,7 +754,7 @@ int main() {
   OutVec outs;
   pits.reserve(50);
   outs.reserve(50);
-  ReadPits(race_start_time, &pits, &outs);
+  ReadPits(Message::race_start_time(), &pits, &outs);
   /*std::for_each(pits.begin(), pits.end(),
                 [=] (Pit& elem) {
                   elem.set_race_time(LongInterval(elem.time_of_day() - race_start_time));
