@@ -1,0 +1,50 @@
+#! /bin/bash
+
+# Create temporary files for each sector and register CleanUp on exit.
+SEC1=$(mktemp -t S1.$$.XXXXXXXXXX)
+SEC2=$(mktemp -t S2.$$.XXXXXXXXXX)
+SEC3=$(mktemp -t S3.$$.XXXXXXXXXX)
+
+function CleanUp {
+  rm $SEC1 $SEC2 $SEC3
+  exit
+}
+trap CleanUp 0 SIGHUP SIGINT SIGQUIT SIGTERM
+
+# Parses the Best Sectors pdf into a csv file.
+pdftotext -layout BestSectors.pdf
+
+# Remove empty lines.
+sed -i '/^$/d' BestSectors.txt
+
+# Remove any non-timing lines.
+sed -i '/^\s*[0-9].*/!d' BestSectors.txt
+
+# Remove other comment lines, e.g. 2014...
+sed -i '/^.*[0-9][0-9][0-9][0-9]/d' BestSectors.txt
+
+# Remove competitor names.
+perl -p -i -e 's/[A-z]\.\s[A-z]+\s//g' BestSectors.txt
+
+# Remove position (first column).
+perl -p -i -e 's/^\s*\d+\s//g' BestSectors.txt
+
+# Shrink multiple spaces.
+sed -i 's/  */ /g' BestSectors.txt
+
+# Extract sectors 1, 2 and 3 to temporary files.
+awk '{ print $1 " " $2 }' BestSectors.txt > $SEC1
+awk '{ print $3 " " $4 }' BestSectors.txt > $SEC2
+awk '{ print $5 " " $6 }' BestSectors.txt > $SEC3
+
+# Sort sector times by competitor.
+{ rm $SEC1 && sort -n > $SEC1; } < $SEC1
+{ rm $SEC2 && sort -n > $SEC2; } < $SEC2
+{ rm $SEC3 && sort -n > $SEC3; } < $SEC3
+
+# Remove the competitor number from sectors 2 and 3.
+{ rm $SEC2 && awk '{ print $2; }' > $SEC2; } < $SEC2
+{ rm $SEC3 && awk '{ print $2; }' > $SEC3; } < $SEC3
+
+# Join together the sorted sector times into a single file.
+paste -d" " $SEC1 $SEC2 $SEC3 
