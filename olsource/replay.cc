@@ -292,6 +292,15 @@ class Competitor final : public Message {
   std::string name() const { return name_; }
   int num() const { return num_; }
 
+  float sector_1_percent() const { return sector_1_percent_; }
+  void set_sector_1_percent(float val) { sector_1_percent_ = val; }
+
+  float sector_2_percent() const { return sector_2_percent_; }
+  void set_sector_2_percent(float val) { sector_2_percent_ = val; }
+
+  float sector_3_percent() const { return sector_3_percent_; }
+  void set_sector_3_percent(float val) { sector_3_percent_ = val; }
+
  private:
   friend std::istream& operator>>(std::istream& is, Competitor& competitor);
 
@@ -305,6 +314,9 @@ class Competitor final : public Message {
   std::string short_name_;
   std::string name_;
   std::string team_;
+  float sector_1_percent_;
+  float sector_2_percent_;
+  float sector_3_percent_;
 };
 
 std::istream& operator>>(std::istream& is, Competitor& competitor) {
@@ -316,6 +328,29 @@ std::istream& operator>>(std::istream& is, Competitor& competitor) {
   std::getline(is, competitor.team_, ',');
 
   return is;
+}
+
+void ReadBestSectors(CompetitorMap* competitors) {
+  if (!competitors) return;
+
+  std::ifstream file;
+  file.open("BestSectors.txt");
+
+  int num = 0;
+  float lap_time;
+  float sector_1, sector_2, sector_3;
+
+  std::string str;
+  while (std::getline(file, str)) {
+    std::istringstream iss(str);
+    iss >> num;
+    iss >> sector_1; iss >> sector_2; iss >> sector_3;
+
+    lap_time = sector_1 + sector_2 + sector_3;
+    (*competitors)[num].set_sector_1_percent(sector_1 / lap_time);
+    (*competitors)[num].set_sector_2_percent(sector_2 / lap_time);
+    (*competitors)[num].set_sector_3_percent(sector_3 / lap_time);
+  }
 }
 
 void ReadCompetitors(CompetitorMap* competitors) {
@@ -331,6 +366,8 @@ void ReadCompetitors(CompetitorMap* competitors) {
     competitor.set_grid_pos(++grid_pos);
     (*competitors)[competitor.num()] = competitor;
   }
+
+  ReadBestSectors(competitors);
 }
 
 const optional<CompetitorMap::mapped_type&> FindPole(CompetitorMap* competitors) {
@@ -762,6 +799,7 @@ int main() {
     std::copy(laps.begin(), laps.end(), std::back_inserter(msgs));
     AddMessages(laps, &message_map);
   }
+
 
   PitVec pits;
   OutVec outs;

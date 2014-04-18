@@ -47,4 +47,4 @@ awk '{ print $5 " " $6 }' BestSectors.txt > $SEC3
 { rm $SEC3 && awk '{ print $2; }' > $SEC3; } < $SEC3
 
 # Join together the sorted sector times into a single file.
-paste -d" " $SEC1 $SEC2 $SEC3 
+paste -d" " $SEC1 $SEC2 $SEC3 > BestSectors.txt
