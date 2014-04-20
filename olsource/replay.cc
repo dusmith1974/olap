@@ -30,6 +30,7 @@
 #include "boost/asio.hpp"
 #include "boost/bind.hpp"
 #include "boost/lexical_cast.hpp"
+#include "boost/multiprecision/cpp_dec_float.hpp"
 #include "boost/optional.hpp"
 #include "boost/ptr_container/ptr_map.hpp"
 #include "boost/ptr_container/ptr_vector.hpp"
@@ -38,10 +39,12 @@
 #include "boost/regex.hpp"
 
 namespace adaptors = boost::adaptors;
+namespace mp = boost::multiprecision;
 
 using boost::optional;
 
 class Lap;
+class Sector;
 class Competitor;
 class Interval;
 class Message;
@@ -51,8 +54,11 @@ class Out;
 typedef std::vector<std::string> MsgVec;
 typedef std::map<int, Competitor> CompetitorMap;
 typedef std::vector<Lap> LapVec;
+typedef std::vector<Sector> SectorVec;
 typedef std::vector<Pit> PitVec;
 typedef std::vector<Out> OutVec;
+
+typedef mp::number<mp::cpp_dec_float<3> > cpp_dec_float_3;
 
 // TODO(ds) rm or mv to utils.
 template <typename charT, typename traits>
@@ -292,14 +298,14 @@ class Competitor final : public Message {
   std::string name() const { return name_; }
   int num() const { return num_; }
 
-  float sector_1_percent() const { return sector_1_percent_; }
-  void set_sector_1_percent(float val) { sector_1_percent_ = val; }
+  cpp_dec_float_3 sector_1_percent() const { return sector_1_percent_; }
+  void set_sector_1_percent(cpp_dec_float_3 val) { sector_1_percent_ = val; }
 
-  float sector_2_percent() const { return sector_2_percent_; }
-  void set_sector_2_percent(float val) { sector_2_percent_ = val; }
+  cpp_dec_float_3 sector_2_percent() const { return sector_2_percent_; }
+  void set_sector_2_percent(cpp_dec_float_3 val) { sector_2_percent_ = val; }
 
-  float sector_3_percent() const { return sector_3_percent_; }
-  void set_sector_3_percent(float val) { sector_3_percent_ = val; }
+  cpp_dec_float_3 sector_3_percent() const { return sector_3_percent_; }
+  void set_sector_3_percent(cpp_dec_float_3 val) { sector_3_percent_ = val; }
 
  private:
   friend std::istream& operator>>(std::istream& is, Competitor& competitor);
@@ -314,9 +320,9 @@ class Competitor final : public Message {
   std::string short_name_;
   std::string name_;
   std::string team_;
-  float sector_1_percent_;
-  float sector_2_percent_;
-  float sector_3_percent_;
+  cpp_dec_float_3 sector_1_percent_;
+  cpp_dec_float_3 sector_2_percent_;
+  cpp_dec_float_3 sector_3_percent_;
 };
 
 std::istream& operator>>(std::istream& is, Competitor& competitor) {
@@ -337,8 +343,9 @@ void ReadBestSectors(CompetitorMap* competitors) {
   file.open("BestSectors.txt");
 
   int num = 0;
-  float lap_time;
-  float sector_1, sector_2, sector_3;
+  cpp_dec_float_3 lap_time;
+  cpp_dec_float_3 sector_1, sector_2, sector_3;
+  cpp_dec_float_3 sector_1_pc, sector_2_pc, sector_3_pc;
 
   std::string str;
   while (std::getline(file, str)) {
@@ -346,10 +353,16 @@ void ReadBestSectors(CompetitorMap* competitors) {
     iss >> num;
     iss >> sector_1; iss >> sector_2; iss >> sector_3;
 
-    lap_time = sector_1 + sector_2 + sector_3;
-    (*competitors)[num].set_sector_1_percent(sector_1 / lap_time);
-    (*competitors)[num].set_sector_2_percent(sector_2 / lap_time);
-    (*competitors)[num].set_sector_3_percent(sector_3 / lap_time);
+    sector_1_pc = sector_1 / (sector_1 + sector_2 + sector_3);
+    sector_2_pc = sector_2 / (sector_1 + sector_2 + sector_3);
+    sector_3_pc = sector_3 / (sector_1 + sector_2 + sector_3);
+    sector_3_pc += 1 - (sector_1_pc + sector_2_pc + sector_3_pc);
+    (*competitors)[num].set_sector_1_percent(sector_1_pc);
+    (*competitors)[num].set_sector_2_percent(sector_2_pc);
+    (*competitors)[num].set_sector_3_percent(sector_3_pc);
+
+    // TODO(ds) NDEBUG release
+    assert(1 == sector_1_pc + sector_2_pc + sector_3_pc);
   }
 }
 
@@ -476,6 +489,80 @@ std::istream& operator>>(std::istream& is, Lap& lap) {
     lap.time_ = boost::lexical_cast<LongInterval>(m.str());
 
   return is;
+}
+
+class Sector final : public Message {
+ public:
+  Sector()
+    : num_(0),
+      competitor_num_(0),
+      lap_num_(0),
+      time_(Interval()) {
+  }
+
+  Sector(int num, int competitor_num, int lap_num, long time)
+    : num_(num),
+      competitor_num_(competitor_num),
+      lap_num_(lap_num),
+      time_(time) {
+  }
+
+  virtual ~Sector() {
+  }
+
+  Message* Clone() const { return new Sector(*this); }
+
+  operator std::string() const {
+    std::stringstream ss;
+    ss << *this;
+
+    return ss.str();
+  }
+
+  int num() const { return num_; }
+  void set_num(int val) { num_ = val; }
+
+  int competitor_num() const { return competitor_num_; }
+
+  Interval time() const { return time_; }
+
+  operator Interval() const { return time_; };
+
+ private:
+  void Print(std::ostream& os) const override {
+    os << "sec," << static_cast<LongInterval>(race_time_)
+      << "," << time_of_day_ << "," << competitor_num_ << "," << lap_num_
+      << "," << num_ << "," << time_ << std::endl;
+  }
+
+  int num_;
+  int competitor_num_;
+  int lap_num_;
+  Interval time_;
+};
+
+inline bool operator<(const Sector& lhs, const Sector& rhs) {
+  return lhs.num() < rhs.num();
+}
+
+inline bool operator>(const Sector& lhs, const Sector& rhs) {
+  return rhs < lhs;
+}
+
+inline bool operator<=(const Sector& lhs, const Sector& rhs) {
+  return !(lhs > rhs);
+}
+
+inline bool operator>=(const Sector& lhs, const Sector& rhs) {
+  return !(lhs < rhs);
+}
+
+inline bool operator==(const Sector& lhs, const Sector& rhs) {
+  return lhs.num() == rhs.num();
+}
+
+inline bool operator!=(const Sector& lhs, const Sector& rhs) {
+  return !(lhs == rhs);
 }
 
 class Pit : public Message {
@@ -605,6 +692,7 @@ std::istream& operator>>(std::istream& is, Out& out) {
 }
 
 typedef std::map<int, LapVec> CompetitorLapMap;
+typedef std::map<int, SectorVec> CompetitorSectorMap;
 
 LongInterval ReadLapAnalysis(const Lap& leaders_lap, CompetitorLapMap* lap_analysis) {
   if (!lap_analysis) return LongInterval(0);
@@ -734,7 +822,8 @@ int main() {
   CompetitorMap competitors;
   CompetitorLapMap lap_history;
   CompetitorLapMap lap_analysis;
-  CompetitorLapMap all_laps;;
+  CompetitorLapMap all_laps;
+  CompetitorSectorMap sectors;
 
   ReadCompetitors(&competitors);
   /*boost::copy(competitors | adaptors::map_values,
@@ -800,16 +889,43 @@ int main() {
     AddMessages(laps, &message_map);
   }
 
+  // Doesn't look as though the sector analysis pdf is published (to the public)
+  // so we'll have to guess them based on the lap time and the fastest sectors.
+  long sector_1, sector_2, sector_3, total_sectors, lap_time, adjust;
+  for (const auto& laps : all_laps | adaptors::map_values) {
+    for (const auto& lap : laps) {
+      sector_1 = cpp_dec_float_3(static_cast<long>(lap.time()) * competitors[lap.competitor_num()].sector_1_percent()).convert_to<long>();
+      sector_2 = cpp_dec_float_3(static_cast<long>(lap.time()) * competitors[lap.competitor_num()].sector_2_percent()).convert_to<long>();
+      sector_3 = cpp_dec_float_3(static_cast<long>(lap.time()) * competitors[lap.competitor_num()].sector_3_percent()).convert_to<long>();
+      sector_3 += static_cast<long>(lap.time()) - (sector_1 + sector_2 + sector_3);
+
+      assert(static_cast<long>(lap.time()) == (sector_1 + sector_2 + sector_3));
+
+      Sector s1(1, lap.competitor_num(), lap.num(), sector_1);
+      Sector s2(2, lap.competitor_num(), lap.num(), sector_2);
+      Sector s3(3, lap.competitor_num(), lap.num(), sector_3);
+
+      s1.set_race_time(Interval(lap.race_time() - lap.time() + s1.time()));
+      s2.set_race_time(Interval(s1.race_time() + s2.time()));
+      s3.set_race_time(Interval(s2.race_time() + s3.time()));
+
+      sectors[lap.competitor_num()].push_back(s1);
+      sectors[lap.competitor_num()].push_back(s2);
+      sectors[lap.competitor_num()].push_back(s3);
+    }
+  }
+
+  for (const auto& competitor_sectors : sectors | adaptors::map_values) {
+    std::copy(competitor_sectors.begin(), competitor_sectors.end(), std::back_inserter(msgs));
+    AddMessages(competitor_sectors, &message_map);
+  }
 
   PitVec pits;
   OutVec outs;
   pits.reserve(50);
   outs.reserve(50);
   ReadPits(Message::race_start_time(), &pits, &outs);
-  /*std::for_each(pits.begin(), pits.end(),
-                [=] (Pit& elem) {
-                  elem.set_race_time(LongInterval(elem.time_of_day() - race_start_time));
-                });*/
+
   AddMessages(pits, &message_map);
   AddMessages(outs, &message_map);
 
