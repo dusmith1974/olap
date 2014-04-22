@@ -1,0 +1,28 @@
+#! /bin/bash
+
+# Run the replay long enough to get the msgs, no need to wait for the race to finish!
+(./replay |tee output.txt) & sleep 1; kill $!
+
+# Just keep the msgs.
+sed -i '/^msg /!d' output.txt
+
+# Strip the msg prefix.
+sed -i 's/^msg //' output.txt
+
+# Get a list of the competitor numbers (in order).
+COMPETITORS=$(mktemp -t OLAP_COMP.$$.XXXXXXXXXX)
+awk -F',' '{ print $4; }' output.txt |sort -n |uniq > $COMPETITORS
+
+# Grep out the msgs for each competitor in turn.
+while read num; do
+  echo $num
+done < $COMPETITORS
+
+# Delete temp file(s) on exit.
+function CleanUp {
+  rm $COMPETITORS
+  exit
+}
+trap CleanUp 0 SIGHUP SIGINT SIGQUIT SIGTERM
+
+exit

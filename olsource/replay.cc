@@ -311,7 +311,7 @@ class Competitor final : public Message {
   friend std::istream& operator>>(std::istream& is, Competitor& competitor);
 
   void Print(std::ostream& os) const override {
-    os << "com," << "0," << num_ << "," << grid_pos_ << "," << short_name_
+    os << "com," << "0,0," << num_ << "," << grid_pos_ << "," << short_name_
       << "," << name_ << "," << team_ << std::endl;
   }
 
