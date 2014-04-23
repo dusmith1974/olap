@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # Run the replay long enough to get the msgs, no need to wait for the race to finish!
-(./replay |tee output.txt) & sleep 1; kill $!
+timeout 1 ./replay |tee output.txt
 
 # Just keep the msgs.
 sed -i '/^msg /!d' output.txt
@@ -13,9 +13,12 @@ sed -i 's/^msg //' output.txt
 COMPETITORS=$(mktemp -t OLAP_COMP.$$.XXXXXXXXXX)
 awk -F',' '{ print $4; }' output.txt |sort -n |uniq > $COMPETITORS
 
-# Grep out the msgs for each competitor in turn.
+# Extract the msgs for each competitor in turn.
+mkdir -p test
+>test/all.txt
 while read num; do
-  echo $num
+  grep -P '^([^,]+,)(?1)(?1)'"$num"',.*' output.txt > test/$num.txt
+  cat test/$num.txt >> test/all.txt
 done < $COMPETITORS
 
 # Delete temp file(s) on exit.
