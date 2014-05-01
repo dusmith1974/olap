@@ -1,0 +1,3 @@
+#!/bin/bash
+valgrind --leak-check=yes --track-origins=yes --show-reachable=no --show-possibly-lost=yes `dirname $0`/../bin/test -c settings.cfg 2>&1 
+

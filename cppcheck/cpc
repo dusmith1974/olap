@@ -1,0 +1,2 @@
+#!/bin/bash
+cppcheck `dirname $0`/.. --enable=all --verbose --std=c++11 2>&1
