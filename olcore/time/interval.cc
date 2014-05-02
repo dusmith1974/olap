@@ -15,7 +15,9 @@
 
 // Implements the Interval class.
 
-#include "interval.h"
+#include "time/interval.h"
+
+#include <iomanip>
 
 namespace olap {
 

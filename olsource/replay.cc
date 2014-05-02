@@ -724,8 +724,8 @@ void ReadLapHistory(CompetitorLapMap* lap_history, Lap* leaders_lap) {
   boost::regex rgx(R"(((?<=\s)[0-9]+\s)(.(?!(?1)))*)");
 
   std::string line;
-  std::map<int,int> competitor_lap_count;
-  std::map<int,Interval> competitor_race_time;
+  //std::map<int,int> competitor_lap_count;
+  //std::map<int,Interval> competitor_race_time;
   boost::sregex_token_iterator end;
   boost::smatch m;
 
@@ -818,7 +818,7 @@ void AddMessages(T coll, MessageMap* message_map) {
 
 int main() {
   MsgVec msgs;
-  EventPQueue events;
+  //EventPQueue events;
   CompetitorMap competitors;
   CompetitorLapMap lap_history;
   CompetitorLapMap lap_analysis;
@@ -891,7 +891,7 @@ int main() {
 
   // Doesn't look as though the sector analysis pdf is published (to the public)
   // so we'll have to guess them based on the lap time and the fastest sectors.
-  long sector_1, sector_2, sector_3, total_sectors, lap_time, adjust;
+  long sector_1, sector_2, sector_3, lap_time;
   for (const auto& laps : all_laps | adaptors::map_values) {
     for (const auto& lap : laps) {
       sector_1 = cpp_dec_float_3(static_cast<long>(lap.time()) * competitors[lap.competitor_num()].sector_1_percent()).convert_to<long>();

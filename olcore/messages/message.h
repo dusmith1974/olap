@@ -15,55 +15,43 @@
 
 // Contains a base class for all timing messages.
 
+#ifndef MESSAGES_MESSAGE_H_
+#define MESSAGES_MESSAGE_H_
+
 #include "boost/asio.hpp"
+
+#include "time/interval.h"
+#include "time/long_interval.h"
+
+namespace olap {
+
+class Interval;
+class LongInterval;
 
 // The message class.
 class Message {
  public:
-  Message() : race_time_(Interval()) {
-  }
-
-  virtual ~Message() {
-  }
+  Message();
+  virtual ~Message();
 
   virtual Message* Clone() const = 0;
 
-  void set_timer(boost::asio::io_service* service) {
-    if (!service) return;
+  void set_timer(boost::asio::io_service* service);
 
-    timer_ = std::shared_ptr<boost::asio::deadline_timer>(
-      new boost::asio::deadline_timer(*service,
-                                 boost::posix_time::milliseconds(race_time())));
-  }
+  void start_timer();
 
-  void start_timer() {
-    timer_->async_wait(boost::bind(PublishMessage,
-                       boost::asio::placeholders::error,
-                       static_cast<std::string>(*this)));
-  }
+  operator std::string() const;
 
-  operator std::string() const {
-    std::stringstream ss;
-    ss << *this;
+  static LongInterval race_start_time();
 
-    return ss.str();
-  }
+  static void set_race_start_time(const LongInterval& val);
 
-  static LongInterval race_start_time() { return race_start_time_; }
+  LongInterval time_of_day() const;
+  void set_time_of_day(const LongInterval& val);
 
-  static void set_race_start_time(const LongInterval& val) {
-    race_start_time_ = val;
-  }
+  Interval race_time() const;
 
-  LongInterval time_of_day() const { return time_of_day_; }
-  void set_time_of_day(const LongInterval& val) { time_of_day_ = val; }
-
-  Interval race_time() const { return race_time_; }
-
-  void set_race_time(const Interval& val) {
-    race_time_ = val;
-    time_of_day_ = LongInterval(Message::race_start_time() + race_time());
-  }
+  void set_race_time(const Interval& val);
 
  protected:
   Interval race_time_;
@@ -85,3 +73,6 @@ std::ostream& operator<<(std::ostream& os, const Message& message) {
   message.Print(os);
   return os;
 }
+
+}  // namespace olap
+#endif  // MESSAGES_MESSAGE_H_

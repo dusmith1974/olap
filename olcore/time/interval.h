@@ -15,8 +15,10 @@
 
 // Contains the Interval class.
 
+#ifndef TIME_INTERVAL_H_
+#define TIME_INTERVAL_H_
+
 #include <chrono>
-#include <iomanip>
 #include <iostream>
 
 #include "boost/lexical_cast.hpp"
@@ -50,3 +52,5 @@ class Interval {
 };
 
 }  // namespace olap
+
+#endif  // TIME_INTERVAL_H_
