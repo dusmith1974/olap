@@ -1,1 +1,2 @@
 Implement olsource here as exe using osoa and olcore.
+error handlers for missing .txt files, eg. competitors.txt
