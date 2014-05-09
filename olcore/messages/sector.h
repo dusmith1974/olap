@@ -27,7 +27,6 @@ namespace olap {
 class Sector final : public Message {
  public:
   Sector();
-
   Sector(int num, int competitor_num, int lap_num, long time);
 
   virtual ~Sector();
