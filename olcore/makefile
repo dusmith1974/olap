@@ -5,10 +5,9 @@ CXXFLAGS += -std=c++11
 
 MESSAGES = messages
 TIME = time
-#TEST = test
 BASE = .
 
-PRJS := $(MESSAGES) $(TIME) $(BASE) #$(TEST)
+PRJS := $(MESSAGES) $(TIME) $(BASE)
 
 LIB_OLAP_BASE = libolap-mt
 ifeq ($(MAKECMDGOALS), debug)
@@ -34,11 +33,9 @@ INC += -I$(BOOST_DIR)
 $(OBJ_DIR)/%.o : %.cc 
 	$(COMPILE.cc) $(INC) $(OUTPUT_OPTION) $<
 
-#all: $(BIN_DIR)/test $(OBJ_DIR)/$(LIB_OLAP)
 all: $(OBJ_DIR)/$(LIB_OLAP)
 
 debug: CXXFLAGS += -DDEBUG -g -O0
-#debug: $(BIN_DIR)/test $(OBJ_DIR)/$(LIB_OLAP)
 debug: $(OBJ_DIR)/$(LIB_OLAP)
 
 ifneq ($(MAKECMDGOALS), debug)
@@ -53,11 +50,6 @@ $(OBJ_DIR)/%.d : %.cc
 	$(CXX) $(CXXFLAGS) -MM $(INC) $< |sed -e '1 s/^/obj\//' > $@ 
 -include $(DEPS)
 endif
-
-#$(BIN_DIR)/test: $(OBJS)
-#	$(LINK.cc) $(OBJS) -dynamic -pthread -lboost_program_options -lboost_log_setup -lboost_log -lboost_system -lboost_thread -lboost_date_time -lboost_filesystem $(OUTPUT_OPTION)
-#	ctags -R --c-kinds=+cdefglmnpstuvx --extra=+f
-#	cscope -Rb
 
 $(OBJ_DIR)/$(LIB_OLAP): $(OBJS)
 	mkdir -p $(OBJ_DIR)
