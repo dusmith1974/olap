@@ -13,10 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Contains the sector message class.
+// Contains a class representing a Pit.
 
-#ifndef MESSAGES_SECTOR_H_
-#define MESSAGES_SECTOR_H_
+#ifndef MESSAGES__PIT_H_
+#define MESSAGES__PIT_H_
 
 #include <iostream>
 
@@ -24,36 +24,31 @@
 
 namespace olap {
 
-class Sector final : public Message {
+// The Pit class.
+class Pit : public Message {
  public:
-  Sector();
-  Sector(int num_val, int competitor_num_val, int lap_num_val, long time_val);
+  Pit();
 
-  virtual ~Sector();
+  virtual ~Pit();
 
   Message* Clone() const;
 
   operator std::string() const;
 
-  int num() const;
-  void set_num(int val);
+  int lap_num() const;
+  void set_lap_num(int val);
 
-  int competitor_num() const;
-
-  Interval time() const;
-
-  operator Interval() const;
-
- private:
-  void Print(std::ostream& os) const override;
-
-  int num_;
+ protected:
   int competitor_num_;
   int lap_num_;
-  Interval time_;
-};
+  int num_;
 
+ private:
+  friend std::istream& operator>>(std::istream& is, Pit& pit);
+
+  void Print(std::ostream& os) const override;
+};
 
 }  // namespace olap
 
-#endif  // MESSAGES_SECTOR_H_
+#endif  // MESSAGES__PIT_H_

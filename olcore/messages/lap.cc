@@ -49,7 +49,7 @@ int Lap::competitor_num() const { return competitor_num_; }
 LongInterval Lap::time() const { return time_; }
 
 Lap::operator Interval() const { return gap_; }
-Lap::operator LongInterval() const { return time_; };
+Lap::operator LongInterval() const { return time_; }
 
 void Lap::Print(std::ostream& os) const {
   os << "lap," << static_cast<LongInterval>(race_time_)

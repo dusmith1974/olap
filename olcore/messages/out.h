@@ -13,10 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Contains the sector message class.
+// Contains a class representing a Out.
 
-#ifndef MESSAGES_SECTOR_H_
-#define MESSAGES_SECTOR_H_
+#ifndef MESSAGES__OUT_H_
+#define MESSAGES__OUT_H_
 
 #include <iostream>
 
@@ -24,36 +24,37 @@
 
 namespace olap {
 
-class Sector final : public Message {
+// The Out class.
+class Out : public Message {
  public:
-  Sector();
-  Sector(int num_val, int competitor_num_val, int lap_num_val, long time_val);
-
-  virtual ~Sector();
+  Out();
+  virtual ~Out();
 
   Message* Clone() const;
 
   operator std::string() const;
 
-  int num() const;
-  void set_num(int val);
-
-  int competitor_num() const;
-
   Interval time() const;
+  LongInterval time_of_day() const;
 
-  operator Interval() const;
+  int lap_num() const;
+  void set_lap_num(int val);
 
- private:
-  void Print(std::ostream& os) const override;
-
-  int num_;
+ protected:
   int competitor_num_;
   int lap_num_;
+  LongInterval time_of_day_;
+  int num_;
   Interval time_;
+  Interval total_time_;
+
+ private:
+  friend std::istream& operator>>(std::istream& is, Out& out);
+
+  void Print(std::ostream& os) const override;
 };
 
 
 }  // namespace olap
 
-#endif  // MESSAGES_SECTOR_H_
+#endif  // MESSAGES__OUT_H_

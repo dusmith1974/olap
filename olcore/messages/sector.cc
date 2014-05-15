@@ -26,11 +26,11 @@ Sector::Sector()
     time_(Interval()) {
 }
 
-Sector::Sector(int num, int competitor_num, int lap_num, long time)
-  : num_(num),
-    competitor_num_(competitor_num),
-    lap_num_(lap_num),
-    time_(time) {
+Sector::Sector(int num_val, int competitor_num_val, int lap_num_val, long time_val)
+  : num_(num_val),
+    competitor_num_(competitor_num_val),
+    lap_num_(lap_num_val),
+    time_(time_val) {
 }
 
 Sector::~Sector() {
@@ -52,7 +52,7 @@ int Sector::competitor_num() const { return competitor_num_; }
 
 Interval Sector::time() const { return time_; }
 
-Sector::operator Interval() const { return time_; };
+Sector::operator Interval() const { return time_; }
 
 void Sector::Print(std::ostream& os) const {
   os << "sec," << static_cast<LongInterval>(race_time_)

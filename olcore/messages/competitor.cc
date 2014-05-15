@@ -24,7 +24,10 @@ Competitor::Competitor()
     grid_pos_(0),
     short_name_(""),
     name_(""),
-    team_("") {
+    team_(""),
+    sector_1_percent_{},
+    sector_2_percent_{},
+    sector_3_percent_{} {
 }
 
 Message* Competitor::Clone() const { return new Competitor(*this); }

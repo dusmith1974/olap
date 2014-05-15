@@ -21,13 +21,19 @@
 
 namespace olap {
 
-Interval::Interval() : milliseconds_(0) {
+Interval::Interval()
+  : milliseconds_(0),
+    str_{} {
 }
 
-Interval::Interval(long val) : milliseconds_(val) {
+Interval::Interval(long val)
+  : milliseconds_(val),
+    str_{} {
 }
 
-Interval::Interval(const std::chrono::milliseconds& val) : milliseconds_(val) {
+Interval::Interval(const std::chrono::milliseconds& val)
+  : milliseconds_(val),
+    str_{} {
 }
 
 Interval::~Interval() {

@@ -23,7 +23,10 @@ namespace asio = boost::asio;
 
 namespace olap {
 
-Message::Message() : race_time_(Interval()) {
+Message::Message()
+  : race_time_(Interval()),
+    time_of_day_{},
+    timer_{} {
 }
 
 Message::~Message() {
