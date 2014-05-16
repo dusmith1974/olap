@@ -15,6 +15,34 @@
 
 // Recreates an events timing messages from the results.
 
+#include <algorithm>
+#include <chrono>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <limits>
+#include <map>
+#include <queue>
+#include <sstream>
+#include <string>
+
+#include "boost/algorithm/string.hpp"
+#include "boost/asio.hpp"
+#include "boost/bind.hpp"
+#include "boost/lexical_cast.hpp"
+#include "boost/multiprecision/cpp_dec_float.hpp"
+#include "boost/optional.hpp"
+#include "boost/ptr_container/ptr_map.hpp"
+#include "boost/ptr_container/ptr_vector.hpp"
+#include "boost/range/adaptor/map.hpp"
+#include "boost/range/algorithm/copy.hpp"
+#include "boost/regex.hpp"
+
+namespace adaptors = boost::adaptors;
+namespace mp = boost::multiprecision;
+
+using boost::optional;
+
 class Lap;
 class Sector;
 class Competitor;
