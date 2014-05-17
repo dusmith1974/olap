@@ -4,3 +4,4 @@ makefile for olreplay
 nested makes $(MAKE) -C gtest-1.4.0/make clean
 build osoa olap as shared libs (as well as static lib).
 publish to subscribers
+mkdir leaves output.txt, mv to test or delete it.
