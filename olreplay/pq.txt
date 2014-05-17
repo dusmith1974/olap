@@ -1,0 +1,19 @@
+// example priority queue
+
+  //EventPQueue events;
+
+  //Event ev = std::make_pair(laps[0].race_time(), std::unique_ptr<Message>(new Lap(laps[0])));
+  //events.push(std::move(ev));
+
+  //std::copy(msgs.begin(), msgs.end(),
+    //        std::ostream_iterator<std::string>(std::cout));
+
+  /*std::cout << events.size() << std::endl;
+  while (!events.empty()) {
+    std::cout << events.top().first << " " << *events.top().second);
+    events.pop();
+  }*/
+
+  // copy container to cout
+  /*boost::copy(competitors | adaptors::map_values,
+              std::ostream_iterator<Competitor>(std::cout));*/
