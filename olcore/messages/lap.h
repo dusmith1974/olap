@@ -24,6 +24,11 @@
 
 namespace olap {
 
+class Lap;
+
+typedef std::vector<Lap> LapVec;
+typedef std::map<int, LapVec> CompetitorLapMap;
+
 // The lap message.
 class Lap final : public Message {
  public:
@@ -57,6 +62,30 @@ class Lap final : public Message {
   Interval gap_;
   LongInterval time_;
 };
+
+inline bool operator<(const Lap& lhs, const Lap& rhs) {
+  return lhs.num() < rhs.num();
+}
+
+inline bool operator>(const Lap& lhs, const Lap& rhs) {
+  return rhs < lhs;
+}
+
+inline bool operator<=(const Lap& lhs, const Lap& rhs) {
+  return !(lhs > rhs);
+}
+
+inline bool operator>=(const Lap& lhs, const Lap& rhs) {
+  return !(lhs < rhs);
+}
+
+inline bool operator==(const Lap& lhs, const Lap& rhs) {
+  return lhs.num() == rhs.num();
+}
+
+inline bool operator!=(const Lap& lhs, const Lap& rhs) {
+  return !(lhs == rhs);
+}
 }  // namespace olap
 
 #endif  // MESSAGES_LAP_H_

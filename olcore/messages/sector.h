@@ -24,6 +24,10 @@
 
 namespace olap {
 
+class Sector;
+typedef std::vector<Sector> SectorVec;
+typedef std::map<int, SectorVec> CompetitorSectorMap;
+
 class Sector final : public Message {
  public:
   Sector();

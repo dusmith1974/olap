@@ -57,29 +57,6 @@ void Lap::Print(std::ostream& os) const {
     << "," << num_ << "," << gap_ << "," << time_ << std::endl;
 }
 
-inline bool operator<(const Lap& lhs, const Lap& rhs) {
-  return lhs.num() < rhs.num();
-}
-
-inline bool operator>(const Lap& lhs, const Lap& rhs) {
-  return rhs < lhs;
-}
-
-inline bool operator<=(const Lap& lhs, const Lap& rhs) {
-  return !(lhs > rhs);
-}
-
-inline bool operator>=(const Lap& lhs, const Lap& rhs) {
-  return !(lhs < rhs);
-}
-
-inline bool operator==(const Lap& lhs, const Lap& rhs) {
-  return lhs.num() == rhs.num();
-}
-
-inline bool operator!=(const Lap& lhs, const Lap& rhs) {
-  return !(lhs == rhs);
-}
 
 std::istream& operator>>(std::istream& is, Lap& lap) {
   std::string str;

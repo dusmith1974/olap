@@ -13,45 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Contains a class representing a Pit.
+// Contains a class representing a ReadLapAnalysis.
 
-#ifndef MESSAGES__PIT_H_
-#define MESSAGES__PIT_H_
+#ifndef READERS__READ_LAP_ANALYSIS_H_
+#define READERS__READ_LAP_ANALYSIS_H_
 
 #include <iostream>
 
-#include "messages/message.h"
+// TODO(ds) use _fwd.h for map
+#include "olcore/messages/lap.h"
 
 namespace olap {
 
-class Pit;
-typedef std::vector<Pit> PitVec;
+class Lap;
+class LongInterval;
 
-// The Pit class.
-class Pit : public Message {
- public:
-  Pit();
-
-  virtual ~Pit();
-
-  Message* Clone() const;
-
-  operator std::string() const;
-
-  int lap_num() const;
-  void set_lap_num(int val);
-
- protected:
-  int competitor_num_;
-  int lap_num_;
-  int num_;
-
- private:
-  friend std::istream& operator>>(std::istream& is, Pit& pit);
-
-  void Print(std::ostream& os) const override;
-};
+LongInterval ReadLapAnalysis(const Lap& leaders_lap, CompetitorLapMap* lap_analysis);
 
 }  // namespace olap
 
-#endif  // MESSAGES__PIT_H_
+#endif  // READERS__READ_LAP_ANALYSIS_H_

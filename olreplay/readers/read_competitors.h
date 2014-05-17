@@ -13,45 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Contains a class representing a Pit.
+// Contains ReadCompetitors.
 
-#ifndef MESSAGES__PIT_H_
-#define MESSAGES__PIT_H_
+#ifndef READERS__READ_COMPETITORS_H_
+#define READERS__READ_COMPETITORS_H_
 
-#include <iostream>
-
-#include "messages/message.h"
+// TODO(ds) competitor_fwd for typedef only.
+#include "olcore/messages/competitor.h"
 
 namespace olap {
 
-class Pit;
-typedef std::vector<Pit> PitVec;
+// TODO(ds) mv BestSectors to own cc?
+void ReadBestSectors(CompetitorMap* competitors);
 
-// The Pit class.
-class Pit : public Message {
- public:
-  Pit();
-
-  virtual ~Pit();
-
-  Message* Clone() const;
-
-  operator std::string() const;
-
-  int lap_num() const;
-  void set_lap_num(int val);
-
- protected:
-  int competitor_num_;
-  int lap_num_;
-  int num_;
-
- private:
-  friend std::istream& operator>>(std::istream& is, Pit& pit);
-
-  void Print(std::ostream& os) const override;
-};
+void ReadCompetitors(CompetitorMap* competitors);
 
 }  // namespace olap
-
-#endif  // MESSAGES__PIT_H_
+#endif  // READERS__READ_COMPETITORS_H_

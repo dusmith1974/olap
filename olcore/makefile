@@ -5,19 +5,20 @@ CXXFLAGS += -std=c++11
 
 MESSAGES = messages
 TIME = time
+UTIL = util
 BASE = .
 
-PRJS := $(MESSAGES) $(TIME) $(BASE)
+PRJS := $(MESSAGES) $(TIME) $(UTIL) $(BASE)
 
-LIB_OLAP_BASE = libolap-mt
+LIB_OLCORE_BASE = libolcore-mt
 ifeq ($(MAKECMDGOALS), debug)
-LIB_OLAP_SUFFIX = -d.a
+LIB_OLCORE_SUFFIX = -d.a
 CONFIG=debug
 else
-LIB_OLAP_SUFFIX = .a
+LIB_OLCORE_SUFFIX = .a
 CONFIG=release
 endif
-LIB_OLAP=$(LIB_OLAP_BASE)$(LIB_OLAP_SUFFIX)
+LIB_OLCORE=$(LIB_OLCORE_BASE)$(LIB_OLCORE_SUFFIX)
 
 OBJ_BASE=lib
 OBJ_DIR = $(OBJ_BASE)/$(CONFIG)
@@ -33,10 +34,10 @@ INC += -I$(BOOST_DIR)
 $(OBJ_DIR)/%.o : %.cc 
 	$(COMPILE.cc) $(INC) $(OUTPUT_OPTION) $<
 
-all: $(OBJ_DIR)/$(LIB_OLAP)
+all: $(OBJ_DIR)/$(LIB_OLCORE)
 
 debug: CXXFLAGS += -DDEBUG -g -O0
-debug: $(OBJ_DIR)/$(LIB_OLAP)
+debug: $(OBJ_DIR)/$(LIB_OLCORE)
 
 ifneq ($(MAKECMDGOALS), debug)
 CXXFLAGS += -O3 -DNDEBUG
@@ -51,7 +52,7 @@ $(OBJ_DIR)/%.d : %.cc
 -include $(DEPS)
 endif
 
-$(OBJ_DIR)/$(LIB_OLAP): $(OBJS)
+$(OBJ_DIR)/$(LIB_OLCORE): $(OBJS)
 	mkdir -p $(OBJ_DIR)
 	ar cr $@ $(OBJS)
 

@@ -13,45 +13,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Contains a class representing a Pit.
+// Contains inline templates for the message class.
 
-#ifndef MESSAGES__PIT_H_
-#define MESSAGES__PIT_H_
+#ifndef MESSAGES_MESSAGE_INL_H_
+#define MESSAGES_MESSAGE_INL_H_
 
-#include <iostream>
+#include "boost/ptr_container/ptr_map.hpp"
 
 #include "messages/message.h"
+#include "time/interval.h"
 
 namespace olap {
 
-class Pit;
-typedef std::vector<Pit> PitVec;
+typedef boost::ptr_multimap<Interval, Message> MessageMap;
 
-// The Pit class.
-class Pit : public Message {
- public:
-  Pit();
+namespace {
+void AddMessage(const Message& msg, MessageMap* message_map) {
+  Interval race_time = msg.race_time();
+  message_map->insert(race_time, msg.Clone());
+}
 
-  virtual ~Pit();
+template<typename T>
+void AddMessages(T coll, MessageMap* message_map) {
+  if (!message_map) return;
 
-  Message* Clone() const;
-
-  operator std::string() const;
-
-  int lap_num() const;
-  void set_lap_num(int val);
-
- protected:
-  int competitor_num_;
-  int lap_num_;
-  int num_;
-
- private:
-  friend std::istream& operator>>(std::istream& is, Pit& pit);
-
-  void Print(std::ostream& os) const override;
-};
+  for (const auto& msg : coll)
+    AddMessage(msg, message_map);
+}
+}  // namespace
 
 }  // namespace olap
-
-#endif  // MESSAGES__PIT_H_
+#endif  // MESSAGES_MESSAGE_INL_H_

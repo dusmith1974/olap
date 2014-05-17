@@ -23,6 +23,8 @@ namespace asio = boost::asio;
 
 namespace olap {
 
+LongInterval Message::race_start_time_;
+
 Message::Message()
   : race_time_(Interval()),
     time_of_day_{},
@@ -42,10 +44,10 @@ void Message::set_timer(boost::asio::io_service* service) {
 
 void Message::start_timer() {
   using boost::bind;
-  std::cout << "TODO(ds) pass PublishMessage as std::function" << std::endl;
-  /*timer_->async_wait(bind(PublishMessage,
+  //std::cout << "TODO(ds) pass PublishMessage as std::function" << std::endl;
+  timer_->async_wait(bind(PublishMessage,
                             asio::placeholders::error,
-                            static_cast<std::string>(*this)));*/
+                            static_cast<std::string>(*this)));
 }
 
 Message::operator std::string() const {
@@ -70,4 +72,10 @@ void Message::set_race_time(const Interval& val) {
   race_time_ = val;
   time_of_day_ = LongInterval(Message::race_start_time() + race_time());
 }
+
+std::ostream& operator<<(std::ostream& os, const Message& message) {
+  message.Print(os);
+  return os;
+}
+
 }  // namespace olap

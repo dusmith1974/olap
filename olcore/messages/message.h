@@ -27,6 +27,9 @@ namespace olap {
 
 class Interval;
 class LongInterval;
+class Message;
+
+typedef std::vector<std::string> MsgVec;
 
 // The message class.
 class Message {
@@ -66,13 +69,6 @@ class Message {
 
   std::shared_ptr<boost::asio::deadline_timer> timer_;
 };
-
-LongInterval Message::race_start_time_;
-
-std::ostream& operator<<(std::ostream& os, const Message& message) {
-  message.Print(os);
-  return os;
-}
 
 }  // namespace olap
 #endif  // MESSAGES_MESSAGE_H_

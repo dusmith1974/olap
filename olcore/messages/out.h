@@ -24,6 +24,9 @@
 
 namespace olap {
 
+class Out;
+typedef std::vector<Out> OutVec;
+
 // The Out class.
 class Out : public Message {
  public:
@@ -53,7 +56,6 @@ class Out : public Message {
 
   void Print(std::ostream& os) const override;
 };
-
 
 }  // namespace olap
 

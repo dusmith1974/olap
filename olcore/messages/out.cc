@@ -46,6 +46,12 @@ LongInterval Out::time_of_day() const { return time_of_day_; }
 int Out::lap_num() const { return lap_num_; }
 void Out::set_lap_num(int val) { lap_num_ = val; }
 
+void Out::Print(std::ostream& os) const {
+  os << "out," << static_cast<LongInterval>(race_time_) << ","
+    << time_of_day_ << "," << competitor_num_ << "," << lap_num_ << ","
+    << num_ << "," << time_ << "," << total_time_ << std::endl;
+}
+
 std::istream& operator>>(std::istream& is, Out& out) {
   std::string str;
 

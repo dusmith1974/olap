@@ -13,45 +13,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Contains a class representing a Pit.
+// Implements ReadPits.
 
-#ifndef MESSAGES__PIT_H_
-#define MESSAGES__PIT_H_
+#include "readers/read_pits.h"
 
-#include <iostream>
+#include <fstream>
 
-#include "messages/message.h"
+#include "olcore/time/interval.h"
 
 namespace olap {
 
-class Pit;
-typedef std::vector<Pit> PitVec;
+void ReadPits(const Interval& race_start_time, PitVec* pits, OutVec *outs) {
+  if (!pits || !outs) return;
 
-// The Pit class.
-class Pit : public Message {
- public:
-  Pit();
+  std::ifstream file;
+  file.open("PitStopSummary.txt");
 
-  virtual ~Pit();
+  std::string str;
+  while (std::getline(file, str)) {
+    Pit pit = boost::lexical_cast<Pit>(str);
+    Out out = boost::lexical_cast<Out>(str);
 
-  Message* Clone() const;
+    pit.set_race_time(LongInterval(pit.time_of_day() - race_start_time));
+    out.set_race_time(Interval(pit.race_time() + out.time()));
 
-  operator std::string() const;
+    pits->push_back(pit);
+    outs->push_back(out);
+  }
+}
 
-  int lap_num() const;
-  void set_lap_num(int val);
-
- protected:
-  int competitor_num_;
-  int lap_num_;
-  int num_;
-
- private:
-  friend std::istream& operator>>(std::istream& is, Pit& pit);
-
-  void Print(std::ostream& os) const override;
-};
-
-}  // namespace olap
-
-#endif  // MESSAGES__PIT_H_
+}  // namespcae olap
