@@ -42,12 +42,12 @@ void Message::set_timer(boost::asio::io_service* service) {
                              boost::posix_time::milliseconds(race_time())));
 }
 
-void Message::start_timer() {
+void Message::start_timer(std::function<void(const boost::system::error_code&, const std::string&)> fn) {
   using boost::bind;
-  //std::cout << "TODO(ds) pass PublishMessage as std::function" << std::endl;
-  timer_->async_wait(bind(PublishMessage,
-                            asio::placeholders::error,
-                            static_cast<std::string>(*this)));
+  timer_->async_wait(bind(fn,
+                          asio::placeholders::error,
+                          static_cast<std::string>(*this)));
+  //timer_->async_wait(fn);
 }
 
 Message::operator std::string() const {

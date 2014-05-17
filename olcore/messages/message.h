@@ -41,7 +41,7 @@ class Message {
 
   void set_timer(boost::asio::io_service* service);
 
-  void start_timer();
+  void start_timer(std::function<void(const boost::system::error_code&, const std::string&)> fn);
 
   operator std::string() const;
 

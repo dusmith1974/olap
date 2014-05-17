@@ -44,6 +44,11 @@ using boost::optional;
 
 namespace olap {
 
+void PublishMessage(const boost::system::error_code&,
+                    const std::string& message) {
+  std::cout << message;
+}
+
 int replay() {
   MsgVec msgs;
   CompetitorMap competitors;
@@ -161,7 +166,7 @@ int replay() {
   }
 
   for (const auto& message : message_map)
-    message.second->start_timer();
+    message.second->start_timer(PublishMessage);
 
   service.run();
 }

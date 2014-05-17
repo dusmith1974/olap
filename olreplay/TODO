@@ -1,3 +1,6 @@
 Implement olsource here as exe using osoa and olcore.
 error handlers for missing .txt files, eg. competitors.txt
-$(MAKE) -C gtest-1.4.0/make clean
+makefile for olreplay
+nested makes $(MAKE) -C gtest-1.4.0/make clean
+build osoa olap as shared libs (as well as static lib).
+publish to subscribers
