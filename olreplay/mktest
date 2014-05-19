@@ -23,7 +23,7 @@ done < $COMPETITORS
 
 # Delete temp file(s) on exit.
 function CleanUp {
-  rm $COMPETITORS
+  rm $COMPETITORS output.txt
   exit
 }
 trap CleanUp 0 SIGHUP SIGINT SIGQUIT SIGTERM
