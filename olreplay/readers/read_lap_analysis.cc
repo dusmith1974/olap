@@ -27,7 +27,11 @@ LongInterval ReadLapAnalysis(const Lap& leaders_lap, CompetitorLapMap* lap_analy
   if (!lap_analysis) return LongInterval(0);
 
   std::ifstream file;
-  file.open("RaceLapAnalysis.txt");
+  std::string filename("RaceLapAnalysis.txt");
+
+  file.open(filename);
+  if (!file.is_open())
+    throw std::runtime_error("Could not open " + filename);
 
   LongInterval race_start_time;
   std::string line;

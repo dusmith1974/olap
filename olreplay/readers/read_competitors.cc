@@ -25,7 +25,10 @@ void ReadBestSectors(CompetitorMap* competitors) {
   if (!competitors) return;
 
   std::ifstream file;
-  file.open("BestSectors.txt");
+  std::string filename("BestSectors.txt");
+  file.open(filename);
+  if (!file.is_open())
+    throw std::runtime_error("Could not open " + filename);
 
   int num = 0;
   cpp_dec_float_3 lap_time;
@@ -55,7 +58,11 @@ void ReadCompetitors(CompetitorMap* competitors) {
   if (!competitors) return;
 
   std::ifstream file;
-  file.open("competitors.txt");
+  std::string filename("competitors.txt");
+
+  file.open(filename);
+  if (!file.is_open())
+    throw std::runtime_error("Could not open " + filename);
 
   int grid_pos = 0;
   std::string line;

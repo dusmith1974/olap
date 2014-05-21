@@ -120,7 +120,7 @@ int replay() {
   // Doesn't look as though the sector analysis pdf is published (to the public)
   // so we'll have to guess the sector times based on the current lap time and
   // the fastest sectors.
-  long sector_1, sector_2, sector_3, lap_time;
+  long sector_1, sector_2, sector_3;
   for (const auto& laps : all_laps | adaptors::map_values) {
     for (const auto& lap : laps) {
       sector_1 = cpp_dec_float_3(static_cast<long>(lap.time()) * competitors[lap.competitor_num()].sector_1_percent()).convert_to<long>();
@@ -169,6 +169,8 @@ int replay() {
     message.second->start_timer(PublishMessage);
 
   service.run();
+
+  return 0;
 }
 }  // namespace olap
 

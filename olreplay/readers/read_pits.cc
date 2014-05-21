@@ -27,7 +27,11 @@ void ReadPits(const Interval& race_start_time, PitVec* pits, OutVec *outs) {
   if (!pits || !outs) return;
 
   std::ifstream file;
-  file.open("PitStopSummary.txt");
+  std::string filename("PitStopSummary.txt");
+
+  file.open(filename);
+  if (!file.is_open())
+    throw std::runtime_error("Could not open " + filename);
 
   std::string str;
   while (std::getline(file, str)) {

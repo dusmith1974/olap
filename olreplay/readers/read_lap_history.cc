@@ -30,7 +30,11 @@ void ReadLapHistory(CompetitorLapMap* lap_history, Lap* leaders_lap) {
   if (!lap_history || !leaders_lap) return;
 
   std::ifstream file;
-  file.open("RaceHist.txt");
+  std::string filename("RaceHist.txt");
+
+  file.open(filename);
+  if (!file.is_open())
+    throw std::runtime_error("Could not open " + filename);
 
   // Competitor num followed by any other data (upto the next competitor num).
   boost::regex rgx(R"(((?<=\s)[0-9]+\s)(.(?!(?1)))*)");
