@@ -55,6 +55,8 @@ endif
 $(OBJ_DIR)/$(LIB_OLCORE): $(OBJS)
 	mkdir -p $(OBJ_DIR)
 	ar cr $@ $(OBJS)
+	ctags -R --c-kinds=+cdefglmnpstuvx --extra=+f
+	cscope -Rb
 
 $(OBJS) $(DEPS) : | $(OBJ_DIR) $(BIN_DIR)
 
