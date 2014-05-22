@@ -19,6 +19,9 @@
 
 #include <fstream>
 
+#include "boost/lexical_cast.hpp"
+
+#include "olcore/messages/lap.h"
 #include "olcore/time/long_interval.h"
 
 namespace olap {

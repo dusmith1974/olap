@@ -18,14 +18,10 @@
 #ifndef MESSAGES__OUT_H_
 #define MESSAGES__OUT_H_
 
-#include <iostream>
-
 #include "messages/message.h"
+#include "messages/out.h"
 
 namespace olap {
-
-class Out;
-typedef std::vector<Out> OutVec;
 
 // The Out class.
 class Out : public Message {

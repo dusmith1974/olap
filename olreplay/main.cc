@@ -15,6 +15,7 @@
 
 // Recreates an events timing messages from the results.
 
+#include <iostream>
 #include <map>
 #include <string>
 #include <vector>

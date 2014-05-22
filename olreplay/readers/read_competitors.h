@@ -18,8 +18,7 @@
 #ifndef READERS__READ_COMPETITORS_H_
 #define READERS__READ_COMPETITORS_H_
 
-// TODO(ds) competitor_fwd for typedef only.
-#include "olcore/messages/competitor.h"
+#include "olcore/messages/competitor_fwd.h"
 
 namespace olap {
 

@@ -19,10 +19,8 @@
 #define TIME_INTERVAL_H_
 
 #include <chrono>
-#include <iostream>
-
-#include "boost/lexical_cast.hpp"
-#include "boost/regex.hpp"
+#include <iosfwd>
+#include <string>
 
 namespace olap {
 

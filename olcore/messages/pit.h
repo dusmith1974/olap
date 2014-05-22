@@ -18,14 +18,10 @@
 #ifndef MESSAGES__PIT_H_
 #define MESSAGES__PIT_H_
 
-#include <iostream>
-
 #include "messages/message.h"
+#include "messages/pit_fwd.h"
 
 namespace olap {
-
-class Pit;
-typedef std::vector<Pit> PitVec;
 
 // The Pit class.
 class Pit : public Message {

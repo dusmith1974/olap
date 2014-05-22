@@ -17,6 +17,8 @@
 
 #include "messages/pit.h"
 
+#include "boost/lexical_cast.hpp"
+
 namespace olap {
 
 Pit::Pit()

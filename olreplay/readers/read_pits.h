@@ -18,11 +18,8 @@
 #ifndef READERS__READ_PITS_H_
 #define READERS__READ_PITS_H_
 
-#include <iostream>
-
-// TODO(ds) use _fwd.h for vec
-#include "olcore/messages/pit.h"
-#include "olcore/messages/out.h"
+#include "olcore/messages/pit_fwd.h"
+#include "olcore/messages/out_fwd.h"
 
 class Interval;
 

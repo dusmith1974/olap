@@ -18,19 +18,15 @@
 #ifndef MESSAGES_COMPETITOR_H_
 #define MESSAGES_COMPETITOR_H_
 
-#include <iostream>
-
 #include "messages/message.h"
+#include "messages/competitor_fwd.h"
 
 #include "boost/multiprecision/cpp_dec_float.hpp"
 
 namespace olap {
 namespace mp = boost::multiprecision;
 
-class Competitor;
-
 typedef mp::number<mp::cpp_dec_float<3> > cpp_dec_float_3;
-typedef std::map<int, Competitor> CompetitorMap;
 
 // The competitor message.
 class Competitor final : public Message {

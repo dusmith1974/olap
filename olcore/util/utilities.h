@@ -20,8 +20,7 @@
 
 #include "boost/optional.hpp"
 
-// TODO(ds) use _fwd.h for map
-#include "messages/competitor.h"
+#include "messages/competitor_fwd.h"
 
 using boost::optional;
 

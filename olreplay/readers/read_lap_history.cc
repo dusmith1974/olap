@@ -20,7 +20,11 @@
 #include <fstream>
 
 #include "boost/algorithm/string.hpp"
+#include "boost/lexical_cast.hpp"
 #include "boost/range/adaptor/map.hpp"
+#include "boost/regex.hpp"
+
+#include "olcore/messages/lap.h"
 
 namespace adaptors = boost::adaptors;
 

@@ -17,6 +17,8 @@
 
 #include "messages/out.h"
 
+#include "boost/lexical_cast.hpp"
+
 namespace olap {
 
 Out::Out()

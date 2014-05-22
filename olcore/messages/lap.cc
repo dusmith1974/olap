@@ -17,6 +17,9 @@
 
 #include "messages/lap.h"
 
+#include "boost/lexical_cast.hpp"
+#include "boost/regex.hpp"
+
 namespace olap {
 
 Lap::Lap()

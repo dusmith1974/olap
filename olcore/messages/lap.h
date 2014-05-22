@@ -18,16 +18,10 @@
 #ifndef MESSAGES_LAP_H_
 #define MESSAGES_LAP_H_
 
-#include <iostream>
-
 #include "messages/message.h"
+#include "lap_fwd.h"
 
 namespace olap {
-
-class Lap;
-
-typedef std::vector<Lap> LapVec;
-typedef std::map<int, LapVec> CompetitorLapMap;
 
 // The lap message.
 class Lap final : public Message {

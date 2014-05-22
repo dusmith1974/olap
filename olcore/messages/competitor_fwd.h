@@ -13,26 +13,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Contains the LongInterval class.
+// Contains the forward declarations for a competitor.
 
-#ifndef TIME_LONG_INTERVAL_H_
-#define TIME_LONG_INTERVAL_H_
+#ifndef MESSAGES_COMPETITOR_FWD_H_
+#define MESSAGES_COMPETITOR_FWD_H_
 
-#include <iosfwd>
-
-#include "time/interval.h"
+#include <map>
 
 namespace olap {
 
-class LongInterval : public Interval {
- public:
-  LongInterval();
-  explicit LongInterval(long val);
+class Competitor;
+typedef std::map<int, Competitor> CompetitorMap;
 
- private:
-  friend std::ostream& operator<<(std::ostream& os,
-                                  const LongInterval& long_interval);
-};
-}  // namespace olap
+}  // namespace
 
-#endif  // TIME_LONG_INTERVAL_H_
+#endif // MESSAGES_COMPETITOR_FWD_H_

@@ -18,6 +18,10 @@
 #include "time/interval.h"
 
 #include <iomanip>
+#include <iostream>
+
+#include "boost/lexical_cast.hpp"
+#include "boost/regex.hpp"
 
 namespace olap {
 

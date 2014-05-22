@@ -13,23 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// General utility functions.
+// Contains the forward declarations for a competitors lap.
 
-#include "util/utilities.h"
-#include "messages/competitor.h"
+#ifndef MESSAGES_LAP_FWD_H_
+#define MESSAGES_LAP_FWD_H_
+
+#include <map>
+#include <vector>
 
 namespace olap {
 
-const optional<CompetitorMap::mapped_type&> FindPole(CompetitorMap* competitors) {
-  if (!competitors) return optional<CompetitorMap::mapped_type&>();
+class Lap;
 
-  auto pole = std::find_if(competitors->begin(), competitors->end(),
-                           [] (const std::pair<int, Competitor>& elem) {
-                             return elem.second.grid_pos() == 1;
-                           });
-
-  return (pole == competitors->end()) ? optional<CompetitorMap::mapped_type&>()
-    : optional<CompetitorMap::mapped_type&>(pole->second);
-}
+typedef std::vector<Lap> LapVec;
+typedef std::map<int, LapVec> CompetitorLapMap;
 
 }  // namespace olap
+#endif  // MESSAGES_LAP_FWD_H_

@@ -18,18 +18,16 @@
 #ifndef MESSAGES_MESSAGE_H_
 #define MESSAGES_MESSAGE_H_
 
+#include <functional>
+#include <memory>
+
 #include "boost/asio.hpp"
 
+#include "messages/message_fwd.h"
 #include "time/interval.h"
 #include "time/long_interval.h"
 
 namespace olap {
-
-class Interval;
-class LongInterval;
-class Message;
-
-typedef std::vector<std::string> MsgVec;
 
 // The message class.
 class Message {

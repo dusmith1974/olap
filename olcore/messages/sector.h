@@ -18,15 +18,10 @@
 #ifndef MESSAGES_SECTOR_H_
 #define MESSAGES_SECTOR_H_
 
-#include <iostream>
-
 #include "messages/message.h"
+#include "messages/sector_fwd.h"
 
 namespace olap {
-
-class Sector;
-typedef std::vector<Sector> SectorVec;
-typedef std::map<int, SectorVec> CompetitorSectorMap;
 
 class Sector final : public Message {
  public:

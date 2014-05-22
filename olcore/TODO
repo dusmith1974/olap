@@ -1,2 +1,4 @@
 Common timing routines shared between sources, servers and clients.
 script to create new code snippets and add to scm, eg 'new class MyClass' -> cc h add to git
+$(MAKE) -c osoa // see olreplay
+

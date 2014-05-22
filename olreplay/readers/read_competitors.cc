@@ -17,6 +17,8 @@
 
 #include "readers/read_competitors.h"
 
+#include "olcore/messages/competitor.h"
+
 #include <fstream>
 
 namespace olap {

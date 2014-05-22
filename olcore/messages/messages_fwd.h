@@ -13,26 +13,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Contains the LongInterval class.
+// Contains the forward declarations for all message types.
 
-#ifndef TIME_LONG_INTERVAL_H_
-#define TIME_LONG_INTERVAL_H_
+#ifndef MESSAGES_MESSAGES_FWD_H_
+#define MESSAGES_MESSAGES_FWD_H_
 
-#include <iosfwd>
+#include "messages/lap_fwd.h"
+#include "messages/pit_fwd.h"
+#include "messages/out_fwd.h"
+#include "messages/sector_fwd.h"
+#include "messages/message_fwd.h"
+#include "messages/competitor_fwd.h"
 
-#include "time/interval.h"
-
-namespace olap {
-
-class LongInterval : public Interval {
- public:
-  LongInterval();
-  explicit LongInterval(long val);
-
- private:
-  friend std::ostream& operator<<(std::ostream& os,
-                                  const LongInterval& long_interval);
-};
-}  // namespace olap
-
-#endif  // TIME_LONG_INTERVAL_H_
+#endif  // MESSAGES_MESSAGES_FWD_H_

@@ -18,6 +18,7 @@
 #include "time/long_interval.h"
 
 #include <iomanip>
+#include <iostream>
 
 namespace olap {
 

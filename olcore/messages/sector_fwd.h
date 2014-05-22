@@ -13,23 +13,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// General utility functions.
+// Contains the forward declarations for a sector message.
 
-#include "util/utilities.h"
-#include "messages/competitor.h"
+#ifndef MESSAGES_SECTOR_FWD_H_
+#define MESSAGES_SECTOR_FWD_H_
+
+#include <map>
+#include <vector>
+
+#include "messages/message_fwd.h"
 
 namespace olap {
 
-const optional<CompetitorMap::mapped_type&> FindPole(CompetitorMap* competitors) {
-  if (!competitors) return optional<CompetitorMap::mapped_type&>();
-
-  auto pole = std::find_if(competitors->begin(), competitors->end(),
-                           [] (const std::pair<int, Competitor>& elem) {
-                             return elem.second.grid_pos() == 1;
-                           });
-
-  return (pole == competitors->end()) ? optional<CompetitorMap::mapped_type&>()
-    : optional<CompetitorMap::mapped_type&>(pole->second);
-}
+class Sector;
+typedef std::vector<Sector> SectorVec;
+typedef std::map<int, SectorVec> CompetitorSectorMap;
 
 }  // namespace olap
+
+#endif  // MESSAGES_SECTOR_FWD_H_

@@ -18,10 +18,7 @@
 #ifndef READERS__READ_LAP_ANALYSIS_H_
 #define READERS__READ_LAP_ANALYSIS_H_
 
-#include <iostream>
-
-// TODO(ds) use _fwd.h for map
-#include "olcore/messages/lap.h"
+#include "olcore/messages/lap_fwd.h"
 
 namespace olap {
 
