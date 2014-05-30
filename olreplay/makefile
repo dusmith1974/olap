@@ -5,8 +5,9 @@ CXXFLAGS += -std=c++11
 
 READERS = readers
 TIMING = timing
+REPLAY = replay
 BASE = .
-PRJS := $(BASE) $(TIMING) $(READERS)
+PRJS := $(BASE) $(REPLAY) $(TIMING) $(READERS)
 
 LIB_OSOA_BASE = libosoa-mt
 LIB_OLCORE_BASE = libolcore-mt
@@ -37,6 +38,7 @@ INC += -I$(BOOST_DIR)
 INC += -I$(OSOA_DIR)
 INC += -I$(OLCORE_DIR)
 INC += -I..
+INC += -I../..
 
 $(OBJ_DIR)/%.o : %.cc 
 	$(COMPILE.cc) $(INC) $(OUTPUT_OPTION) $<

@@ -24,20 +24,11 @@
 #include "boost/range/adaptor/map.hpp"
 #include "boost/range/algorithm/copy.hpp"
 
-// TODO(ds) single messages.h
-#include "olcore/messages/message-inl.h"
-#include "olcore/messages/competitor.h"
-#include "olcore/messages/lap.h"
-#include "olcore/messages/out.h"
-#include "olcore/messages/pit.h"
-#include "olcore/messages/sector.h"
+#include "olcore/messages/messages.h"
 #include "olcore/util/utilities.h"
 
-// TODO(ds) single readers.h
-#include "readers/read_competitors.h"
-#include "readers/read_lap_history.h"
-#include "readers/read_lap_analysis.h"
-#include "readers/read_pits.h"
+#include "readers/readers.h"
+#include "replay/replay.h"
 #include "util/utilities.h"
 
 namespace adaptors = boost::adaptors;
@@ -175,6 +166,16 @@ int replay() {
 }
 }  // namespace olap
 
-int main() {
-  return olap::replay();
+int main(int argc, const char* argv[]) {
+  //return olap::replay();
+  olap::Replay service;
+
+  osoa::Error code = service.Initialize(argc, argv);
+  if (osoa::Error::kSuccess != code)
+    return static_cast<int>(code);
+
+  if (osoa::Error::kSuccess == service.Start())
+    service.Stop();
+
+  return static_cast<int>(osoa::Error::kSuccess);
 }

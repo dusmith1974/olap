@@ -1,12 +1,19 @@
+AddTopicMessage to accept/add new message into topic map.
+
+wait for next msg when topic q empty (don't drop out)
+ on signal, cond_var?
+
+swmr shared_lock on map (1 map per topic)
 build osoa olap as shared libs (as well as static lib).
 publish to subscribers
 -h (human readable) option for h:m:s/tod timestamps (over ms)
-reduce h in h via _fwd.h
- core 45s replay 35s
 mv *.txt data dir and -option to set dir
+use osoa
+override osoa base args
 
 Client:
 Google Chrome Dev Tools
 HTML5 Rocks - WebSockets
 WebSocket++ (others libwebsockets QWebSockets)
 www.websocket.org/echo.html
+w3c offline to dropbox
