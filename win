@@ -1,6 +1,7 @@
 # use C-a Z to maximize a split window
 # tmux list-commands
 
+cd olreplay
 tmux rename-window vim
 tmux new-window -c ~/sw/workspaces/osoa
 tmux rename-window gcc 
@@ -8,8 +9,10 @@ tmux split-window -h -c ~/sw/workspaces/olap/olreplay
 tmux new-window -c ~/sw/workspaces/olap/olreplay
 tmux rename-window gdb
 tmux split-window -h -c ~/sw/workspaces/olap/olreplay
-tmux new-window -c ~/sw/workspaces
-tmux rename-window grep
 tmux new-window -c ~/sw/workspaces/olap/olreplay
 tmux rename-window run
 tmux split-window -h -c ~/sw/workspaces/olap/olreplay
+tmux new-window -c ~/sw/workspaces
+tmux rename-window grep
+tmux select-window -t 1
+vim TODO
