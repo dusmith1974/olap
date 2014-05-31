@@ -2,6 +2,7 @@ AddTopicMessage to accept/add new message into topic map.
 
 wait for next msg when topic q empty (don't drop out)
  on signal, cond_var?
+  placed with topic message map - evnt data ready
 
 swmr shared_lock on map (1 map per topic)
 build osoa olap as shared libs (as well as static lib).
