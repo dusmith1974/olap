@@ -68,4 +68,9 @@ Error Replay::Start() {
 Error Replay::Stop() {
   return super::Stop();
 }
+
+void Replay::AddTopicMessage(const std::string& topic, const std::string& message, int num) {
+  comms()->AddTopicMessage(topic, message, num);
+}
+
 }  // namespcae olap

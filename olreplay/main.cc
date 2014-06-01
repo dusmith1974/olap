@@ -38,10 +38,10 @@ namespace olap {
 
 void PublishMessage(const boost::system::error_code&,
                     const std::string& message) {
-  std::cout << message;
+  std::cout << message << std::endl;
 }
 
-int replay() {
+int run() {
   MsgVec msgs;
   CompetitorMap competitors;
   CompetitorLapMap lap_history, lap_analysis, all_laps;
@@ -167,15 +167,19 @@ int replay() {
 }  // namespace olap
 
 int main(int argc, const char* argv[]) {
-  //return olap::replay();
-  olap::Replay service;
-
-  osoa::Error code = service.Initialize(argc, argv);
+  olap::Replay replay;
+  osoa::Error code = replay.Initialize(argc, argv);
   if (osoa::Error::kSuccess != code)
     return static_cast<int>(code);
 
-  if (osoa::Error::kSuccess == service.Start())
-    service.Stop();
+  // Publish some data.
+  replay.AddTopicMessage("data", "another message.", 1);
+
+  //olap::run();
+
+  if (osoa::Error::kSuccess == replay.Start()) {
+    replay.Stop();
+  }
 
   return static_cast<int>(osoa::Error::kSuccess);
 }

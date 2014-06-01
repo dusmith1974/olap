@@ -43,6 +43,8 @@ class Replay final : public osoa::Service, private boost::noncopyable {
   // Stops the service.
   osoa::Error Stop() override;
 
+  void AddTopicMessage(const std::string& topic, const std::string& message, int num);
+
  private:
   typedef Service super;
 };
