@@ -45,8 +45,14 @@ class Replay final : public osoa::Service, private boost::noncopyable {
 
   void AddTopicMessage(const std::string& topic, const std::string& message, int num);
 
+  // TODO(ds) mv to base?
+  bool publishing() const;
+  void set_publishing(bool val);
+
  private:
   typedef Service super;
+
+  bool publishing_;
 };
 
 }  // namespace olap

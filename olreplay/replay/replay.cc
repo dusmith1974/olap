@@ -17,15 +17,16 @@
 
 #include "replay/replay.h"
 
+#include "osoa/service/args.h"
 #include "osoa/service/logging.h"
-#include "osoa/service/comms.h"
+#include "osoa/service/comms/comms.h"
 
 using osoa::Error;
 using osoa::Logging;
 
 namespace olap {
 
-Replay::Replay() {
+Replay::Replay() : publishing_(false) {
 }
 
 Replay::~Replay() {
@@ -45,7 +46,12 @@ Error Replay::Initialize(int argc, const char *argv[]) {
   // Set the callback handler for the listening port when connections are made.
   comms()->set_on_connect_callback(std::bind(&Test::OnConnect, this));*/
 
-  return super::Initialize(argc, argv);
+  Error result = super::Initialize(argc, argv);
+
+  if (!args()->listening_port().empty())
+    set_publishing(true);
+
+  return result;
 }
 
 // Starts the base class service, logs messages and connects to other services.
@@ -55,8 +61,11 @@ Error Replay::Start() {
 
   BOOST_LOG_SEV(*Logging::logger(), blt::debug) << "Replaying race.";
 
-  for (const auto& subscription : comms()->subscriptions()) {
-    code = comms()->Subscribe(subscription.second);
+  // TODO(ds) only subscribe if -s and not -p
+  // mv to base
+  // consider separate io_service for server and client.
+  if (args()->listening_port().empty()) {
+    code = comms()->Subscribe("127.0.0.1", "8000"); // TODO(ds) use prog args, resolve port from name
     if (Error::kSuccess == code) BOOST_LOG_SEV(*Logging::logger(), blt::debug)
       << "Subscribed to TODO(ds) format subscription name.";
   }
@@ -66,11 +75,23 @@ Error Replay::Start() {
 
 // No tidy up is required except to stop the base class service.
 Error Replay::Stop() {
+  comms()->Shutdown(); // mv into super::Stop() ?
   return super::Stop();
 }
 
+// TODO(ds) ren PublishMessage, drop num.
 void Replay::AddTopicMessage(const std::string& topic, const std::string& message, int num) {
-  comms()->AddTopicMessage(topic, message, num);
+  (void)num;
+  (void)topic;
+  comms()->PublishMessage(message);
+}
+
+bool Replay::publishing() const {
+  return publishing_;
+}
+
+void Replay::set_publishing(bool val) {
+  publishing_ = val;
 }
 
 }  // namespcae olap

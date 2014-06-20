@@ -18,12 +18,15 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <thread>
 #include <vector>
 
+#include "boost/asio.hpp"
 #include "boost/optional.hpp"
 #include "boost/range/adaptor/map.hpp"
 #include "boost/range/algorithm/copy.hpp"
 
+#include "osoa/service/comms/comms.h"
 #include "olcore/messages/messages.h"
 #include "olcore/util/utilities.h"
 
@@ -32,13 +35,16 @@
 #include "util/utilities.h"
 
 namespace adaptors = boost::adaptors;
+namespace asio = boost::asio;
 using boost::optional;
+
+olap::Replay replay;
 
 namespace olap {
 
 void PublishMessage(const boost::system::error_code&,
                     const std::string& message) {
-  std::cout << message << std::endl;
+  replay.AddTopicMessage("data", message, 1);
 }
 
 int run() {
@@ -54,9 +60,6 @@ int run() {
   MessageMap message_map;
   AddMessages(competitors | adaptors::map_values, &message_map);
 
-  optional<CompetitorMap::mapped_type&> pole = FindPole(&competitors);
-  std::cout << "pole: " << (*pole).num() << " " << (*pole).name() << std::endl;
-
   Lap leaders_lap;
   ReadLapHistory(&lap_history, &leaders_lap);
   for (const auto& laps : lap_history | adaptors::map_values)
@@ -64,13 +67,11 @@ int run() {
 
   Message::set_race_start_time(ReadLapAnalysis(leaders_lap, &lap_analysis));
 
-  std::cout << "RST: " << Message::race_start_time() << std::endl;
-
   for (auto& laps : lap_analysis) {
     const auto other = lap_history.find(laps.first);
     if (other != lap_history.end() && other->second.size()) {
       std::transform(laps.second.begin(), std::next(laps.second.begin(),
-                     other->second.size() - 1),
+                                                    other->second.size() - 1),
                      std::next(other->second.begin()),
                      laps.second.begin(),
                      [] (Lap& a, const Lap& b) {
@@ -150,34 +151,29 @@ int run() {
   AddMessages(pits, &message_map);
   AddMessages(outs, &message_map);
 
-  boost::asio::io_service service;
+  boost::asio::io_service io_service;
 
-  for (const auto& message : message_map) {
-    std::cout << "msg " << *message.second;
-    message.second->set_timer(&service);
-  }
+  for (const auto& message : message_map)
+    message.second->set_timer(&io_service);
 
   for (const auto& message : message_map)
     message.second->start_timer(PublishMessage);
 
-  service.run();
+  io_service.run();
 
   return 0;
 }
 }  // namespace olap
 
 int main(int argc, const char* argv[]) {
-  olap::Replay replay;
   osoa::Error code = replay.Initialize(argc, argv);
   if (osoa::Error::kSuccess != code)
     return static_cast<int>(code);
 
-  // Publish some data.
-  replay.AddTopicMessage("data", "another message.", 1);
-
-  //olap::run();
-
   if (osoa::Error::kSuccess == replay.Start()) {
+    if (replay.publishing())
+      olap::run();
+
     replay.Stop();
   }
 
