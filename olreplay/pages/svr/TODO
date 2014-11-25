@@ -1,0 +1,5 @@
+requires shared libs? static link or follow path
+requires main in poco app class? can separate?
+can build from non poco makefile, eg. include libs in std makefile
+can build as lib (no main) or w/o poco util server app
+is c++11?
