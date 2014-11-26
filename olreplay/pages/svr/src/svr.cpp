@@ -104,7 +104,7 @@ public:
 	}
 };
 
-class WebSocketServer: public Poco::Util::ServerApplication {
+class WebSocketServer /*: public Poco::Util::ServerApplication*/ {
 public:
 	WebSocketServer() /* : _helpRequested(false)*/ {
 	}
@@ -113,14 +113,14 @@ public:
 	}
 
 protected:
-	void initialize(Application& self) {
+	/*void initialize(Application& self) {
 		loadConfiguration(); // load default configuration files, if present
 		ServerApplication::initialize(self);
 	}
 		
 	void uninitialize() {
 		ServerApplication::uninitialize();
-	}
+	}*/
 
 	/*void defineOptions(OptionSet& options) {
 		ServerApplication::defineOptions(options);
@@ -146,30 +146,43 @@ protected:
 		helpFormatter.format(std::cout);
 	}*/
 
-	int main(const std::vector<std::string>& args) {
-		//if (_helpRequested) {
-		//	displayHelp();
-		//}
-		//else {
-			// get parameters from configuration file
-			unsigned short port = (unsigned short) config().getInt("WebSocketServer.port", 9980);
-			
-			// set-up a server socket
-			ServerSocket svs(port);
-			// set-up a HTTPServer instance
-			HTTPServer srv(new RequestHandlerFactory, svs, new HTTPServerParams);
-			// start the HTTPServer
-			srv.start();
-			// wait for CTRL-C or kill
-			waitForTerminationRequest();
-			// Stop the HTTPServer
-			srv.stop();
-		//}
-		return Application::EXIT_OK;
-	}
 	
 private:
 	//bool _helpRequested;
 };
 
-POCO_SERVER_MAIN(WebSocketServer)
+#include <signal.h>
+int main(int argc, char** argv) {
+  //if (_helpRequested) {
+  //	displayHelp();
+  //}
+  //else {
+    // get parameters from configuration file
+    unsigned short port = 9980;
+    
+    // set-up a server socket
+    ServerSocket svs(port);
+    // set-up a HTTPServer instance
+    HTTPServer srv(new RequestHandlerFactory, svs, new HTTPServerParams);
+    // start the HTTPServer
+    srv.start();
+    // wait for CTRL-C or kill
+    //waitForTerminationRequest();
+    sigset_t sset;
+    sigemptyset(&sset);
+    if (!std::getenv("POCO_ENABLE_DEBUGGER"))
+    {
+            sigaddset(&sset, SIGINT);
+    }
+    sigaddset(&sset, SIGQUIT);
+    sigaddset(&sset, SIGTERM);
+    sigprocmask(SIG_BLOCK, &sset, NULL);
+    int sig;
+    sigwait(&sset, &sig);
+
+    // Stop the HTTPServer
+    srv.stop();
+  //}
+  return Application::EXIT_OK;
+}
+//POCO_SERVER_MAIN(WebSocketServer)
