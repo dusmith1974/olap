@@ -167,12 +167,12 @@ int main(int argc, char** argv) {
     // start the HTTPServer
     srv.start();
     // wait for CTRL-C or kill
-    //waitForTerminationRequest();
-    sigset_t sset;
+    //waitForTerminationRequest(); // req ServerApp (too much!)
+    sigset_t sset; // use asio wait instead..? (portable).
     sigemptyset(&sset);
     if (!std::getenv("POCO_ENABLE_DEBUGGER"))
     {
-            sigaddset(&sset, SIGINT);
+      sigaddset(&sset, SIGINT);
     }
     sigaddset(&sset, SIGQUIT);
     sigaddset(&sset, SIGTERM);
