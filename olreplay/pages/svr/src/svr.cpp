@@ -159,6 +159,8 @@ int main(int argc, char** argv) {
   //else {
     // get parameters from configuration file
     unsigned short port = 9980;
+    auto msg = "C++11 OK";
+    std::cout << msg << std::endl;
     
     // set-up a server socket
     ServerSocket svs(port);
