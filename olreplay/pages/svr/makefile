@@ -17,7 +17,7 @@ all:
 	mkdir -p obj
 	mkdir -p bin
 	g++ $(INC) $(CXXFLAGS) $(DEF) -D_DEBUG -fPIC -c src/svr.cpp -o obj/svr.o
-	g++ $(DEF) -Wl,-rpath,lib -o bin/svrd obj/svr.o -L$(POCO_BASE)/lib/Linux/x86_64 -lPocoUtild -l PocoNetd -lPocoXMLd -lPocoFoundationd -lpthread -ldl -lrt
+	g++ $(DEF) -Wl,-rpath,lib -o bin/svrd obj/svr.o -L/usr/lib/x86_64-linux-gnu -L$(POCO_BASE)/lib/Linux/x86_64 -lboost_system -lPocoUtild -l PocoNetd -lPocoXMLd -lPocoFoundationd -lpthread -ldl -lrt
 
 clean:
 	rm bin obj -rf

@@ -8,9 +8,6 @@
 #include "Poco/Net/WebSocket.h"
 #include "Poco/Net/NetException.h"
 #include "Poco/Util/ServerApplication.h"
-//#include "Poco/Util/Option.h"
-//#include "Poco/Util/OptionSet.h"
-//#include "Poco/Util/HelpFormatter.h"
 #include "Poco/Format.h"
 #include <iostream>
 
@@ -28,34 +25,26 @@ using Poco::Timestamp;
 using Poco::ThreadPool;
 using Poco::Util::ServerApplication;
 using Poco::Util::Application;
-//using Poco::Util::Option;
-//using Poco::Util::OptionSet;
-//using Poco::Util::HelpFormatter;
 
 // Handle a WebSocket connection.
 class WebSocketRequestHandler : public HTTPRequestHandler {
  public:
 	void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response) {
-		//Application& app = Application::instance();
 		try {
 			WebSocket ws(request, response);
-			//app.logger().information("WebSocket connection established.");
       std::cout << std::string("WebSocket connection established.") << std::endl;
 			char buffer[1024];
 			int flags;
 			int n;
 			do {
 				n = ws.receiveFrame(buffer, sizeof(buffer), flags);
-				//app.logger().information(Poco::format("Frame received (length=%d, flags=0x%x).", n, unsigned(flags)));
         std::cout << Poco::format("Frame received (length=%d, flags=0x%x).", n, unsigned(flags)) << std::endl; // use boost format?
 				ws.sendFrame(buffer, n, flags);
 			} while (n > 0 || (flags & WebSocket::FRAME_OP_BITMASK) != WebSocket::FRAME_OP_CLOSE);
 
-			//app.logger().information("WebSocket connection closed.");
       std::cout << "WebSocket connection closed." << std::endl;
 		}
 		catch (WebSocketException& exc) {
-			//app.logger().log(exc);
       std::cout << exc.what() << std::endl;
 			switch (exc.code()) {
 			 case WebSocket::WS_ERR_HANDSHAKE_UNSUPPORTED_VERSION:
@@ -78,8 +67,6 @@ class RequestHandlerFactory: public HTTPRequestHandlerFactory
 public:
 	HTTPRequestHandler* createRequestHandler(const HTTPServerRequest& request)
 	{
-		//Application& app = Application::instance();
-		//app.logger().information("Request from " 
     std::string str = "Request from " 
 			+ request.clientAddress().toString()
 			+ ": "
@@ -92,15 +79,11 @@ public:
     std::cout << str << std::endl;
 			
 		for (HTTPServerRequest::ConstIterator it = request.begin(); it != request.end(); ++it) {
-			//app.logger().information(it->first + ": " + it->second);
       str = (it->first + ": " + it->second);
       std::cout << str << std::endl;
 		}
 		
-		//if (request.getURI() == "/ws")
-			return new WebSocketRequestHandler;
-		//else
-			//return new PageRequestHandler;
+    return new WebSocketRequestHandler;
 	}
 };
 
@@ -113,54 +96,21 @@ public:
 	}
 
 protected:
-	/*void initialize(Application& self) {
-		loadConfiguration(); // load default configuration files, if present
-		ServerApplication::initialize(self);
-	}
-		
-	void uninitialize() {
-		ServerApplication::uninitialize();
-	}*/
-
-	/*void defineOptions(OptionSet& options) {
-		ServerApplication::defineOptions(options);
-		
-		options.addOption(
-			Option("help", "h", "display help information on command line arguments")
-				.required(false)
-				.repeatable(false));
-	}
-
-	void handleOption(const std::string& name, const std::string& value) {
-		ServerApplication::handleOption(name, value);
-
-		if (name == "help")
-			_helpRequested = true;
-	}
-
-	void displayHelp() {
-		HelpFormatter helpFormatter(options());
-		helpFormatter.setCommand(commandName());
-		helpFormatter.setUsage("OPTIONS");
-		helpFormatter.setHeader("A sample HTTP server supporting the WebSocket protocol.");
-		helpFormatter.format(std::cout);
-	}*/
-
 	
 private:
-	//bool _helpRequested;
 };
 
-#include <signal.h>
+#include <boost/asio.hpp>
+void handler(const boost::system::error_code& error, int signal_number) {
+  if (!error) {
+    // process signal
+  }
+}
+
+//#include <signal.h>
 int main(int argc, char** argv) {
-  //if (_helpRequested) {
-  //	displayHelp();
-  //}
-  //else {
     // get parameters from configuration file
     unsigned short port = 9980;
-    auto msg = "C++11 OK";
-    std::cout << msg << std::endl;
     
     // set-up a server socket
     ServerSocket svs(port);
@@ -169,7 +119,7 @@ int main(int argc, char** argv) {
     // start the HTTPServer
     srv.start();
     // wait for CTRL-C or kill
-    //waitForTerminationRequest(); // req ServerApp (too much!)
+    /*//waitForTerminationRequest(); // req ServerApp (too much!)
     sigset_t sset; // use asio wait instead..? (portable).
     sigemptyset(&sset);
     if (!std::getenv("POCO_ENABLE_DEBUGGER"))
@@ -180,11 +130,14 @@ int main(int argc, char** argv) {
     sigaddset(&sset, SIGTERM);
     sigprocmask(SIG_BLOCK, &sset, NULL);
     int sig;
-    sigwait(&sset, &sig);
+    sigwait(&sset, &sig);*/
+
+    boost::asio::io_service io_service;
+    boost::asio::signal_set signals(io_service, SIGINT, SIGTERM);
+    signals.async_wait(handler);
+    io_service.run();
 
     // Stop the HTTPServer
     srv.stop();
-  //}
   return Application::EXIT_OK;
 }
-//POCO_SERVER_MAIN(WebSocketServer)
