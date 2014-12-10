@@ -1,0 +1,26 @@
+﻿Build started 10/12/2014 12:59:16.
+
+Project Performance Summary:
+       94 ms  E:\sw\workspaces\olap\olreplay\vs\olreplay\olreplay.vcxproj   1 calls
+                 94 ms  Clean                                      1 calls
+
+Target Performance Summary:
+        0 ms  AfterClean                                 1 calls
+        0 ms  CoreClean                                  1 calls
+        0 ms  BeforeClean                                1 calls
+        0 ms  AfterCppClean                              1 calls
+        0 ms  AssignProjectConfiguration                 1 calls
+        0 ms  Clean                                      1 calls
+        0 ms  _CheckForInvalidConfigurationAndPlatform   1 calls
+        0 ms  BeforeCppClean                             1 calls
+        0 ms  CleanReferencedProjects                    1 calls
+        0 ms  CleanPublishFolder                         1 calls
+        0 ms  CppClean                                   1 calls
+       15 ms  _SplitProjectReferencesByFileExistence     1 calls
+       16 ms  PGInstrumentedClean                        1 calls
+       17 ms  _PrepareForClean                           1 calls
+       47 ms  CoreCppClean                               1 calls
+
+Build succeeded.
+
+Time Elapsed 00:00:00.09

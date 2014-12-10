@@ -1,3 +1,4 @@
+rm olreplay pch (reuse osoa?)
 fix build (link with boost chrono) and test.
 VS/gcc dual build.
 tidy osoa and olap (strip to current).

@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="readers">
+      <UniqueIdentifier>{dfb72f23-dab4-4746-834f-08fc5b9ab1ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="replay">
+      <UniqueIdentifier>{69b5c115-7089-4887-aba9-42087ce35cf3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\main.cc" />
+    <ClCompile Include="..\..\replay\replay.cc">
+      <Filter>replay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\readers\read_competitors.cc">
+      <Filter>readers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\readers\read_lap_analysis.cc">
+      <Filter>readers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\readers\read_lap_history.cc">
+      <Filter>readers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\readers\read_pits.cc">
+      <Filter>readers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\olreplay_pch.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\replay\replay.h">
+      <Filter>replay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\readers\read_competitors.h">
+      <Filter>readers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\readers\read_lap_analysis.h">
+      <Filter>readers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\readers\read_lap_history.h">
+      <Filter>readers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\readers\read_pits.h">
+      <Filter>readers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\readers\readers.h">
+      <Filter>readers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\olreplay_pch.h" />
+  </ItemGroup>
+</Project>
