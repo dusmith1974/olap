@@ -34,18 +34,6 @@ Replay::~Replay() {
 
 // Add customizations specific to this particular service.
 Error Replay::Initialize(int argc, const char *argv[]) {
-  /*po::options_description& config = args()->config();
-
-  // Add a command line option (for the number of times to log the test msg).
-  auto msg_count_option =
-    new po::typed_value<decltype(msg_count_)>(&msg_count_);
-  msg_count_option->value_name("number");
-  config.add_options()
-    ("msg-count,o", msg_count_option, "number of msgs");
-
-  // Set the callback handler for the listening port when connections are made.
-  comms()->set_on_connect_callback(std::bind(&Test::OnConnect, this));*/
-
   Error result = super::Initialize(argc, argv);
 
   if (!args()->listening_port().empty())

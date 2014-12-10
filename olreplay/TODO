@@ -1,3 +1,9 @@
+fix build (link with boost chrono) and test.
+VS/gcc dual build.
+tidy osoa and olap (strip to current).
+add websocket in OSOA and mirror publishMessage socket in olap
+ccache
+
 AddTopicMessage to accept/add new message into topic map.
 
 wait for next msg when topic q empty (don't drop out)
