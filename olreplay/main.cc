@@ -20,6 +20,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <numeric>
 
 #include "boost/asio.hpp"
 #include "boost/optional.hpp"

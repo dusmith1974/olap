@@ -25,10 +25,14 @@
 namespace olap {
 
 // The Replay class.
+#ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Weffc++"
+#endif
 class Replay final : public osoa::Service, private boost::noncopyable {
+#ifdef __GNUC__
 #pragma GCC diagnostic pop
+#endif
  public:
   Replay();
   virtual ~Replay();
