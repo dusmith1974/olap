@@ -10,6 +10,65 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\messages\competitor.cc">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/wd4996 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/wd4996 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="..\..\messages\lap.cc">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/wd4996 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/wd4996 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="..\..\messages\message.cc">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/wd4996 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/wd4996 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="..\..\messages\out.cc">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/wd4966 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/wd4996 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="..\..\messages\pit.cc">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/wd4996 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/wd4996 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="..\..\messages\sector.cc">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/wd4966 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/wd4996 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="..\..\olcore_pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">olcore_pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">olcore_pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\..\time\interval.cc" />
+    <ClCompile Include="..\..\time\long_interval.cc" />
+    <ClCompile Include="..\..\util\utilities.cc">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/wd4996 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/wd4996 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\messages\competitor.h" />
+    <ClInclude Include="..\..\messages\competitor_fwd.h" />
+    <ClInclude Include="..\..\messages\lap.h" />
+    <ClInclude Include="..\..\messages\lap_fwd.h" />
+    <ClInclude Include="..\..\messages\message-inl.h" />
+    <ClInclude Include="..\..\messages\message.h" />
+    <ClInclude Include="..\..\messages\messages.h" />
+    <ClInclude Include="..\..\messages\messages_fwd.h" />
+    <ClInclude Include="..\..\messages\message_fwd.h" />
+    <ClInclude Include="..\..\messages\out.h" />
+    <ClInclude Include="..\..\messages\out_fwd.h" />
+    <ClInclude Include="..\..\messages\pit.h" />
+    <ClInclude Include="..\..\messages\pit_fwd.h" />
+    <ClInclude Include="..\..\messages\sector.h" />
+    <ClInclude Include="..\..\messages\sector_fwd.h" />
+    <ClInclude Include="..\..\olcore_pch.h" />
+    <ClInclude Include="..\..\time\interval.h" />
+    <ClInclude Include="..\..\time\long_interval.h" />
+    <ClInclude Include="..\..\util\utilities.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D82ABAEC-3799-457E-89AC-EEC6151664C5}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -42,11 +101,13 @@
   <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_WIN32_WINNT=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>olcore_pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>E:\sw\lib\boost\boost_1_55_0;..\..</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -55,13 +116,15 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_WIN32_WINNT=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>olcore_pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>E:\sw\lib\boost\boost_1_55_0;..\..\</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -15,6 +15,8 @@
 
 // Implements the Interval class.
 
+#include "olcore_pch.h"
+
 #include "time/interval.h"
 
 #include <iomanip>
@@ -35,7 +37,7 @@ Interval::Interval(long val)
     str_{} {
 }
 
-Interval::Interval(const std::chrono::milliseconds& val)
+Interval::Interval(const boost::chrono::milliseconds& val)
   : milliseconds_(val),
     str_{} {
 }
@@ -45,8 +47,8 @@ Interval::~Interval() {
 
 const std::string Interval::str() const { return str_; }
 
-Interval::operator long() const { return milliseconds_.count(); }
-Interval::operator std::chrono::milliseconds() const { return milliseconds_; }
+Interval::operator long() const { return static_cast<long>(milliseconds_.count()); }
+Interval::operator boost::chrono::milliseconds() const { return milliseconds_; }
 
 const Interval& Interval::operator+=(const Interval& interval) {
   milliseconds_ += interval.milliseconds_;
@@ -65,34 +67,34 @@ std::istream& operator>>(std::istream& is, Interval& interval) {
   std::getline(is, str);
 
   interval.str_ = "";
-  interval.milliseconds_ = std::chrono::milliseconds();
+  interval.milliseconds_ = boost::chrono::milliseconds();
 
   boost::smatch m;
   if (boost::regex_search(str, m, boost::regex(R"((\d+):(\d+)[\.:](\d+))"))) {
     if (std::count(str.begin(), str.end(), ':') > 1) {
-      interval.milliseconds_ += std::chrono::hours(
+      interval.milliseconds_ += boost::chrono::hours(
           boost::lexical_cast<int>(m[1].str()));
 
-      interval.milliseconds_ += std::chrono::minutes(
+      interval.milliseconds_ += boost::chrono::minutes(
           boost::lexical_cast<int>(m[2].str()));
 
-      interval.milliseconds_ += std::chrono::seconds(
+      interval.milliseconds_ += boost::chrono::seconds(
           boost::lexical_cast<int>(m[3].str()));
     } else {
-      interval.milliseconds_ += std::chrono::minutes(
+      interval.milliseconds_ += boost::chrono::minutes(
           boost::lexical_cast<int>(m[1].str()));
 
-      interval.milliseconds_ += std::chrono::seconds(
+      interval.milliseconds_ += boost::chrono::seconds(
           boost::lexical_cast<int>(m[2].str()));
 
-      interval.milliseconds_ += std::chrono::milliseconds(
+      interval.milliseconds_ += boost::chrono::milliseconds(
           boost::lexical_cast<int>(m[3].str()));
     }
   } else if (boost::regex_search(str, m, boost::regex(R"((\d+)\.(\d+))"))) {
-    interval.milliseconds_ += std::chrono::seconds(
+    interval.milliseconds_ += boost::chrono::seconds(
         boost::lexical_cast<int>(m[1].str()));
 
-    interval.milliseconds_ += std::chrono::milliseconds(
+    interval.milliseconds_ += boost::chrono::milliseconds(
         boost::lexical_cast<int>(m[2].str()));
   } else {
     interval.str_ = str;  // 1 LAP, 2 LAPS etc.
@@ -107,12 +109,12 @@ std::ostream& operator<<(std::ostream& os, const Interval& interval) {
     return os;
   }
 
-  os << std::chrono::duration_cast<
-    std::chrono::seconds>(interval.milliseconds_).count();
+  os << boost::chrono::duration_cast<
+    boost::chrono::seconds>(interval.milliseconds_).count();
 
   os << "." << std::setw(3) << std::setfill('0')
-     << std::chrono::duration_cast<std::chrono::milliseconds>(
-      interval.milliseconds_ % std::chrono::seconds(1)).count();
+     << boost::chrono::duration_cast<boost::chrono::milliseconds>(
+      interval.milliseconds_ % boost::chrono::seconds(1)).count();
 
   return os;
 }

@@ -15,6 +15,8 @@
 
 // General utility functions.
 
+#include "olcore_pch.h"
+
 #include "util/utilities.h"
 #include "messages/competitor.h"
 

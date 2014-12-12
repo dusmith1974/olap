@@ -15,6 +15,8 @@
 
 // Implements the sector message.
 
+#include "olcore_pch.h"
+
 #include "messages/sector.h"
 
 namespace olap {

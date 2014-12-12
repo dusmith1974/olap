@@ -15,6 +15,8 @@
 
 // Implements the LongInterval class.
 
+#include "olcore_pch.h"
+
 #include "time/long_interval.h"
 
 #include <iomanip>
@@ -29,7 +31,7 @@ LongInterval::LongInterval(long val) : Interval(val) {
 }
 
 std::ostream& operator<<(std::ostream& os, const LongInterval& long_interval) {
-  std::chrono::hours hours = std::chrono::duration_cast<std::chrono::hours>(
+  boost::chrono::hours hours = boost::chrono::duration_cast<boost::chrono::hours>(
       long_interval.milliseconds_);
 
   if (hours.count()) {
@@ -37,18 +39,18 @@ std::ostream& operator<<(std::ostream& os, const LongInterval& long_interval) {
     os << std::setw(2) << std::setfill('0');
   }
 
-  os << std::chrono::duration_cast<
-    std::chrono::minutes>((hours.count())
-        ? long_interval.milliseconds_ % std::chrono::hours(1)
+  os << boost::chrono::duration_cast<
+    boost::chrono::minutes>((hours.count())
+        ? long_interval.milliseconds_ % boost::chrono::hours(1)
         : long_interval.milliseconds_).count();
 
   os << ":" << std::setw(2) << std::setfill('0')
-    << std::chrono::duration_cast<std::chrono::seconds>(
-      long_interval.milliseconds_ % std::chrono::minutes(1)).count();
+    << boost::chrono::duration_cast<boost::chrono::seconds>(
+      long_interval.milliseconds_ % boost::chrono::minutes(1)).count();
 
   os << "." << std::setw(3)
-    << std::chrono::duration_cast<std::chrono::milliseconds>(
-      long_interval.milliseconds_ % std::chrono::seconds(1)).count();
+    << boost::chrono::duration_cast<boost::chrono::milliseconds>(
+      long_interval.milliseconds_ % boost::chrono::seconds(1)).count();
 
   return os;
 }

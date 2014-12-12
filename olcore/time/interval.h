@@ -18,9 +18,10 @@
 #ifndef TIME_INTERVAL_H_
 #define TIME_INTERVAL_H_
 
-#include <chrono>
 #include <iosfwd>
 #include <string>
+
+#include "boost/chrono.hpp"
 
 namespace olap {
 
@@ -31,17 +32,17 @@ class Interval {
   virtual ~Interval();
 
   explicit Interval(long val);
-  explicit Interval(const std::chrono::milliseconds& val);
+  explicit Interval(const boost::chrono::milliseconds& val);
 
   const std::string str() const;
 
   operator long() const;
-  operator std::chrono::milliseconds() const;
+  operator boost::chrono::milliseconds() const;
 
   const Interval& operator+=(const Interval& interval);
 
  protected:
-  std::chrono::milliseconds milliseconds_;
+  boost::chrono::milliseconds milliseconds_;
   std::string str_;
 
  private:

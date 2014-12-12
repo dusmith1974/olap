@@ -17,12 +17,13 @@
 
 #include <iostream>
 #include <map>
+#include <numeric>
 #include <string>
 #include <thread>
 #include <vector>
-#include <numeric>
 
 #include "boost/asio.hpp"
+
 #include "boost/optional.hpp"
 #include "boost/range/adaptor/map.hpp"
 #include "boost/range/algorithm/copy.hpp"

@@ -15,6 +15,8 @@
 
 // Implements the Pit class.
 
+#include "olcore_pch.h"
+
 #include "messages/pit.h"
 
 #include "boost/lexical_cast.hpp"

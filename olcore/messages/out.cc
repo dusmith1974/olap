@@ -15,6 +15,8 @@
 
 // Implements the Out class.
 
+#include "olcore_pch.h"
+
 #include "messages/out.h"
 
 #include "boost/lexical_cast.hpp"

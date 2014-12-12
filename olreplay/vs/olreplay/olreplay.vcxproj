@@ -121,6 +121,9 @@
     <ProjectReference Include="..\..\..\..\osoa\vs\osoa\osoa.vcxproj">
       <Project>{1a384013-e7f9-4f01-9469-d1b3eea07646}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\olcore\vs\olcore\olcore.vcxproj">
+      <Project>{d82abaec-3799-457e-89ac-eec6151664c5}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

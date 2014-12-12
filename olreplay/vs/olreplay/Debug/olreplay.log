@@ -1,8 +1,5 @@
-﻿Build started 11/12/2014 12:44:37.
+﻿Build started 12/12/2014 12:45:52.
 Project "E:\sw\workspaces\olap\olreplay\vs\olreplay\olreplay.vcxproj" on node 2 (Build target(s)).
-ClCompile:
-  C:\Program Files\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IE:\sw\lib\boost\boost_1_55_0 /I..\.. /I..\..\.. /I..\..\..\.. /I..\..\..\olcore /I..\..\..\..\osoa /ZI /nologo /W4 /WX /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _WIN32_WINNT=0x0501 /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt /wd4512 /wd4996 /wd4100 /wd4714 ..\..\replay\replay.cc
-  replay.cc
 Link:
   C:\Program Files\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\sw\workspaces\olap\olreplay\vs\olreplay\Debug\olreplay.exe" /INCREMENTAL /NOLOGO /LIBPATH:c:\sw\lib\boost\boost_1_55_0\stage\lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:\sw\workspaces\olap\olreplay\vs\olreplay\Debug\olreplay.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\sw\workspaces\olap\olreplay\vs\olreplay\Debug\olreplay.lib" /MACHINE:X86 Debug\main.obj
   Debug\olreplay_pch.obj
@@ -12,195 +9,135 @@ Link:
   Debug\read_pits.obj
   Debug\replay.obj
   E:\sw\workspaces\olap\olreplay\vs\olreplay\Debug\osoa.lib
-read_pits.obj : error LNK2001: unresolved external symbol "public: virtual __thiscall olap::Interval::~Interval(void)" (??1Interval@olap@@UAE@XZ)
-main.obj : error LNK2001: unresolved external symbol "public: virtual __thiscall olap::Interval::~Interval(void)" (??1Interval@olap@@UAE@XZ)
-read_competitors.obj : error LNK2001: unresolved external symbol "public: virtual __thiscall olap::Interval::~Interval(void)" (??1Interval@olap@@UAE@XZ)
-read_lap_analysis.obj : error LNK2001: unresolved external symbol "public: virtual __thiscall olap::Interval::~Interval(void)" (??1Interval@olap@@UAE@XZ)
-read_lap_history.obj : error LNK2001: unresolved external symbol "public: virtual __thiscall olap::Interval::~Interval(void)" (??1Interval@olap@@UAE@XZ)
-main.obj : error LNK2019: unresolved external symbol "public: __thiscall olap::Interval::Interval(long)" (??0Interval@olap@@QAE@J@Z) referenced in function "public: class olap::Lap __thiscall <lambda_800137e93474cb4087aa3d6e26017e39>::operator()(class olap::Lap &,class olap::Lap &)const " (??R<lambda_800137e93474cb4087aa3d6e26017e39>@@QBE?AVLap@olap@@AAV12@0@Z)
-read_pits.obj : error LNK2001: unresolved external symbol "public: __thiscall olap::Interval::Interval(long)" (??0Interval@olap@@QAE@J@Z)
-main.obj : error LNK2019: unresolved external symbol "public: __thiscall olap::Interval::operator long(void)const " (??BInterval@olap@@QBEJXZ) referenced in function "public: void __thiscall <lambda_6a2c8b4990536adfa85f7504ff544b71>::operator()(class olap::Lap &)const " (??R<lambda_6a2c8b4990536adfa85f7504ff544b71>@@QBEXAAVLap@olap@@@Z)
-read_lap_analysis.obj : error LNK2001: unresolved external symbol "public: __thiscall olap::Interval::operator long(void)const " (??BInterval@olap@@QBEJXZ)
-read_pits.obj : error LNK2001: unresolved external symbol "public: __thiscall olap::Interval::operator long(void)const " (??BInterval@olap@@QBEJXZ)
-main.obj : error LNK2019: unresolved external symbol "public: __thiscall olap::LongInterval::LongInterval(long)" (??0LongInterval@olap@@QAE@J@Z) referenced in function "public: void __thiscall <lambda_6a2c8b4990536adfa85f7504ff544b71>::operator()(class olap::Lap &)const " (??R<lambda_6a2c8b4990536adfa85f7504ff544b71>@@QBEXAAVLap@olap@@@Z)
-read_lap_analysis.obj : error LNK2001: unresolved external symbol "public: __thiscall olap::LongInterval::LongInterval(long)" (??0LongInterval@olap@@QAE@J@Z)
-read_pits.obj : error LNK2001: unresolved external symbol "public: __thiscall olap::LongInterval::LongInterval(long)" (??0LongInterval@olap@@QAE@J@Z)
-read_pits.obj : error LNK2001: unresolved external symbol "public: virtual __thiscall olap::Message::~Message(void)" (??1Message@olap@@UAE@XZ)
-main.obj : error LNK2001: unresolved external symbol "public: virtual __thiscall olap::Message::~Message(void)" (??1Message@olap@@UAE@XZ)
-read_competitors.obj : error LNK2001: unresolved external symbol "public: virtual __thiscall olap::Message::~Message(void)" (??1Message@olap@@UAE@XZ)
-read_lap_analysis.obj : error LNK2001: unresolved external symbol "public: virtual __thiscall olap::Message::~Message(void)" (??1Message@olap@@UAE@XZ)
-read_lap_history.obj : error LNK2001: unresolved external symbol "public: virtual __thiscall olap::Message::~Message(void)" (??1Message@olap@@UAE@XZ)
-main.obj : error LNK2019: unresolved external symbol "public: void __thiscall olap::Message::set_timer(class boost::asio::io_service *)" (?set_timer@Message@olap@@QAEXPAVio_service@asio@boost@@@Z) referenced in function "int __cdecl olap::run(void)" (?run@olap@@YAHXZ)
-main.obj : error LNK2019: unresolved external symbol "public: void __thiscall olap::Message::start_timer(class std::function<void __cdecl(class boost::system::error_code const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)>)" (?start_timer@Message@olap@@QAEXV?$function@$$A6AXABVerror_code@system@boost@@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z@std@@@Z) referenced in function "int __cdecl olap::run(void)" (?run@olap@@YAHXZ)
-main.obj : error LNK2019: unresolved external symbol "public: static class olap::LongInterval __cdecl olap::Message::race_start_time(void)" (?race_start_time@Message@olap@@SA?AVLongInterval@2@XZ) referenced in function "public: void __thiscall <lambda_6a2c8b4990536adfa85f7504ff544b71>::operator()(class olap::Lap &)const " (??R<lambda_6a2c8b4990536adfa85f7504ff544b71>@@QBEXAAVLap@olap@@@Z)
-main.obj : error LNK2019: unresolved external symbol "public: static void __cdecl olap::Message::set_race_start_time(class olap::LongInterval const &)" (?set_race_start_time@Message@olap@@SAXABVLongInterval@2@@Z) referenced in function "int __cdecl olap::run(void)" (?run@olap@@YAHXZ)
-main.obj : error LNK2019: unresolved external symbol "public: class olap::LongInterval __thiscall olap::Message::time_of_day(void)const " (?time_of_day@Message@olap@@QBE?AVLongInterval@2@XZ) referenced in function "public: void __thiscall <lambda_6a2c8b4990536adfa85f7504ff544b71>::operator()(class olap::Lap &)const " (??R<lambda_6a2c8b4990536adfa85f7504ff544b71>@@QBEXAAVLap@olap@@@Z)
-read_pits.obj : error LNK2001: unresolved external symbol "public: class olap::LongInterval __thiscall olap::Message::time_of_day(void)const " (?time_of_day@Message@olap@@QBE?AVLongInterval@2@XZ)
-main.obj : error LNK2019: unresolved external symbol "public: void __thiscall olap::Message::set_time_of_day(class olap::LongInterval const &)" (?set_time_of_day@Message@olap@@QAEXABVLongInterval@2@@Z) referenced in function "public: void __thiscall <lambda_6a2c8b4990536adfa85f7504ff544b71>::operator()(class olap::Lap &)const " (??R<lambda_6a2c8b4990536adfa85f7504ff544b71>@@QBEXAAVLap@olap@@@Z)
-main.obj : error LNK2019: unresolved external symbol "public: class olap::Interval __thiscall olap::Message::race_time(void)const " (?race_time@Message@olap@@QBE?AVInterval@2@XZ) referenced in function "public: class olap::Lap __thiscall <lambda_800137e93474cb4087aa3d6e26017e39>::operator()(class olap::Lap &,class olap::Lap &)const " (??R<lambda_800137e93474cb4087aa3d6e26017e39>@@QBE?AVLap@olap@@AAV12@0@Z)
-read_pits.obj : error LNK2001: unresolved external symbol "public: class olap::Interval __thiscall olap::Message::race_time(void)const " (?race_time@Message@olap@@QBE?AVInterval@2@XZ)
-main.obj : error LNK2019: unresolved external symbol "public: void __thiscall olap::Message::set_race_time(class olap::Interval const &)" (?set_race_time@Message@olap@@QAEXABVInterval@2@@Z) referenced in function "public: class olap::Lap __thiscall <lambda_800137e93474cb4087aa3d6e26017e39>::operator()(class olap::Lap &,class olap::Lap &)const " (??R<lambda_800137e93474cb4087aa3d6e26017e39>@@QBE?AVLap@olap@@AAV12@0@Z)
-read_lap_history.obj : error LNK2001: unresolved external symbol "public: void __thiscall olap::Message::set_race_time(class olap::Interval const &)" (?set_race_time@Message@olap@@QAEXABVInterval@2@@Z)
-read_pits.obj : error LNK2001: unresolved external symbol "public: void __thiscall olap::Message::set_race_time(class olap::Interval const &)" (?set_race_time@Message@olap@@QAEXABVInterval@2@@Z)
-main.obj : error LNK2019: unresolved external symbol "public: __thiscall olap::Lap::Lap(void)" (??0Lap@olap@@QAE@XZ) referenced in function "int __cdecl olap::run(void)" (?run@olap@@YAHXZ)
-read_lap_analysis.obj : error LNK2001: unresolved external symbol "public: __thiscall olap::Lap::Lap(void)" (??0Lap@olap@@QAE@XZ)
-read_lap_history.obj : error LNK2001: unresolved external symbol "public: __thiscall olap::Lap::Lap(void)" (??0Lap@olap@@QAE@XZ)
-main.obj : error LNK2019: unresolved external symbol "public: virtual __thiscall olap::Lap::~Lap(void)" (??1Lap@olap@@UAE@XZ) referenced in function "class olap::Lap * __cdecl std::_Partial_sum<class olap::Lap *,class olap::Lap *,class <lambda_800137e93474cb4087aa3d6e26017e39>,class olap::Lap>(class olap::Lap *,class olap::Lap *,class olap::Lap *,class <lambda_800137e93474cb4087aa3d6e26017e39>,class olap::Lap *)" (??$_Partial_sum@PAVLap@olap@@PAV12@V<lambda_800137e93474cb4087aa3d6e26017e39>@@V12@@std@@YAPAVLap@olap@@PAV12@00V<lambda_800137e93474cb4087aa3d6e26017e39>@@0@Z)
-read_lap_analysis.obj : error LNK2001: unresolved external symbol "public: virtual __thiscall olap::Lap::~Lap(void)" (??1Lap@olap@@UAE@XZ)
-read_lap_history.obj : error LNK2001: unresolved external symbol "public: virtual __thiscall olap::Lap::~Lap(void)" (??1Lap@olap@@UAE@XZ)
-main.obj : error LNK2001: unresolved external symbol "public: virtual class olap::Message * __thiscall olap::Lap::Clone(void)const " (?Clone@Lap@olap@@UBEPAVMessage@2@XZ)
-read_lap_analysis.obj : error LNK2001: unresolved external symbol "public: virtual class olap::Message * __thiscall olap::Lap::Clone(void)const " (?Clone@Lap@olap@@UBEPAVMessage@2@XZ)
-read_lap_history.obj : error LNK2001: unresolved external symbol "public: virtual class olap::Message * __thiscall olap::Lap::Clone(void)const " (?Clone@Lap@olap@@UBEPAVMessage@2@XZ)
-main.obj : error LNK2019: unresolved external symbol "public: __thiscall olap::Lap::operator class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >(void)const " (??BLap@olap@@QBE?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ) referenced in function "class std::back_insert_iterator<class std::vector<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,class std::allocator<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > > > __cdecl std::_Copy_impl<class olap::Lap const *,class std::back_insert_iterator<class std::vector<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,class std::allocator<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > > > >(class olap::Lap const *,class olap::Lap const *,class std::back_insert_iterator<class std::vector<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,class std::allocator<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > > >,struct std::_Nonscalar_ptr_iterator_tag)" (??$_Copy_impl@PBVLap@olap@@V?$back_insert_iterator@V?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@@std@@@std@@YA?AV?$back_insert_iterator@V?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@@0@PBVLap@olap@@0V10@U_Nonscalar_ptr_iterator_tag@0@@Z)
-main.obj : error LNK2019: unresolved external symbol "public: int __thiscall olap::Lap::num(void)const " (?num@Lap@olap@@QBEHXZ) referenced in function "int __cdecl olap::run(void)" (?run@olap@@YAHXZ)
-read_lap_analysis.obj : error LNK2001: unresolved external symbol "public: int __thiscall olap::Lap::num(void)const " (?num@Lap@olap@@QBEHXZ)
-read_lap_history.obj : error LNK2001: unresolved external symbol "public: int __thiscall olap::Lap::num(void)const " (?num@Lap@olap@@QBEHXZ)
-main.obj : error LNK2019: unresolved external symbol "public: class olap::Interval __thiscall olap::Lap::gap(void)const " (?gap@Lap@olap@@QBE?AVInterval@2@XZ) referenced in function "public: class olap::Lap __thiscall <lambda_527be23277ffe342a8e8ec185e7d13d7>::operator()(class olap::Lap &,class olap::Lap const &)const " (??R<lambda_527be23277ffe342a8e8ec185e7d13d7>@@QBE?AVLap@olap@@AAV12@ABV12@@Z)
-read_lap_history.obj : error LNK2001: unresolved external symbol "public: class olap::Interval __thiscall olap::Lap::gap(void)const " (?gap@Lap@olap@@QBE?AVInterval@2@XZ)
-main.obj : error LNK2019: unresolved external symbol "public: void __thiscall olap::Lap::set_gap(class olap::Interval)" (?set_gap@Lap@olap@@QAEXVInterval@2@@Z) referenced in function "public: class olap::Lap __thiscall <lambda_527be23277ffe342a8e8ec185e7d13d7>::operator()(class olap::Lap &,class olap::Lap const &)const " (??R<lambda_527be23277ffe342a8e8ec185e7d13d7>@@QBE?AVLap@olap@@AAV12@ABV12@@Z)
-main.obj : error LNK2019: unresolved external symbol "public: int __thiscall olap::Lap::competitor_num(void)const " (?competitor_num@Lap@olap@@QBEHXZ) referenced in function "int __cdecl olap::run(void)" (?run@olap@@YAHXZ)
-read_lap_analysis.obj : error LNK2001: unresolved external symbol "public: int __thiscall olap::Lap::competitor_num(void)const " (?competitor_num@Lap@olap@@QBEHXZ)
-read_lap_history.obj : error LNK2001: unresolved external symbol "public: int __thiscall olap::Lap::competitor_num(void)const " (?competitor_num@Lap@olap@@QBEHXZ)
-main.obj : error LNK2019: unresolved external symbol "public: class olap::LongInterval __thiscall olap::Lap::time(void)const " (?time@Lap@olap@@QBE?AVLongInterval@2@XZ) referenced in function "public: class olap::Lap __thiscall <lambda_800137e93474cb4087aa3d6e26017e39>::operator()(class olap::Lap &,class olap::Lap &)const " (??R<lambda_800137e93474cb4087aa3d6e26017e39>@@QBE?AVLap@olap@@AAV12@0@Z)
-read_lap_analysis.obj : error LNK2001: unresolved external symbol "public: class olap::LongInterval __thiscall olap::Lap::time(void)const " (?time@Lap@olap@@QBE?AVLongInterval@2@XZ)
-read_lap_history.obj : error LNK2001: unresolved external symbol "public: class olap::LongInterval __thiscall olap::Lap::time(void)const " (?time@Lap@olap@@QBE?AVLongInterval@2@XZ)
-main.obj : error LNK2001: unresolved external symbol "private: virtual void __thiscall olap::Lap::Print(class std::basic_ostream<char,struct std::char_traits<char> > &)const " (?Print@Lap@olap@@EBEXAAV?$basic_ostream@DU?$char_traits@D@std@@@std@@@Z)
-read_lap_analysis.obj : error LNK2001: unresolved external symbol "private: virtual void __thiscall olap::Lap::Print(class std::basic_ostream<char,struct std::char_traits<char> > &)const " (?Print@Lap@olap@@EBEXAAV?$basic_ostream@DU?$char_traits@D@std@@@std@@@Z)
-read_lap_history.obj : error LNK2001: unresolved external symbol "private: virtual void __thiscall olap::Lap::Print(class std::basic_ostream<char,struct std::char_traits<char> > &)const " (?Print@Lap@olap@@EBEXAAV?$basic_ostream@DU?$char_traits@D@std@@@std@@@Z)
-main.obj : error LNK2019: unresolved external symbol "public: virtual __thiscall olap::Pit::~Pit(void)" (??1Pit@olap@@UAE@XZ) referenced in function "public: virtual void * __thiscall olap::Pit::`scalar deleting destructor'(unsigned int)" (??_GPit@olap@@UAEPAXI@Z)
-read_pits.obj : error LNK2001: unresolved external symbol "public: virtual __thiscall olap::Pit::~Pit(void)" (??1Pit@olap@@UAE@XZ)
-main.obj : error LNK2001: unresolved external symbol "public: virtual class olap::Message * __thiscall olap::Pit::Clone(void)const " (?Clone@Pit@olap@@UBEPAVMessage@2@XZ)
-read_pits.obj : error LNK2001: unresolved external symbol "public: virtual class olap::Message * __thiscall olap::Pit::Clone(void)const " (?Clone@Pit@olap@@UBEPAVMessage@2@XZ)
-main.obj : error LNK2001: unresolved external symbol "private: virtual void __thiscall olap::Pit::Print(class std::basic_ostream<char,struct std::char_traits<char> > &)const " (?Print@Pit@olap@@EBEXAAV?$basic_ostream@DU?$char_traits@D@std@@@std@@@Z)
-read_pits.obj : error LNK2001: unresolved external symbol "private: virtual void __thiscall olap::Pit::Print(class std::basic_ostream<char,struct std::char_traits<char> > &)const " (?Print@Pit@olap@@EBEXAAV?$basic_ostream@DU?$char_traits@D@std@@@std@@@Z)
-main.obj : error LNK2019: unresolved external symbol "public: virtual __thiscall olap::Out::~Out(void)" (??1Out@olap@@UAE@XZ) referenced in function "public: virtual void * __thiscall olap::Out::`scalar deleting destructor'(unsigned int)" (??_GOut@olap@@UAEPAXI@Z)
-read_pits.obj : error LNK2001: unresolved external symbol "public: virtual __thiscall olap::Out::~Out(void)" (??1Out@olap@@UAE@XZ)
-main.obj : error LNK2001: unresolved external symbol "public: virtual class olap::Message * __thiscall olap::Out::Clone(void)const " (?Clone@Out@olap@@UBEPAVMessage@2@XZ)
-read_pits.obj : error LNK2001: unresolved external symbol "public: virtual class olap::Message * __thiscall olap::Out::Clone(void)const " (?Clone@Out@olap@@UBEPAVMessage@2@XZ)
-main.obj : error LNK2001: unresolved external symbol "private: virtual void __thiscall olap::Out::Print(class std::basic_ostream<char,struct std::char_traits<char> > &)const " (?Print@Out@olap@@EBEXAAV?$basic_ostream@DU?$char_traits@D@std@@@std@@@Z)
-read_pits.obj : error LNK2001: unresolved external symbol "private: virtual void __thiscall olap::Out::Print(class std::basic_ostream<char,struct std::char_traits<char> > &)const " (?Print@Out@olap@@EBEXAAV?$basic_ostream@DU?$char_traits@D@std@@@std@@@Z)
-main.obj : error LNK2019: unresolved external symbol "public: __thiscall olap::Sector::Sector(int,int,int,long)" (??0Sector@olap@@QAE@HHHJ@Z) referenced in function "int __cdecl olap::run(void)" (?run@olap@@YAHXZ)
-main.obj : error LNK2019: unresolved external symbol "public: virtual __thiscall olap::Sector::~Sector(void)" (??1Sector@olap@@UAE@XZ) referenced in function "public: virtual void * __thiscall olap::Sector::`scalar deleting destructor'(unsigned int)" (??_GSector@olap@@UAEPAXI@Z)
-main.obj : error LNK2001: unresolved external symbol "public: virtual class olap::Message * __thiscall olap::Sector::Clone(void)const " (?Clone@Sector@olap@@UBEPAVMessage@2@XZ)
-main.obj : error LNK2019: unresolved external symbol "public: __thiscall olap::Sector::operator class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >(void)const " (??BSector@olap@@QBE?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ) referenced in function "class std::back_insert_iterator<class std::vector<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,class std::allocator<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > > > __cdecl std::_Copy_impl<class olap::Sector const *,class std::back_insert_iterator<class std::vector<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,class std::allocator<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > > > >(class olap::Sector const *,class olap::Sector const *,class std::back_insert_iterator<class std::vector<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,class std::allocator<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > > >,struct std::_Nonscalar_ptr_iterator_tag)" (??$_Copy_impl@PBVSector@olap@@V?$back_insert_iterator@V?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@@std@@@std@@YA?AV?$back_insert_iterator@V?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@@0@PBVSector@olap@@0V10@U_Nonscalar_ptr_iterator_tag@0@@Z)
-main.obj : error LNK2019: unresolved external symbol "public: class olap::Interval __thiscall olap::Sector::time(void)const " (?time@Sector@olap@@QBE?AVInterval@2@XZ) referenced in function "int __cdecl olap::run(void)" (?run@olap@@YAHXZ)
-main.obj : error LNK2001: unresolved external symbol "private: virtual void __thiscall olap::Sector::Print(class std::basic_ostream<char,struct std::char_traits<char> > &)const " (?Print@Sector@olap@@EBEXAAV?$basic_ostream@DU?$char_traits@D@std@@@std@@@Z)
-main.obj : error LNK2019: unresolved external symbol "public: __thiscall olap::Competitor::Competitor(void)" (??0Competitor@olap@@QAE@XZ) referenced in function "public: __thiscall std::pair<int const ,class olap::Competitor>::pair<int const ,class olap::Competitor><class std::tuple<int &&>,class std::tuple<>,0>(class std::tuple<int &&> &,class std::tuple<> &,struct std::_Arg_idx<0>,struct std::_Arg_idx<>)" (??$?0V?$tuple@$$QAH@std@@V?$tuple@$$$V@1@$0A@$S@?$pair@$$CBHVCompetitor@olap@@@std@@QAE@AAV?$tuple@$$QAH@1@AAV?$tuple@$$$V@1@U?$_Arg_idx@$0A@@1@U?$_Arg_idx@$S@1@@Z)
-read_competitors.obj : error LNK2001: unresolved external symbol "public: __thiscall olap::Competitor::Competitor(void)" (??0Competitor@olap@@QAE@XZ)
-main.obj : error LNK2019: unresolved external symbol "public: __thiscall olap::Competitor::operator class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >(void)const " (??BCompetitor@olap@@QBE?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ) referenced in function "class std::back_insert_iterator<class std::vector<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,class std::allocator<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > > > __cdecl std::_Copy_impl<class boost::transform_iterator<struct boost::range_detail::select_second_mutable<class std::map<int,class olap::Competitor,struct std::less<int>,class std::allocator<struct std::pair<int const ,class olap::Competitor> > > >,class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const ,class olap::Competitor> > > >,struct boost::use_default,struct boost::use_default>,class std::back_insert_iterator<class std::vector<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,class std::allocator<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > > > >(class boost::transform_iterator<struct boost::range_detail::select_second_mutable<class std::map<int,class olap::Competitor,struct std::less<int>,class std::allocator<struct std::pair<int const ,class olap::Competitor> > > >,class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const ,class olap::Competitor> > > >,struct boost::use_default,struct boost::use_default>,class boost::transform_iterator<struct boost::range_detail::select_second_mutable<class std::map<int,class olap::Competitor,struct std::less<int>,class std::allocator<struct std::pair<int const ,class olap::Competitor> > > >,class std::_Tree_iterator<class std::_Tree_val<struct std::_Tree_simple_types<struct std::pair<int const ,class olap::Competitor> > > >,struct boost::use_default,struct boost::use_default>,class std::back_insert_iterator<class std::vector<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,class std::allocator<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > > >,struct std::_Nonscalar_ptr_iterator_tag)" (??$_Copy_impl@V?$transform_iterator@U?$select_second_mutable@V?$map@HVCompetitor@olap@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVCompetitor@olap@@@std@@@4@@std@@@range_detail@boost@@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVCompetitor@olap@@@std@@@std@@@std@@@std@@Uuse_default@3@U63@@boost@@V?$back_insert_iterator@V?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@@std@@@std@@YA?AV?$back_insert_iterator@V?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@@0@V?$transform_iterator@U?$select_second_mutable@V?$map@HVCompetitor@olap@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVCompetitor@olap@@@std@@@4@@std@@@range_detail@boost@@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHVCompetitor@olap@@@std@@@std@@@std@@@std@@Uuse_default@3@U63@@boost@@0V10@U_Nonscalar_ptr_iterator_tag@0@@Z)
-main.obj : error LNK2019: unresolved external symbol "public: class boost::multiprecision::number<class boost::multiprecision::backends::cpp_dec_float<3,int,void>,1> __thiscall olap::Competitor::sector_1_percent(void)const " (?sector_1_percent@Competitor@olap@@QBE?AV?$number@V?$cpp_dec_float@$02HX@backends@multiprecision@boost@@$00@multiprecision@boost@@XZ) referenced in function "int __cdecl olap::run(void)" (?run@olap@@YAHXZ)
-main.obj : error LNK2019: unresolved external symbol "public: class boost::multiprecision::number<class boost::multiprecision::backends::cpp_dec_float<3,int,void>,1> __thiscall olap::Competitor::sector_2_percent(void)const " (?sector_2_percent@Competitor@olap@@QBE?AV?$number@V?$cpp_dec_float@$02HX@backends@multiprecision@boost@@$00@multiprecision@boost@@XZ) referenced in function "int __cdecl olap::run(void)" (?run@olap@@YAHXZ)
-main.obj : error LNK2019: unresolved external symbol "public: class boost::multiprecision::number<class boost::multiprecision::backends::cpp_dec_float<3,int,void>,1> __thiscall olap::Competitor::sector_3_percent(void)const " (?sector_3_percent@Competitor@olap@@QBE?AV?$number@V?$cpp_dec_float@$02HX@backends@multiprecision@boost@@$00@multiprecision@boost@@XZ) referenced in function "int __cdecl olap::run(void)" (?run@olap@@YAHXZ)
-read_competitors.obj : error LNK2001: unresolved external symbol "public: virtual class olap::Message * __thiscall olap::Competitor::Clone(void)const " (?Clone@Competitor@olap@@UBEPAVMessage@2@XZ)
-read_competitors.obj : error LNK2019: unresolved external symbol "public: void __thiscall olap::Competitor::set_grid_pos(int)" (?set_grid_pos@Competitor@olap@@QAEXH@Z) referenced in function "void __cdecl olap::ReadCompetitors(class std::map<int,class olap::Competitor,struct std::less<int>,class std::allocator<struct std::pair<int const ,class olap::Competitor> > > *)" (?ReadCompetitors@olap@@YAXPAV?$map@HVCompetitor@olap@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVCompetitor@olap@@@std@@@4@@std@@@Z)
-read_competitors.obj : error LNK2019: unresolved external symbol "public: int __thiscall olap::Competitor::num(void)const " (?num@Competitor@olap@@QBEHXZ) referenced in function "void __cdecl olap::ReadCompetitors(class std::map<int,class olap::Competitor,struct std::less<int>,class std::allocator<struct std::pair<int const ,class olap::Competitor> > > *)" (?ReadCompetitors@olap@@YAXPAV?$map@HVCompetitor@olap@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVCompetitor@olap@@@std@@@4@@std@@@Z)
-read_competitors.obj : error LNK2019: unresolved external symbol "public: void __thiscall olap::Competitor::set_sector_1_percent(class boost::multiprecision::number<class boost::multiprecision::backends::cpp_dec_float<3,int,void>,1>)" (?set_sector_1_percent@Competitor@olap@@QAEXV?$number@V?$cpp_dec_float@$02HX@backends@multiprecision@boost@@$00@multiprecision@boost@@@Z) referenced in function "void __cdecl olap::ReadBestSectors(class std::map<int,class olap::Competitor,struct std::less<int>,class std::allocator<struct std::pair<int const ,class olap::Competitor> > > *)" (?ReadBestSectors@olap@@YAXPAV?$map@HVCompetitor@olap@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVCompetitor@olap@@@std@@@4@@std@@@Z)
-read_competitors.obj : error LNK2019: unresolved external symbol "public: void __thiscall olap::Competitor::set_sector_2_percent(class boost::multiprecision::number<class boost::multiprecision::backends::cpp_dec_float<3,int,void>,1>)" (?set_sector_2_percent@Competitor@olap@@QAEXV?$number@V?$cpp_dec_float@$02HX@backends@multiprecision@boost@@$00@multiprecision@boost@@@Z) referenced in function "void __cdecl olap::ReadBestSectors(class std::map<int,class olap::Competitor,struct std::less<int>,class std::allocator<struct std::pair<int const ,class olap::Competitor> > > *)" (?ReadBestSectors@olap@@YAXPAV?$map@HVCompetitor@olap@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVCompetitor@olap@@@std@@@4@@std@@@Z)
-read_competitors.obj : error LNK2019: unresolved external symbol "public: void __thiscall olap::Competitor::set_sector_3_percent(class boost::multiprecision::number<class boost::multiprecision::backends::cpp_dec_float<3,int,void>,1>)" (?set_sector_3_percent@Competitor@olap@@QAEXV?$number@V?$cpp_dec_float@$02HX@backends@multiprecision@boost@@$00@multiprecision@boost@@@Z) referenced in function "void __cdecl olap::ReadBestSectors(class std::map<int,class olap::Competitor,struct std::less<int>,class std::allocator<struct std::pair<int const ,class olap::Competitor> > > *)" (?ReadBestSectors@olap@@YAXPAV?$map@HVCompetitor@olap@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHVCompetitor@olap@@@std@@@4@@std@@@Z)
-read_competitors.obj : error LNK2019: unresolved external symbol "class std::basic_istream<char,struct std::char_traits<char> > & __cdecl olap::operator>>(class std::basic_istream<char,struct std::char_traits<char> > &,class olap::Competitor &)" (??5olap@@YAAAV?$basic_istream@DU?$char_traits@D@std@@@std@@AAV12@AAVCompetitor@0@@Z) referenced in function "private: bool __thiscall boost::detail::lexical_stream_limited_src<char,struct std::char_traits<char>,0>::shr_using_base_class<class olap::Competitor>(class olap::Competitor &)" (??$shr_using_base_class@VCompetitor@olap@@@?$lexical_stream_limited_src@DU?$char_traits@D@std@@$0A@@detail@boost@@AAE_NAAVCompetitor@olap@@@Z)
-read_competitors.obj : error LNK2001: unresolved external symbol "private: virtual void __thiscall olap::Competitor::Print(class std::basic_ostream<char,struct std::char_traits<char> > &)const " (?Print@Competitor@olap@@EBEXAAV?$basic_ostream@DU?$char_traits@D@std@@@std@@@Z)
-read_lap_analysis.obj : error LNK2019: unresolved external symbol "public: __thiscall olap::LongInterval::LongInterval(void)" (??0LongInterval@olap@@QAE@XZ) referenced in function "class olap::LongInterval __cdecl olap::ReadLapAnalysis(class olap::Lap const &,class std::map<int,class std::vector<class olap::Lap,class std::allocator<class olap::Lap> >,struct std::less<int>,class std::allocator<struct std::pair<int const ,class std::vector<class olap::Lap,class std::allocator<class olap::Lap> > > > > *)" (?ReadLapAnalysis@olap@@YA?AVLongInterval@1@ABVLap@1@PAV?$map@HV?$vector@VLap@olap@@V?$allocator@VLap@olap@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@VLap@olap@@V?$allocator@VLap@olap@@@std@@@std@@@std@@@2@@std@@@Z)
-read_lap_analysis.obj : error LNK2019: unresolved external symbol "class std::basic_istream<char,struct std::char_traits<char> > & __cdecl olap::operator>>(class std::basic_istream<char,struct std::char_traits<char> > &,class olap::Lap &)" (??5olap@@YAAAV?$basic_istream@DU?$char_traits@D@std@@@std@@AAV12@AAVLap@0@@Z) referenced in function "private: bool __thiscall boost::detail::lexical_stream_limited_src<char,struct std::char_traits<char>,0>::shr_using_base_class<class olap::Lap>(class olap::Lap &)" (??$shr_using_base_class@VLap@olap@@@?$lexical_stream_limited_src@DU?$char_traits@D@std@@$0A@@detail@boost@@AAE_NAAVLap@olap@@@Z)
-read_lap_history.obj : error LNK2001: unresolved external symbol "class std::basic_istream<char,struct std::char_traits<char> > & __cdecl olap::operator>>(class std::basic_istream<char,struct std::char_traits<char> > &,class olap::Lap &)" (??5olap@@YAAAV?$basic_istream@DU?$char_traits@D@std@@@std@@AAV12@AAVLap@0@@Z)
-read_lap_history.obj : error LNK2019: unresolved external symbol "public: class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const __thiscall olap::Interval::str(void)const " (?str@Interval@olap@@QBE?BV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ) referenced in function "void __cdecl olap::ReadLapHistory(class std::map<int,class std::vector<class olap::Lap,class std::allocator<class olap::Lap> >,struct std::less<int>,class std::allocator<struct std::pair<int const ,class std::vector<class olap::Lap,class std::allocator<class olap::Lap> > > > > *,class olap::Lap *)" (?ReadLapHistory@olap@@YAXPAV?$map@HV?$vector@VLap@olap@@V?$allocator@VLap@olap@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@VLap@olap@@V?$allocator@VLap@olap@@@std@@@std@@@std@@@2@@std@@PAVLap@1@@Z)
-read_lap_history.obj : error LNK2019: unresolved external symbol "public: void __thiscall olap::Lap::set_num(int)" (?set_num@Lap@olap@@QAEXH@Z) referenced in function "void __cdecl olap::ReadLapHistory(class std::map<int,class std::vector<class olap::Lap,class std::allocator<class olap::Lap> >,struct std::less<int>,class std::allocator<struct std::pair<int const ,class std::vector<class olap::Lap,class std::allocator<class olap::Lap> > > > > *,class olap::Lap *)" (?ReadLapHistory@olap@@YAXPAV?$map@HV?$vector@VLap@olap@@V?$allocator@VLap@olap@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$vector@VLap@olap@@V?$allocator@VLap@olap@@@std@@@std@@@std@@@2@@std@@PAVLap@1@@Z)
-read_pits.obj : error LNK2019: unresolved external symbol "public: __thiscall olap::Pit::Pit(void)" (??0Pit@olap@@QAE@XZ) referenced in function "public: static class olap::Pit __cdecl boost::detail::lexical_cast_do_cast<class olap::Pit,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > >::lexical_cast_impl(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (?lexical_cast_impl@?$lexical_cast_do_cast@VPit@olap@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@detail@boost@@SA?AVPit@olap@@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
-read_pits.obj : error LNK2019: unresolved external symbol "class std::basic_istream<char,struct std::char_traits<char> > & __cdecl olap::operator>>(class std::basic_istream<char,struct std::char_traits<char> > &,class olap::Pit &)" (??5olap@@YAAAV?$basic_istream@DU?$char_traits@D@std@@@std@@AAV12@AAVPit@0@@Z) referenced in function "private: bool __thiscall boost::detail::lexical_stream_limited_src<char,struct std::char_traits<char>,0>::shr_using_base_class<class olap::Pit>(class olap::Pit &)" (??$shr_using_base_class@VPit@olap@@@?$lexical_stream_limited_src@DU?$char_traits@D@std@@$0A@@detail@boost@@AAE_NAAVPit@olap@@@Z)
-read_pits.obj : error LNK2019: unresolved external symbol "public: __thiscall olap::Out::Out(void)" (??0Out@olap@@QAE@XZ) referenced in function "public: static class olap::Out __cdecl boost::detail::lexical_cast_do_cast<class olap::Out,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > >::lexical_cast_impl(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (?lexical_cast_impl@?$lexical_cast_do_cast@VOut@olap@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@detail@boost@@SA?AVOut@olap@@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
-read_pits.obj : error LNK2019: unresolved external symbol "public: class olap::Interval __thiscall olap::Out::time(void)const " (?time@Out@olap@@QBE?AVInterval@2@XZ) referenced in function "void __cdecl olap::ReadPits(class olap::Interval const &,class std::vector<class olap::Pit,class std::allocator<class olap::Pit> > *,class std::vector<class olap::Out,class std::allocator<class olap::Out> > *)" (?ReadPits@olap@@YAXABVInterval@1@PAV?$vector@VPit@olap@@V?$allocator@VPit@olap@@@std@@@std@@PAV?$vector@VOut@olap@@V?$allocator@VOut@olap@@@std@@@4@@Z)
-read_pits.obj : error LNK2019: unresolved external symbol "class std::basic_istream<char,struct std::char_traits<char> > & __cdecl olap::operator>>(class std::basic_istream<char,struct std::char_traits<char> > &,class olap::Out &)" (??5olap@@YAAAV?$basic_istream@DU?$char_traits@D@std@@@std@@AAV12@AAVOut@0@@Z) referenced in function "private: bool __thiscall boost::detail::lexical_stream_limited_src<char,struct std::char_traits<char>,0>::shr_using_base_class<class olap::Out>(class olap::Out &)" (??$shr_using_base_class@VOut@olap@@@?$lexical_stream_limited_src@DU?$char_traits@D@std@@$0A@@detail@boost@@AAE_NAAVOut@olap@@@Z)
-E:\sw\workspaces\olap\olreplay\vs\olreplay\Debug\olreplay.exe : fatal error LNK1120: 57 unresolved externals
-Done Building Project "E:\sw\workspaces\olap\olreplay\vs\olreplay\olreplay.vcxproj" (Build target(s)) -- FAILED.
+  E:\sw\workspaces\olap\olreplay\vs\olreplay\Debug\olcore.lib
+  olreplay.vcxproj -> E:\sw\workspaces\olap\olreplay\vs\olreplay\Debug\olreplay.exe
+Done Building Project "E:\sw\workspaces\olap\olreplay\vs\olreplay\olreplay.vcxproj" (Build target(s)).
 
 Project Performance Summary:
-       44 ms  E:\sw\workspaces\osoa\vs\osoa\osoa.vcxproj   3 calls
+       30 ms  E:\sw\workspaces\olap\olcore\vs\olcore\olcore.vcxproj   4 calls
                  14 ms  GetTargetPath                              1 calls
                   0 ms  GetNativeManifest                          1 calls
-                 30 ms  GetResolvedLinkLibs                        1 calls
-    108056 ms  E:\sw\workspaces\olap\olreplay\vs\olreplay\olreplay.vcxproj   1 calls
-              108056 ms  Build                                      1 calls
+                 16 ms  GetResolvedLinkLibs                        1 calls
+                  0 ms  GetCopyToOutputDirectoryItems              1 calls
+       63 ms  E:\sw\workspaces\osoa\vs\osoa\osoa.vcxproj   4 calls
+                  0 ms  GetTargetPath                              1 calls
+                 16 ms  GetNativeManifest                          1 calls
+                 33 ms  GetResolvedLinkLibs                        1 calls
+                 15 ms  GetCopyToOutputDirectoryItems              1 calls
+    20863 ms  E:\sw\workspaces\olap\olreplay\vs\olreplay\olreplay.vcxproj   1 calls
+              20863 ms  Build                                      1 calls
 
 Target Performance Summary:
-        0 ms  AfterBuildCompileEvent                     1 calls
+        0 ms  BeforeLink                                 1 calls
+        0 ms  MakeDirsForCl                              1 calls
         0 ms  AfterBuildGenerateSources                  1 calls
+        0 ms  ComputeCLCompileGeneratedXDCFiles          1 calls
         0 ms  ComputeManifestGeneratedLinkerInputs       1 calls
         0 ms  ResolveReferences                          2 calls
         0 ms  SelectClCompile                            1 calls
+        0 ms  GetCopyToOutputDirectoryXamlAppDefs        2 calls
+        0 ms  _CheckForCompileOutputs                    1 calls
         0 ms  _RemoveNameMetadataFromProjectReferenceItems   1 calls
+        0 ms  _Manifest                                  1 calls
+        0 ms  BuildCompileTraverse                       1 calls
         0 ms  _SelectedFiles                             1 calls
-        0 ms  _PrepareForBuild                           1 calls
+        0 ms  PostBuildEvent                             1 calls
         0 ms  _Midl                                      1 calls
         0 ms  SelectCustomBuild                          1 calls
         0 ms  _ClCompile                                 1 calls
         0 ms  GetReferenceAssemblyPaths                  2 calls
+        0 ms  TouchWinMDFile                             1 calls
         0 ms  CreateCustomManifestResourceNames          1 calls
-        0 ms  SetBuildDefaultEnvironmentVariables        2 calls
         0 ms  ResolveAssemblyReferences                  2 calls
-        0 ms  BeforeLink                                 1 calls
-        0 ms  MakeDirsForCl                              1 calls
-        0 ms  GetTargetPath                              1 calls
-        0 ms  BuildCompileTraverse                       1 calls
-        0 ms  WarnCompileDuplicatedFilename              1 calls
+        0 ms  GetTargetPath                              2 calls
+        0 ms  AfterBuild                                 1 calls
+        0 ms  _PrepareForBuild                           1 calls
+        0 ms  AfterBuildCompileEvent                     1 calls
+        0 ms  ExpandSDKReferences                        2 calls
+        0 ms  CreateSatelliteAssemblies                  1 calls
         0 ms  ComputeCLInputPDBName                      1 calls
         0 ms  BuildGenerateSources                       1 calls
+        0 ms  _CopySourceItemsToOutputDirectory          1 calls
         0 ms  GetFrameworkPaths                          2 calls
         0 ms  AfterResourceCompile                       1 calls
         0 ms  GetResolvedWinMD                           2 calls
         0 ms  _Xsd                                       1 calls
         0 ms  ComputeCustomBuildOutput                   1 calls
         0 ms  ComputeReferenceLinkInputs                 1 calls
+        0 ms  MakeDirsForBscMake                         1 calls
+        0 ms  CopyFilesToOutputDirectory                 1 calls
         0 ms  ComputeResolveLinkObj                      1 calls
-        0 ms  ComputeLinkSwitches                        1 calls
+        0 ms  _GenerateSatelliteAssemblyInputs           1 calls
         0 ms  MakeDirsForResourceCompile                 1 calls
         0 ms  _ResourceCompile                           1 calls
         0 ms  ComputeLinkInputsFromProject               1 calls
+        0 ms  Build                                      1 calls
+        0 ms  _Link                                      1 calls
         0 ms  BuildLinkTraverse                          1 calls
         0 ms  ComputeRCOutputs                           1 calls
-        0 ms  ExpandSDKReferences                        2 calls
+        0 ms  WarnCompileDuplicatedFilename              1 calls
+        0 ms  _XdcMake                                   1 calls
+        0 ms  ComputeLinkSwitches                        1 calls
         0 ms  ComputeManifestInputsTargets               1 calls
         0 ms  ComputeMIDLGeneratedCompileInputs          1 calls
-        0 ms  AfterMidl                                  1 calls
-        0 ms  BeforeResourceCompile                      1 calls
+        0 ms  _BuildLinkAction                           1 calls
+        0 ms  AfterLink                                  1 calls
+        0 ms  PrepareResourceNames                       1 calls
+        0 ms  AfterBuildGenerateSourcesEvent             1 calls
+        0 ms  BeforeClCompile                            1 calls
         0 ms  ComputeCLOutputs                           1 calls
         0 ms  AfterResolveReferences                     2 calls
         0 ms  BeforeResolveReferences                    2 calls
         0 ms  DoLinkOutputFilesMatch                     1 calls
         0 ms  ComputeReferenceCLInput                    1 calls
+        0 ms  PrepareForRun                              1 calls
         0 ms  PreBuildEvent                              1 calls
         0 ms  MakeDirsForMidl                            1 calls
-        0 ms  _BuildGenerateSourcesAction                1 calls
-        0 ms  ResolveSDKReferences                       2 calls
+        0 ms  _BscMake                                   1 calls
         0 ms  ComputeCLGeneratedLinkInputs               1 calls
-        0 ms  BuildGenerateSourcesTraverse               1 calls
-        0 ms  AssignTargetPaths                          1 calls
-        0 ms  ComputeLegacyManifestEmbedding             1 calls
-        0 ms  _CheckForInvalidConfigurationAndPlatform   2 calls
-        0 ms  AfterBuildGenerateSourcesEvent             1 calls
-        0 ms  PrepareResourceNames                       1 calls
-        0 ms  BeforeClCompile                            1 calls
-        0 ms  GetResolvedLinkLibs                        1 calls
-        0 ms  ComputeRCGeneratedLinkInputs               1 calls
-        0 ms  BuildCompile                               1 calls
-        0 ms  PreLinkEvent                               1 calls
-        0 ms  GetNativeManifest                          1 calls
-        0 ms  AssignProjectConfiguration                 2 calls
-        0 ms  _BuildCompileAction                        1 calls
-        0 ms  GetInstalledSDKLocations                   2 calls
-        0 ms  PlatformPrepareForBuild                    2 calls
+        0 ms  _Appverifier                               1 calls
+        0 ms  RegisterOutput                             1 calls
+        0 ms  _ALink                                     1 calls
+        0 ms  _BuildGenerateSourcesAction                1 calls
+        0 ms  BuildLink                                  1 calls
         0 ms  SplitResourcesByCulture                    1 calls
-        0 ms  AfterClCompile                             1 calls
+        0 ms  ComputeCLCompileGeneratedSbrFiles          1 calls
+        0 ms  GetResolvedLinkLibs                        2 calls
+        0 ms  BuildCompile                               1 calls
+        0 ms  BeforeResourceCompile                      1 calls
+        0 ms  AfterMidl                                  1 calls
+        0 ms  PreLinkEvent                               1 calls
+        0 ms  _CheckForInvalidConfigurationAndPlatform   2 calls
+        0 ms  ComputeLegacyManifestEmbedding             1 calls
+        0 ms  _Deploy                                    1 calls
+        0 ms  _PrepareForReferenceResolution             2 calls
+        0 ms  AssignTargetPaths                          2 calls
+        0 ms  ComputeRCGeneratedLinkInputs               1 calls
         0 ms  BeforeBuildGenerateSources                 1 calls
-       13 ms  MakeDirsForLink                            1 calls
+        0 ms  ResolvedXDCMake                            1 calls
+        0 ms  PlatformPrepareForBuild                    2 calls
+        0 ms  BuildGenerateSourcesTraverse               1 calls
+        0 ms  MakeDirsForXdcMake                         1 calls
+        0 ms  GetInstalledSDKLocations                   2 calls
+        0 ms  _BuildCompileAction                        1 calls
+        0 ms  AssignProjectConfiguration                 2 calls
+        0 ms  GetNativeManifest                          2 calls
+        0 ms  AfterClCompile                             1 calls
+        0 ms  ResolveSDKReferences                       2 calls
        14 ms  _SplitProjectReferencesByFileExistence     2 calls
-       14 ms  _PrepareForReferenceResolution             2 calls
-       16 ms  InitializeBuildStatus                      1 calls
-       27 ms  PrepareForBuild                            2 calls
-       31 ms  SetCABuildNativeEnvironmentVariables       2 calls
-       70 ms  ResolveProjectReferences                   2 calls
-       81 ms  ResolvedLinkLib                            2 calls
-     5332 ms  Link                                       1 calls
-    102501 ms  ClCompile                                  1 calls
+       14 ms  MakeDirsForLink                            1 calls
+       15 ms  InitializeBuildStatus                      1 calls
+       15 ms  FinalizeBuildStatus                        1 calls
+       16 ms  SetCABuildNativeEnvironmentVariables       2 calls
+       16 ms  SetBuildDefaultEnvironmentVariables        2 calls
+       17 ms  ComputeLinkImportLibraryOutputsForClean    1 calls
+       31 ms  GetCopyToOutputDirectoryItems              2 calls
+       33 ms  PrepareForBuild                            2 calls
+       78 ms  ResolveProjectReferences                   2 calls
+       79 ms  ResolvedLinkLib                            3 calls
+     6439 ms  Link                                       1 calls
+    14129 ms  ClCompile                                  1 calls
 
-Build FAILED.
+Build succeeded.
 
-Time Elapsed 00:01:48.06
+Time Elapsed 00:00:20.86

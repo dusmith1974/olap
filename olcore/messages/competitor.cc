@@ -15,6 +15,8 @@
 
 // Implements the lap message.
 
+#include "olcore_pch.h"
+
 #include "messages/competitor.h"
 
 namespace olap {

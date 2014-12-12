@@ -15,6 +15,8 @@
 
 // Implements the base class for all timing messages.
 
+#include "olcore_pch.h"
+
 #include "messages/message.h"
 
 #include "boost/bind.hpp"

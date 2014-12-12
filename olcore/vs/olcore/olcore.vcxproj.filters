@@ -1,2 +1,101 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" />
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="messages">
+      <UniqueIdentifier>{bcb6abb0-8a24-4b40-bed5-a681cda06090}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="time">
+      <UniqueIdentifier>{0d0d2d97-c09b-4d89-bbd4-a60e8d319590}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="util">
+      <UniqueIdentifier>{5b22cb18-1840-4759-9c0b-3893d2619a31}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\messages\competitor.cc">
+      <Filter>messages</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\messages\lap.cc">
+      <Filter>messages</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\messages\message.cc">
+      <Filter>messages</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\messages\out.cc">
+      <Filter>messages</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\messages\pit.cc">
+      <Filter>messages</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\messages\sector.cc">
+      <Filter>messages</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\util\utilities.cc">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\olcore_pch.cpp" />
+    <ClCompile Include="..\..\time\interval.cc">
+      <Filter>time</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\time\long_interval.cc">
+      <Filter>time</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\messages\competitor.h">
+      <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\messages\competitor_fwd.h">
+      <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\messages\lap.h">
+      <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\messages\lap_fwd.h">
+      <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\messages\message.h">
+      <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\messages\message_fwd.h">
+      <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\messages\message-inl.h">
+      <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\messages\messages.h">
+      <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\messages\messages_fwd.h">
+      <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\messages\out.h">
+      <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\messages\out_fwd.h">
+      <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\messages\pit.h">
+      <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\messages\pit_fwd.h">
+      <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\messages\sector.h">
+      <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\messages\sector_fwd.h">
+      <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\util\utilities.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\olcore_pch.h" />
+    <ClInclude Include="..\..\time\interval.h">
+      <Filter>time</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\time\long_interval.h">
+      <Filter>time</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
