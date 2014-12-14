@@ -45,7 +45,7 @@ Interval::Interval(const boost::chrono::milliseconds& val)
 Interval::~Interval() {
 }
 
-const std::string Interval::str() const { return str_; }
+const std::string& Interval::str() const { return str_; }
 
 Interval::operator long() const { return static_cast<long>(milliseconds_.count()); }
 Interval::operator boost::chrono::milliseconds() const { return milliseconds_; }

@@ -64,9 +64,11 @@ void ReadLapHistory(CompetitorLapMap* lap_history, Lap* leaders_lap) {
         int lap_no = leaders_lap_no++;
 
         // Deduct from leaders lap if we've been lapped.
-        if (boost::regex_search(boost::lexical_cast<std::string>(lap.gap().str()),
-                                m, boost::regex(R"((\d+) LAP)")))
+        std::string str = lap.gap().str();
+        if (boost::regex_search(str, m, boost::regex(R"((\d+) LAP)"))) {
           lap_no -= boost::lexical_cast<int>(m[1].str());
+        }
+
 
         lap.set_num(lap_no);
 

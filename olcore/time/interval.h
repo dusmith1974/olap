@@ -34,7 +34,7 @@ class Interval {
   explicit Interval(long val);
   explicit Interval(const boost::chrono::milliseconds& val);
 
-  const std::string str() const;
+  const std::string& str() const;
 
   operator long() const;
   operator boost::chrono::milliseconds() const;
