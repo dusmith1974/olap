@@ -104,7 +104,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_WIN32_WINNT=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_WIN32_WINNT=0x0501;USE_PCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>olcore_pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>E:\sw\lib\boost\boost_1_55_0;..\..</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -121,7 +121,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_WIN32_WINNT=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_WIN32_WINNT=0x0501;USE_PCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>olcore_pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>E:\sw\lib\boost\boost_1_55_0;..\..\</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>

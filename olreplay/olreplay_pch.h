@@ -1,3 +1,7 @@
+#ifndef OLREPLAY_PCH_H_
+#define OLREPLAY_PCH_H_
+
+#ifdef USE_PCH
 #if defined(_MSC_VER) && _MSC_VER >= 1400 
 
 #pragma warning(disable:4512)
@@ -38,3 +42,5 @@
 #pragma warning(default:4610)
 #pragma warning(default:4100)
 #endif
+#endif  // USE_PCH
+#endif  // OLREPLAY_PCH_H_
