@@ -18,11 +18,11 @@
 #ifndef MESSAGES_MESSAGES_FWD_H_
 #define MESSAGES_MESSAGES_FWD_H_
 
-#include "messages/lap_fwd.h"
-#include "messages/pit_fwd.h"
-#include "messages/out_fwd.h"
-#include "messages/sector_fwd.h"
-#include "messages/message_fwd.h"
 #include "messages/competitor_fwd.h"
+#include "messages/lap_fwd.h"
+#include "messages/message_fwd.h"
+#include "messages/out_fwd.h"
+#include "messages/pit_fwd.h"
+#include "messages/sector_fwd.h"
 
 #endif  // MESSAGES_MESSAGES_FWD_H_

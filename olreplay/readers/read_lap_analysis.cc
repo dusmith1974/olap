@@ -15,6 +15,8 @@
 
 // Implements the ReadLapAnalysis class.
 
+#include "olreplay_pch.h"
+
 #include "readers/read_lap_analysis.h"
 
 #include <fstream>

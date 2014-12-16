@@ -15,6 +15,8 @@
 
 // Recreates an events timing messages from the results.
 
+#include "olreplay_pch.h"
+
 #include <iostream>
 #include <map>
 #include <numeric>
@@ -23,12 +25,12 @@
 #include <vector>
 
 #include "boost/asio.hpp"
-
 #include "boost/optional.hpp"
 #include "boost/range/adaptor/map.hpp"
 #include "boost/range/algorithm/copy.hpp"
 
 #include "osoa/service/comms/comms.h"
+
 #include "olcore/messages/messages.h"
 #include "olcore/util/utilities.h"
 

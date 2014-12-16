@@ -19,7 +19,6 @@
 #define MESSAGES__OUT_H_
 
 #include "messages/message.h"
-#include "messages/out.h"
 
 namespace olap {
 

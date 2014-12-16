@@ -15,11 +15,13 @@
 
 // Implements the Replay class.
 
+#include "olreplay_pch.h"
+
 #include "replay/replay.h"
 
 #include "osoa/service/args.h"
-#include "osoa/service/logging.h"
 #include "osoa/service/comms/comms.h"
+#include "osoa/service/logging.h"
 
 using osoa::Error;
 using osoa::Logging;

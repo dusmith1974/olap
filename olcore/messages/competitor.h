@@ -18,10 +18,10 @@
 #ifndef MESSAGES_COMPETITOR_H_
 #define MESSAGES_COMPETITOR_H_
 
-#include "messages/message.h"
-#include "messages/competitor_fwd.h"
-
 #include "boost/multiprecision/cpp_dec_float.hpp"
+
+#include "messages/competitor_fwd.h"
+#include "messages/message.h"
 
 namespace olap {
 namespace mp = boost::multiprecision;

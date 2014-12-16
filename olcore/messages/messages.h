@@ -18,12 +18,12 @@
 #ifndef MESSAGES__MESSAGES_H_
 #define MESSAGES__MESSAGES_H_
 
-#include "olcore/messages/message-inl.h"
-#include "messages/lap.h"
-#include "messages/pit.h"
-#include "messages/out.h"
-#include "messages/sector.h"
-#include "messages/message.h"
 #include "messages/competitor.h"
+#include "messages/lap.h"
+#include "messages/message.h"
+#include "messages/message-inl.h"
+#include "messages/out.h"
+#include "messages/pit.h"
+#include "messages/sector.h"
 
 #endif  // MESSAGES__MESSAGES_H_

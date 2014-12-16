@@ -18,8 +18,8 @@
 #ifndef READERS__READ_PITS_H_
 #define READERS__READ_PITS_H_
 
-#include "olcore/messages/pit_fwd.h"
 #include "olcore/messages/out_fwd.h"
+#include "olcore/messages/pit_fwd.h"
 
 class Interval;
 

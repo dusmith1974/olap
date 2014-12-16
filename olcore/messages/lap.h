@@ -18,8 +18,8 @@
 #ifndef MESSAGES_LAP_H_
 #define MESSAGES_LAP_H_
 
-#include "messages/message.h"
 #include "lap_fwd.h"
+#include "messages/message.h"
 
 namespace olap {
 

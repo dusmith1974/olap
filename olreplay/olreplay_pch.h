@@ -4,43 +4,32 @@
 #ifdef USE_PCH
 #if defined(_MSC_VER) && _MSC_VER >= 1400 
 
-#pragma warning(disable:4512)
-#pragma warning(disable:4996)
-#pragma warning(disable:4510)
-#pragma warning(disable:4610)
-#pragma warning(disable:4100)
-
-#include <thread>
-#include <string>
-#include <map>
+#include <algorithm>
+#include <cmath>
+#include <deque>
 #include <fstream>
 #include <iostream>
-#include <algorithm>
+#include <map>
+#include <memory>
+#include <numeric>
 #include <set>
+#include <sstream>
+#include <string>
+#include <thread>
 #include <utility>
 #include <vector>
-#include <memory>
-#include <deque>
-#include <sstream>
-#include <cmath>
-#include <numeric>
 
+#include "boost/asio.hpp"
+#include "boost/bind.hpp"
+#include "boost/enable_shared_from_this.hpp"
 #include "boost/lexical_cast.hpp"
+#include "boost/noncopyable.hpp"
+#include "boost/optional.hpp"
 #include "boost/range/adaptor/map.hpp"
 #include "boost/range/algorithm/copy.hpp"
 #include "boost/regex.hpp"
-#include "boost/noncopyable.hpp"
-#include "boost/asio.hpp"
-#include "boost/optional.hpp"
-#include "boost/bind.hpp"
 #include "boost/shared_ptr.hpp"
-#include "boost/enable_shared_from_this.hpp"
 
-#pragma warning(default:4512)
-#pragma warning(default:4996)
-#pragma warning(default:4510)
-#pragma warning(default:4610)
-#pragma warning(default:4100)
 #endif
 #endif  // USE_PCH
 #endif  // OLREPLAY_PCH_H_

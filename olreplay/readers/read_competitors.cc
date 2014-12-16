@@ -15,11 +15,13 @@
 
 // Implements ReadCompetitors.
 
+#include "olreplay_pch.h"
+
 #include "readers/read_competitors.h"
 
-#include "olcore/messages/competitor.h"
-
 #include <fstream>
+
+#include "olcore/messages/competitor.h"
 
 namespace olap {
 

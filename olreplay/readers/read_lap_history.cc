@@ -15,6 +15,8 @@
 
 // Implements the ReadLapHistory class.
 
+#include "olreplay_pch.h"
+
 #include "readers/read_lap_history.h"
 
 #include <fstream>
