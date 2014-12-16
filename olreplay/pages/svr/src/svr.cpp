@@ -9,6 +9,7 @@
 #include "Poco/Net/NetException.h"
 #include "Poco/Util/ServerApplication.h"
 #include "Poco/Format.h"
+
 #include <iostream>
 
 using Poco::Net::ServerSocket;
@@ -29,74 +30,74 @@ using Poco::Util::Application;
 // Handle a WebSocket connection.
 class WebSocketRequestHandler : public HTTPRequestHandler {
  public:
-	void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response) {
-		try {
-			WebSocket ws(request, response);
+  void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response) {
+    try {
+      WebSocket ws(request, response);
       std::cout << std::string("WebSocket connection established.") << std::endl;
-			char buffer[1024];
-			int flags;
-			int n;
-			do {
-				n = ws.receiveFrame(buffer, sizeof(buffer), flags);
+      char buffer[1024];
+      int flags;
+      int n;
+      do {
+        n = ws.receiveFrame(buffer, sizeof(buffer), flags);
         std::cout << Poco::format("Frame received (length=%d, flags=0x%x).", n, unsigned(flags)) << std::endl; // use boost format?
-				ws.sendFrame(buffer, n, flags);
-			} while (n > 0 || (flags & WebSocket::FRAME_OP_BITMASK) != WebSocket::FRAME_OP_CLOSE);
+        ws.sendFrame(buffer, n, flags);
+      } while (n > 0 || (flags & WebSocket::FRAME_OP_BITMASK) != WebSocket::FRAME_OP_CLOSE);
 
       std::cout << "WebSocket connection closed." << std::endl;
-		}
-		catch (WebSocketException& exc) {
+    }
+    catch (WebSocketException& exc) {
       std::cout << exc.what() << std::endl;
-			switch (exc.code()) {
-			 case WebSocket::WS_ERR_HANDSHAKE_UNSUPPORTED_VERSION:
-				response.set("Sec-WebSocket-Version", WebSocket::WEBSOCKET_VERSION);
-				// fallthrough
-			 case WebSocket::WS_ERR_NO_HANDSHAKE:
-			 case WebSocket::WS_ERR_HANDSHAKE_NO_VERSION:
-			 case WebSocket::WS_ERR_HANDSHAKE_NO_KEY:
-				response.setStatusAndReason(HTTPResponse::HTTP_BAD_REQUEST);
-				response.setContentLength(0);
-				response.send();
-				break;
-			}
-		}
-	}
+      switch (exc.code()) {
+       case WebSocket::WS_ERR_HANDSHAKE_UNSUPPORTED_VERSION:
+        response.set("Sec-WebSocket-Version", WebSocket::WEBSOCKET_VERSION);
+        // fallthrough
+       case WebSocket::WS_ERR_NO_HANDSHAKE:
+       case WebSocket::WS_ERR_HANDSHAKE_NO_VERSION:
+       case WebSocket::WS_ERR_HANDSHAKE_NO_KEY:
+        response.setStatusAndReason(HTTPResponse::HTTP_BAD_REQUEST);
+        response.setContentLength(0);
+        response.send();
+        break;
+      }
+    }
+  }
 };
 
 class RequestHandlerFactory: public HTTPRequestHandlerFactory
 {
 public:
-	HTTPRequestHandler* createRequestHandler(const HTTPServerRequest& request)
-	{
+  HTTPRequestHandler* createRequestHandler(const HTTPServerRequest& request)
+  {
     std::string str = "Request from " 
-			+ request.clientAddress().toString()
-			+ ": "
-			+ request.getMethod()
-			+ " "
-			+ request.getURI()
-			+ " "
-			+ request.getVersion();
+      + request.clientAddress().toString()
+      + ": "
+      + request.getMethod()
+      + " "
+      + request.getURI()
+      + " "
+      + request.getVersion();
 
     std::cout << str << std::endl;
-			
-		for (HTTPServerRequest::ConstIterator it = request.begin(); it != request.end(); ++it) {
+      
+    for (HTTPServerRequest::ConstIterator it = request.begin(); it != request.end(); ++it) {
       str = (it->first + ": " + it->second);
       std::cout << str << std::endl;
-		}
-		
+    }
+    
     return new WebSocketRequestHandler;
-	}
+  }
 };
 
 class WebSocketServer /*: public Poco::Util::ServerApplication*/ {
 public:
-	WebSocketServer() /* : _helpRequested(false)*/ {
-	}
-	
-	~WebSocketServer() {
-	}
+  WebSocketServer() /* : _helpRequested(false)*/ {
+  }
+  
+  ~WebSocketServer() {
+  }
 
 protected:
-	
+  
 private:
 };
 
