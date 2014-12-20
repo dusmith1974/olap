@@ -30,6 +30,7 @@
 #include "boost/range/algorithm/copy.hpp"
 
 #include "osoa/service/comms/comms.h"
+#include "osoa/service/comms/web_socket.h"
 
 #include "olcore/messages/messages.h"
 #include "olcore/util/utilities.h"
@@ -173,10 +174,22 @@ int main(int argc, const char* argv[]) {
   osoa::Error code = replay.Initialize(argc, argv);
   if (osoa::Error::kSuccess != code)
     return static_cast<int>(code);
+  
+  // TODO(ds) ws needs to connect before tcp..
+  osoa::WebSocket ws;
+  std::thread socket_thread;
+  if (replay.publishing()) {
+    std::cout << "olap ws" << std::endl;
+        //ws.Run();
+    socket_thread = std::thread(&osoa::WebSocket::Run, ws);
+  }
 
+  std::cout << "olap run" << std::endl;
   if (osoa::Error::kSuccess == replay.Start()) {
-    if (replay.publishing())
+    if (replay.publishing()) {
       olap::run();
+      socket_thread.join();
+    }
 
     replay.Stop();
   }

@@ -1,3 +1,10 @@
+ok to start tcp before websocket?
+websocket to accept (and send) msgs, or send ping otherwise
+pings to use deadline timer (not sleep)
+timing web page
+
+WebSocket
+
 rm olreplay pch (reuse osoa?)
 fix build (link with boost chrono) and test.
 VS/gcc dual build.
