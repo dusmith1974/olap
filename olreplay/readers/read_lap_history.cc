@@ -91,4 +91,4 @@ void ReadLapHistory(CompetitorLapMap* lap_history, Lap* leaders_lap) {
   for (auto& laps : (*lap_history | adaptors::map_values))
     std::sort(laps.begin(), laps.end());
 }
-}  // namespcae olap
+}  // namespace olap

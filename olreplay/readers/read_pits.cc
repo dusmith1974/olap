@@ -52,4 +52,4 @@ void ReadPits(const Interval& race_start_time, PitVec* pits, OutVec *outs) {
   }
 }
 
-}  // namespcae olap
+}  // namespace olap

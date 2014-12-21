@@ -68,4 +68,4 @@ std::istream& operator>>(std::istream& is, Pit& pit) {
   return is;
 }
 
-}  // namespcae olap
+}  // namespace olap

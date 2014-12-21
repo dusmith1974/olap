@@ -84,4 +84,4 @@ void Replay::set_publishing(bool val) {
   publishing_ = val;
 }
 
-}  // namespcae olap
+}  // namespace olap

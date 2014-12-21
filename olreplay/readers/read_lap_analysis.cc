@@ -52,4 +52,4 @@ LongInterval ReadLapAnalysis(const Lap& leaders_lap, CompetitorLapMap* lap_analy
   return race_start_time;
 }
 
-}  // namespcae olap
+}  // namespace olap

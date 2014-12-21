@@ -1,3 +1,5 @@
+codeschool js, html paths, angular
+
 ok to start tcp before websocket?
 websocket to accept (and send) msgs, or send ping otherwise
 pings to use deadline timer (not sleep)

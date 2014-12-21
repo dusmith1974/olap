@@ -38,7 +38,7 @@ void AddMessages(T coll, MessageMap* message_map) {
   if (!message_map) return;
 
   for (const auto& msg : coll)
-    AddMessage(msg, message_map);
+      AddMessage(msg, message_map);
 }
 }  // namespace
 

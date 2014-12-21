@@ -30,7 +30,6 @@
 #include "boost/range/algorithm/copy.hpp"
 
 #include "osoa/service/comms/comms.h"
-#include "osoa/service/comms/web_socket.h"
 
 #include "olcore/messages/messages.h"
 #include "olcore/util/utilities.h"
@@ -156,6 +155,11 @@ int run() {
   AddMessages(pits, &message_map);
   AddMessages(outs, &message_map);
 
+  // Cut race time for quick debug/test.
+  /*auto pos = message_map.begin();
+  std::advance(pos, 50);
+  message_map.erase(pos, message_map.end());*/
+
   boost::asio::io_service io_service;
 
   for (const auto& message : message_map)
@@ -166,6 +170,14 @@ int run() {
 
   io_service.run();
 
+  msgs.clear();
+  competitors.clear();
+  lap_history.clear(); 
+  lap_analysis.clear();
+  all_laps.clear();
+  sectors.clear();
+  message_map.clear();
+
   return 0;
 }
 }  // namespace olap
@@ -175,20 +187,12 @@ int main(int argc, const char* argv[]) {
   if (osoa::Error::kSuccess != code)
     return static_cast<int>(code);
   
-  // TODO(ds) ws needs to connect before tcp..
-  osoa::WebSocket ws;
-  std::thread socket_thread;
-  if (replay.publishing()) {
-    std::cout << "olap ws" << std::endl;
-        //ws.Run();
-    socket_thread = std::thread(&osoa::WebSocket::Run, ws);
-  }
 
   std::cout << "olap run" << std::endl;
   if (osoa::Error::kSuccess == replay.Start()) {
     if (replay.publishing()) {
       olap::run();
-      socket_thread.join();
+      //socket_thread.join();
     }
 
     replay.Stop();

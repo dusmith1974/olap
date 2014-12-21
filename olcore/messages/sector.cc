@@ -86,4 +86,4 @@ inline bool operator!=(const Sector& lhs, const Sector& rhs) {
   return !(lhs == rhs);
 }
 
-}  // namespcae olap
+}  // namespace olap

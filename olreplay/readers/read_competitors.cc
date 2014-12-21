@@ -79,4 +79,4 @@ void ReadCompetitors(CompetitorMap* competitors) {
   ReadBestSectors(competitors);
 }
 
-}  // namespcae olap
+}  // namespace olap
