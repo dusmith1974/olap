@@ -1,20 +1,32 @@
-codeschool js, html paths, angular
+fix gcc build
 
-ok to start tcp before websocket?
-websocket to accept (and send) msgs, or send ping otherwise
-pings to use deadline timer (not sleep)
+codeschool js, html paths, angular
 timing web page
 
-WebSocket
+poco branching
 
-rm olreplay pch (reuse osoa?)
-fix build (link with boost chrono) and test.
-VS/gcc dual build.
+autotest
+---
+is affected by startup order (connect ws then asio, or asio then ws etc?)
+does always freeze on same message (1:09:xx), anything special (eg exact same time as other message?)
+only windows or windows + linux?
+only debug or debug + release?
+only with ws + asio or just ws or just asio
+run in debugger, does break show location?
+nightly tests (real time)
+ Selenium WebDriver (Python)
+  Selenium IDE to export basic script.
+ playback with asio and ws clients on winodws and linux
+ save logs, complete race? still ticking?
+sysinternals
+ mem footprint
+ handle, socket, thread count
+easy debugging
+ #define SHORT_RACE (1 lap only)
+ #define QUICK_RACE (all messages 100ms apart)
+  as app args (to be supplied by autorun)
+
 tidy osoa and olap (strip to current).
-add websocket in OSOA and mirror publishMessage socket in olap
-ccache
-
-AddTopicMessage to accept/add new message into topic map.
 
 wait for next msg when topic q empty (don't drop out)
  on signal, cond_var?

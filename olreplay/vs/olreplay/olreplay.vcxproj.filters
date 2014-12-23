@@ -7,6 +7,9 @@
     <Filter Include="replay">
       <UniqueIdentifier>{69b5c115-7089-4887-aba9-42087ce35cf3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="web">
+      <UniqueIdentifier>{40f3c846-2aa0-476a-9235-4a4419b350b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\main.cc" />
@@ -47,5 +50,16 @@
       <Filter>readers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\olreplay_pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\pages\page1.html">
+      <Filter>web</Filter>
+    </None>
+    <None Include="..\..\pages\timing.html">
+      <Filter>web</Filter>
+    </None>
+    <None Include="..\..\pages\mclaren.html">
+      <Filter>web</Filter>
+    </None>
   </ItemGroup>
 </Project>

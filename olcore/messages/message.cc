@@ -39,9 +39,17 @@ Message::~Message() {
 void Message::set_timer(boost::asio::io_service* service) {
   if (!service) return;
 
+  Interval time = race_time();
+//#define OLAP_QUICK_RACE
+#ifdef OLAP_QUICK_RACE
+  static int quick_time = 500;
+  quick_time += 100;
+  time = Interval(quick_time);
+#endif  // OLAP_QUICK_RACE
+
   timer_ = std::shared_ptr<boost::asio::deadline_timer>(
     new asio::deadline_timer(*service,
-                             boost::posix_time::milliseconds(race_time())));
+                             boost::posix_time::milliseconds(time)));
 }
 
 void Message::start_timer(std::function<void(const boost::system::error_code&, const std::string&)> fn) {

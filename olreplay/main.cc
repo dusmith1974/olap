@@ -156,9 +156,11 @@ int run() {
   AddMessages(outs, &message_map);
 
   // Cut race time for quick debug/test.
-  /*auto pos = message_map.begin();
+#ifdef OLAP_SHORT_RACE
+  auto pos = message_map.begin();
   std::advance(pos, 50);
-  message_map.erase(pos, message_map.end());*/
+  message_map.erase(pos, message_map.end());
+#endif  // OLAP_SHORT_RACE
 
   boost::asio::io_service io_service;
 
