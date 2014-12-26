@@ -1,4 +1,7 @@
-fix gcc build
+mv timestamps to before msg
+page1 like display
+gcc link to debug or release poco libs (upon config)
+
 
 codeschool js, html paths, angular
 timing web page

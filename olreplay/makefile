@@ -64,7 +64,7 @@ endif
 $(BIN_DIR)/olreplay: $(OBJS)
 	$(MAKE) -C $(OSOA_DIR) $(MAKECMDGOALS)
 	$(MAKE) -C $(OLCORE_DIR) $(MAKECMDGOALS)
-	$(LINK.cc) $(OBJS) $(LIB_OLCORE) $(LIB_OSOA) -dynamic -pthread -lboost_program_options -lboost_log_setup -lboost_log -lboost_system -lboost_thread -lboost_date_time -lboost_filesystem -lboost_regex -lboost_chrono $(OUTPUT_OPTION)
+	$(LINK.cc) $(OBJS) $(LIB_OLCORE) $(LIB_OSOA) -dynamic -lPocoUtild -lPocoNetd -lPocoXMLd -lPocoFoundationd -pthread -lboost_program_options -lboost_log_setup -lboost_log -lboost_system -lboost_thread -lboost_date_time -lboost_filesystem -lboost_regex -lboost_chrono $(OUTPUT_OPTION)
 	ctags -R --c-kinds=+cdefglmnpstuvx --extra=+f
 	cscope -Rb
 
