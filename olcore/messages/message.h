@@ -18,6 +18,7 @@
 #ifndef MESSAGES_MESSAGE_H_
 #define MESSAGES_MESSAGE_H_
 
+#include <atomic>
 #include <functional>
 #include <memory>
 
@@ -51,8 +52,11 @@ class Message {
   void set_time_of_day(const LongInterval& val);
 
   Interval race_time() const;
-
   void set_race_time(const Interval& val);
+
+  // Reset the (now) incremented value of quick_time_ back to its initial value
+  // Call before re-running a race to prevent a pause before the first message.
+  static void reset_quick_time();
 
  protected:
   Interval race_time_;
@@ -65,6 +69,7 @@ class Message {
 
   virtual void Print(std::ostream& os) const = 0;
 
+  static std::atomic<int> quick_time_;
   std::shared_ptr<boost::asio::deadline_timer> timer_;
 };
 

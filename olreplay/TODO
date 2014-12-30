@@ -1,11 +1,10 @@
-continuous race replay
-verify results (coomplete msg set?)
+run n times
+ compare each run in test
+verify results (complete msg set?)
 use args for server:port and quick race/short race
 
-mv timestamps to before msg
 page1 like display
 gcc link to debug or release poco libs (upon config)
-
 
 codeschool js, html paths, angular
 timing web page
@@ -14,12 +13,6 @@ poco branching
 
 autotest
 ---
-is affected by startup order (connect ws then asio, or asio then ws etc?)
-does always freeze on same message (1:09:xx), anything special (eg exact same time as other message?)
-only windows or windows + linux?
-only debug or debug + release?
-only with ws + asio or just ws or just asio
-run in debugger, does break show location?
 nightly tests (real time)
  Selenium WebDriver (Python)
   Selenium IDE to export basic script.
@@ -29,17 +22,12 @@ sysinternals
  mem footprint
  handle, socket, thread count
 easy debugging
- #define SHORT_RACE (1 lap only)
- #define QUICK_RACE (all messages 100ms apart)
+ #define QUICK_RACE etc
   as app args (to be supplied by autorun)
 
 tidy osoa and olap (strip to current).
 
-wait for next msg when topic q empty (don't drop out)
- on signal, cond_var?
-  placed with topic message map - evnt data ready
-
-swmr shared_lock on map (1 map per topic)
+swmr shared_lock on map (1 map per topic) - no need, ok for single writer
 build osoa olap as shared libs (as well as static lib).
 publish to subscribers
 -h (human readable) option for h:m:s/tod timestamps (over ms)

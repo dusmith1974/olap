@@ -73,7 +73,7 @@
       margin: 0; /*required if using % width or height*/
       padding: 0 20px 0 20px; /*purely aesthetic, not required*/
       box-sizing: border-box;
-      */ /*required if using above declaration*/
+      /*required if using above declaration*/
       //text-align: center; /*delete if using % width, or you don't want table centered*/
     }
 
@@ -84,7 +84,7 @@
       overflow: hidden;
       width: auto; /*set table width here if using fixed value*/
       /*min-width: 100%;*/ /*set table width here if using %*/
-      height: 188px; /*set table height here; can be fixed value or %*/
+      height: 272px; /*188px;*/ /*set table height here; can be fixed value or %*/
       /*min-height: 104px;*/ /*if using % height, make this at least large enough to fit scrollbar arrows + captions + thead*/
       font-family: Verdana, Tahoma, sans-serif;
       font-size: 16px;
@@ -256,10 +256,16 @@
 
           for (var n = 1, r = document.querySelector("tbody>tr"), p = r.parentNode; n--; p.appendChild(r.cloneNode(true)));
           var table = document.getElementById("messages");
-          table.rows[table.rows.length - 1].cells[0].innerHTML = table.rows.length - 1;
+
+          if (typeof WebSocketTest.counter == 'undefined')
+            WebSocketTest.counter = 0;
+
+          table.rows[table.rows.length - 1].cells[0].innerHTML = ++WebSocketTest.counter;
           table.rows[table.rows.length - 1].cells[1].innerHTML = msg;
 
-          //var mstr = document.getElementById("mstrTable");
+          if (table.rows.length >= 25)
+            table.deleteRow(0);
+
           var rows = table.getElementsByTagName("tr");
           table.focus();
           table.parentNode.scrollTop = rows[table.rows.length - 1].offsetTop - rows[0].offsetHeight;
@@ -267,6 +273,12 @@
 
         ws.onclose = function () {
           document.getElementById("status").innerHTML = "Socket Closed";
+          alert("ws close.");
+        };
+
+        window.onbeforeunload = function () {
+          ws.onclose = function () {};
+          ws.close();
         };
       }
       else {
@@ -277,32 +289,15 @@
 </head>
 
 <body>
-  <h1>Australia GP</h1>
-  <h2>Timing Page</h2>
-  <p>Replay of the Australian GP</p>
-  <p>Top level navigation links here</p>
-  <h3>Drivers</h3>
-  <ul>
-    <li>HAM</li>
-    <li>ALO</li>
-    <li>BUT</li>
-  </ul>
-  <h3>Teams</h3>
-  <ol>
-    <li><a href="mclaren.html" target="_blank">McLaren</a></li>
-    <li>Ferrari</li>
-    <li>Mercedes</li>
-  </ol>
   <h3>Live Timing</h3>
   <p><a href="javascript:WebSocketTest()">Start Race</a></p>
   <p id="status">Socket Closed</p>
   <p id="lastMessage">...Last Message...</p>
-  <h3>table</h3>
   <div class="scrollingtable">
     <div>
       <div>
         <table id="messages">
-          <caption>Live Timing</caption>
+          <!--<caption>Live Timing</caption>-->
           <thead>
             <tr>
               <th>
@@ -326,5 +321,21 @@
       <!--Faux bottom caption-->
     </div>
   </div>
+  <h1>Australia GP</h1>
+  <h2>Timing Page</h2>
+  <p>Replay of the Australian GP</p>
+  <p>Top level navigation links here</p>
+  <h3>Drivers</h3>
+  <ul>
+    <li>HAM</li>
+    <li>ALO</li>
+    <li>BUT</li>
+  </ul>
+  <h3>Teams</h3>
+  <ol>
+    <li><a href="mclaren.html" target="_blank">McLaren</a></li>
+    <li>Ferrari</li>
+    <li>Mercedes</li>
+  </ol>
 </body>
 </html>

@@ -26,6 +26,7 @@ namespace asio = boost::asio;
 namespace olap {
 
 LongInterval Message::race_start_time_;
+std::atomic<int> Message::quick_time_{500};
 
 Message::Message()
   : race_time_(Interval()),
@@ -42,9 +43,9 @@ void Message::set_timer(boost::asio::io_service* service) {
   Interval time = race_time();
 //#define OLAP_QUICK_RACE
 #ifdef OLAP_QUICK_RACE
-  static int quick_time = 500;
-  quick_time += 100;
-  time = Interval(quick_time);
+  //static int quick_time = 500;
+  quick_time_ += 100;
+  time = Interval(quick_time_);
 #endif  // OLAP_QUICK_RACE
 
   timer_ = std::shared_ptr<boost::asio::deadline_timer>(
@@ -81,6 +82,10 @@ Interval Message::race_time() const { return race_time_; }
 void Message::set_race_time(const Interval& val) {
   race_time_ = val;
   time_of_day_ = LongInterval(Message::race_start_time() + race_time());
+}
+
+void Message::reset_quick_time() {
+  quick_time_ = 500;
 }
 
 std::ostream& operator<<(std::ostream& os, const Message& message) {

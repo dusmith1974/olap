@@ -156,7 +156,7 @@ int run() {
   AddMessages(outs, &message_map);
 
   // Cut race time for quick debug/test.
-#define OLAP_SHORT_RACE
+//#define OLAP_SHORT_RACE
 #ifdef OLAP_SHORT_RACE
   auto pos = message_map.begin();
   std::advance(pos, 50);
@@ -180,6 +180,7 @@ int run() {
 
     io_service.run();
     io_service.reset();
+    Message::reset_quick_time();
   } while (continue_replay);
 
   msgs.clear();
