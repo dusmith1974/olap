@@ -1,3 +1,7 @@
+continuous race replay
+verify results (coomplete msg set?)
+use args for server:port and quick race/short race
+
 mv timestamps to before msg
 page1 like display
 gcc link to debug or release poco libs (upon config)

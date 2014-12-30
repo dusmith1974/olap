@@ -156,6 +156,7 @@ int run() {
   AddMessages(outs, &message_map);
 
   // Cut race time for quick debug/test.
+#define OLAP_SHORT_RACE
 #ifdef OLAP_SHORT_RACE
   auto pos = message_map.begin();
   std::advance(pos, 50);
@@ -164,13 +165,22 @@ int run() {
 
   boost::asio::io_service io_service;
 
-  for (const auto& message : message_map)
-    message.second->set_timer(&io_service);
+  int continue_replay = false;
+#define OLAP_CONTINUOUS_REPLAY
+#ifdef OLAP_CONTINUOUS_REPLAY
+  continue_replay = true;
+#endif
 
-  for (const auto& message : message_map)
-    message.second->start_timer(PublishMessage);
+  do {
+    for (const auto& message : message_map)
+      message.second->set_timer(&io_service);
 
-  io_service.run();
+    for (const auto& message : message_map)
+      message.second->start_timer(PublishMessage);
+
+    io_service.run();
+    io_service.reset();
+  } while (continue_replay);
 
   msgs.clear();
   competitors.clear();
