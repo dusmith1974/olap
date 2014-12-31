@@ -185,7 +185,7 @@ int run() {
 
   msgs.clear();
   competitors.clear();
-  lap_history.clear(); 
+  lap_history.clear();
   lap_analysis.clear();
   all_laps.clear();
   sectors.clear();

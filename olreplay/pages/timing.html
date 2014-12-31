@@ -57,10 +57,10 @@
       text-decoration: none;
     }
 
-    a:hover {
-      text-decoration: underline;
-      color: darkred;
-    }
+      a:hover {
+        text-decoration: underline;
+        color: darkred;
+      }
 
     html {
       width: 100%; /*required if using % width*/
@@ -74,7 +74,7 @@
       padding: 0 20px 0 20px; /*purely aesthetic, not required*/
       box-sizing: border-box;
       /*required if using above declaration*/
-      //text-align: center; /*delete if using % width, or you don't want table centered*/
+      /*text-align: center;*/ /*delete if using % width, or you don't want table centered*/
     }
 
     .scrollingtable {
@@ -198,12 +198,12 @@
         float: right;
       }
 
-      .scrollingtable .scrollbarhead:before {
-        position: absolute;
-        width: 100px;
-        top: -1px; /*inverse border-width*/
-        background: white; /*match page background color*/
-      }
+        .scrollingtable .scrollbarhead:before {
+          position: absolute;
+          width: 100px;
+          top: -1px; /*inverse border-width*/
+          background: white; /*match page background color*/
+        }
 
       .scrollingtable > div > div > table > tbody > tr:after {
         content: "";
@@ -218,27 +218,27 @@
         vertical-align: top;
       }
 
-      .scrollingtable > div > div > table > tbody > tr {
-        background: white;
-      }
+        .scrollingtable > div > div > table > tbody > tr {
+          background: white;
+        }
 
-      .scrollingtable > div > div > table > tbody > tr > * {
-        border-bottom: 1px solid black;
-        padding: 0 6px 0 6px;
-        height: 20px; /*match column header height*/
-      }
+          .scrollingtable > div > div > table > tbody > tr > * {
+            border-bottom: 1px solid black;
+            padding: 0 6px 0 6px;
+            height: 20px; /*match column header height*/
+          }
 
-      .scrollingtable > div > div > table > tbody:last-of-type > tr:last-child > * {
-        border-bottom: none;
-      }
+        .scrollingtable > div > div > table > tbody:last-of-type > tr:last-child > * {
+          border-bottom: none;
+        }
 
-      .scrollingtable > div > div > table > tbody > tr:nth-child(even) {
-        background: gainsboro;
-      }
-      /*alternate row color*/
-      .scrollingtable > div > div > table > tbody > tr > * + * {
-        border-left: 1px solid black;
-      }
+        .scrollingtable > div > div > table > tbody > tr:nth-child(even) {
+          background: gainsboro;
+        }
+        /*alternate row color*/
+        .scrollingtable > div > div > table > tbody > tr > * + * {
+          border-left: 1px solid black;
+        }
     /*borders between body cells*/
   </style>
 
@@ -273,11 +273,11 @@
 
         ws.onclose = function () {
           document.getElementById("status").innerHTML = "Socket Closed";
-          alert("ws close.");
+          //alert("ws close.");
         };
 
         window.onbeforeunload = function () {
-          ws.onclose = function () {};
+          ws.onclose = function () { };
           ws.close();
         };
       }
@@ -300,11 +300,11 @@
           <!--<caption>Live Timing</caption>-->
           <thead>
             <tr>
-              <th>
-                <div label="No." />
+              <th>No
+                <!--<div aria-label="No." />-->
               </th>
-              <th>
-                <div label="Message" />
+              <th>Message
+                <!--<div aria-label="Message" />-->
               </th>
               <th class="scrollbarhead" />
               <!--ALWAYS ADD THIS EXTRA CELL AT END OF HEADER ROW-->
