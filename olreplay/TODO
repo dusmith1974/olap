@@ -1,3 +1,6 @@
+log all program args in log header
+clean exit of client and server on ctrl-c
+cpplint/gsg/valgrind/vs static code analysis
 fix table headers
 run n times
  compare each run in test

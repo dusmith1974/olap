@@ -16,8 +16,9 @@
 // Implements the Replay class.
 
 #include "olreplay_pch.h"
-
 #include "replay/replay.h"
+
+#include "boost/algorithm/string.hpp"
 
 #include "osoa/service/args.h"
 #include "osoa/service/comms/comms.h"
@@ -49,17 +50,21 @@ Error Replay::Start() {
   Error code = super::Start();
   if (Error::kSuccess != code) return code;
 
-  BOOST_LOG_SEV(*Logging::logger(), blt::debug) << "Replaying race.";
-
-  // TODO(ds) only subscribe if -s and not -p
-  // mv to base
-  // consider separate io_service for server and client.
-  if (args()->listening_port().empty()) {
-    code = comms()->Subscribe("127.0.0.1", "8000"); // TODO(ds) use prog args, resolve port from name
-    if (Error::kSuccess == code) BOOST_LOG_SEV(*Logging::logger(), blt::debug)
-      << "Subscribed to TODO(ds) format subscription name.";
+  if (publishing()) {
+    BOOST_LOG_SEV(*Logging::logger(), blt::debug) << "Replaying race.";
   }
+  else {
+    if (args()->services().size()) {
+      // Split "127.0.0.1:8000" into "127.0.0.1" and "8000"
+      std::vector<std::string> tokens;
+      std::string service = args()->services()[0];
+      boost::split(tokens, service, boost::is_any_of(":"));
 
+      if (tokens.size() > 1) {
+        code = comms()->Subscribe(tokens[0], tokens[1]);
+      }
+    }
+  }
   return Error::kSuccess;
 }
 

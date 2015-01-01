@@ -30,6 +30,7 @@
 #include "boost/range/algorithm/copy.hpp"
 
 #include "osoa/service/comms/comms.h"
+#include "osoa/service/logging.h"
 
 #include "olcore/messages/messages.h"
 #include "olcore/util/utilities.h"
@@ -201,7 +202,7 @@ int main(int argc, const char* argv[]) {
     return static_cast<int>(code);
   
 
-  std::cout << "olap run" << std::endl;
+  BOOST_LOG_SEV(*osoa::Logging::logger(), blt::info) << "olap run";
   if (osoa::Error::kSuccess == replay.Start()) {
     if (replay.publishing()) {
       olap::run();
