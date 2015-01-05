@@ -15,57 +15,55 @@
 
 // Implements the Pit class.
 
-#include "olcore_pch.h"
+#include "olcore_pch.h"  // NOLINT
 
 #include "messages/pit.h"
 
 #include "boost/lexical_cast.hpp"
 
 namespace olap {
-
-Pit::Pit()
-  : competitor_num_(0),
+  Pit::Pit()
+    : competitor_num_(0),
     lap_num_(0),
     num_(0) {
-}
+  }
 
-Pit::~Pit() {
-}
+  Pit::~Pit() {
+  }
 
-Message* Pit::Clone() const { return new Pit(*this); }
+  Message* Pit::Clone() const { return new Pit(*this); }
 
-Pit::operator std::string() const {
-  std::stringstream ss;
-  ss << *this;
+  Pit::operator std::string() const {
+    std::stringstream ss;
+    ss << *this;
 
-  return ss.str();
-}
+    return ss.str();
+  }
 
-int Pit::lap_num() const { return lap_num_; }
-void Pit::set_lap_num(int val) { lap_num_ = val; }
+  int Pit::lap_num() const { return lap_num_; }
+  void Pit::set_lap_num(int val) { lap_num_ = val; }
 
+  void Pit::Print(std::ostream* os) const {
+    if (!os) return;
+    *os << "pit," << static_cast<LongInterval>(race_time_) << ","
+      << time_of_day_ << "," << competitor_num_ << "," << lap_num_ << "," << num_
+      << std::endl;
+  }
 
-void Pit::Print(std::ostream& os) const {
-  os << "pit," << static_cast<LongInterval>(race_time_) << ","
-    << time_of_day_ << "," << competitor_num_<< "," << lap_num_ << "," << num_
-    << std::endl;
-}
+  std::istream& operator>>(std::istream& is, Pit& pit) {
+    std::string str;
 
-std::istream& operator>>(std::istream& is, Pit& pit) {
-  std::string str;
+    is >> pit.competitor_num_, is.ignore();
+    is >> pit.lap_num_, is.ignore();
 
-  is >> pit.competitor_num_, is.ignore();
-  is >> pit.lap_num_, is.ignore();
+    std::getline(is, str, ',');
+    pit.time_of_day_ = boost::lexical_cast<LongInterval>(str);
 
-  std::getline(is, str, ',');
-  pit.time_of_day_ = boost::lexical_cast<LongInterval>(str);
+    is >> pit.num_, is.ignore();
 
-  is >> pit.num_, is.ignore();
+    std::getline(is, str, ',');
+    std::getline(is, str, ',');
 
-  std::getline(is, str, ',');
-  std::getline(is, str, ',');
-
-  return is;
-}
-
+    return is;
+  }
 }  // namespace olap

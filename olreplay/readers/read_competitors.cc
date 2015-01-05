@@ -15,68 +15,66 @@
 
 // Implements ReadCompetitors.
 
-#include "olreplay_pch.h"
+#include "olreplay_pch.h"  // NOLINT
 
 #include "readers/read_competitors.h"
 
-#include <fstream>
+#include <fstream>  // NOLINT
 
 #include "olcore/messages/competitor.h"
 
 namespace olap {
+  void ReadBestSectors(CompetitorMap* competitors) {
+    if (!competitors) return;
 
-void ReadBestSectors(CompetitorMap* competitors) {
-  if (!competitors) return;
+    std::ifstream file;
+    std::string filename("BestSectors.txt");
+    file.open(filename);
+    if (!file.is_open())
+      throw std::runtime_error("Could not open " + filename);
 
-  std::ifstream file;
-  std::string filename("BestSectors.txt");
-  file.open(filename);
-  if (!file.is_open())
-    throw std::runtime_error("Could not open " + filename);
+    int num = 0;
+    cpp_dec_float_3 lap_time;
+    cpp_dec_float_3 sector_1, sector_2, sector_3;
+    cpp_dec_float_3 sector_1_pc, sector_2_pc, sector_3_pc;
 
-  int num = 0;
-  cpp_dec_float_3 lap_time;
-  cpp_dec_float_3 sector_1, sector_2, sector_3;
-  cpp_dec_float_3 sector_1_pc, sector_2_pc, sector_3_pc;
+    std::string str;
+    while (std::getline(file, str)) {
+      std::istringstream iss(str);
+      iss >> num;
+      iss >> sector_1; iss >> sector_2; iss >> sector_3;
 
-  std::string str;
-  while (std::getline(file, str)) {
-    std::istringstream iss(str);
-    iss >> num;
-    iss >> sector_1; iss >> sector_2; iss >> sector_3;
+      sector_1_pc = sector_1 / (sector_1 + sector_2 + sector_3);
+      sector_2_pc = sector_2 / (sector_1 + sector_2 + sector_3);
+      sector_3_pc = sector_3 / (sector_1 + sector_2 + sector_3);
+      sector_3_pc += 1 - (sector_1_pc + sector_2_pc + sector_3_pc);
+      (*competitors)[num].set_sector_1_percent(sector_1_pc);
+      (*competitors)[num].set_sector_2_percent(sector_2_pc);
+      (*competitors)[num].set_sector_3_percent(sector_3_pc);
 
-    sector_1_pc = sector_1 / (sector_1 + sector_2 + sector_3);
-    sector_2_pc = sector_2 / (sector_1 + sector_2 + sector_3);
-    sector_3_pc = sector_3 / (sector_1 + sector_2 + sector_3);
-    sector_3_pc += 1 - (sector_1_pc + sector_2_pc + sector_3_pc);
-    (*competitors)[num].set_sector_1_percent(sector_1_pc);
-    (*competitors)[num].set_sector_2_percent(sector_2_pc);
-    (*competitors)[num].set_sector_3_percent(sector_3_pc);
-
-    // TODO(ds) NDEBUG release
-    assert(1 == sector_1_pc + sector_2_pc + sector_3_pc);
-  }
-}
-
-void ReadCompetitors(CompetitorMap* competitors) {
-  if (!competitors) return;
-
-  std::ifstream file;
-  std::string filename("competitors.txt");
-
-  file.open(filename);
-  if (!file.is_open())
-    throw std::runtime_error("Could not open " + filename);
-
-  int grid_pos = 0;
-  std::string line;
-  while (std::getline(file, line)) {
-    auto competitor = boost::lexical_cast<Competitor>(line);
-    competitor.set_grid_pos(++grid_pos);
-    (*competitors)[competitor.num()] = competitor;
+      // TODO(ds) NDEBUG release
+      assert(1 == sector_1_pc + sector_2_pc + sector_3_pc);
+    }
   }
 
-  ReadBestSectors(competitors);
-}
+  void ReadCompetitors(CompetitorMap* competitors) {
+    if (!competitors) return;
 
+    std::ifstream file;
+    std::string filename("competitors.txt");
+
+    file.open(filename);
+    if (!file.is_open())
+      throw std::runtime_error("Could not open " + filename);
+
+    int grid_pos = 0;
+    std::string line;
+    while (std::getline(file, line)) {
+      auto competitor = boost::lexical_cast<Competitor>(line);
+      competitor.set_grid_pos(++grid_pos);
+      (*competitors)[competitor.num()] = competitor;
+    }
+
+    ReadBestSectors(competitors);
+  }
 }  // namespace olap

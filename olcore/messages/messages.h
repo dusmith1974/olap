@@ -15,8 +15,8 @@
 
 // Includes all message headers.
 
-#ifndef MESSAGES__MESSAGES_H_
-#define MESSAGES__MESSAGES_H_
+#ifndef OLCORE_MESSAGES_MESSAGES_H_
+#define OLCORE_MESSAGES_MESSAGES_H_
 
 #include "messages/competitor.h"
 #include "messages/lap.h"
@@ -26,4 +26,4 @@
 #include "messages/pit.h"
 #include "messages/sector.h"
 
-#endif  // MESSAGES__MESSAGES_H_
+#endif  // OLCORE_MESSAGES_MESSAGES_H_

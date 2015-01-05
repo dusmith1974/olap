@@ -1,3 +1,5 @@
+#CC = distcc
+#CXX = distcc g++
 CXXFLAGS = -DBOOST_ALL_DYN_LINK
 CXXFLAGS += -Wall -Wextra -ansi -pedantic -Weffc++ -Wshadow -Werror
 CXXFLAGS += -Wno-error=effc++ # for boost and other libs.

@@ -22,37 +22,34 @@
 #include "messages/sector_fwd.h"
 
 namespace olap {
+  class Sector final : public Message {
+  public:
+    Sector();
+    Sector(int num_val, int competitor_num_val, int lap_num_val, long time_val);
 
-class Sector final : public Message {
- public:
-  Sector();
-  Sector(int num_val, int competitor_num_val, int lap_num_val, long time_val);
+    virtual ~Sector();
 
-  virtual ~Sector();
+    Message* Clone() const;
 
-  Message* Clone() const;
+    operator std::string() const;
 
-  operator std::string() const;
+    int num() const;
+    void set_num(int val);
 
-  int num() const;
-  void set_num(int val);
+    int competitor_num() const;
 
-  int competitor_num() const;
+    Interval time() const;
 
-  Interval time() const;
+    operator Interval() const;
 
-  operator Interval() const;
+  private:
+    void Print(std::ostream* os) const override;
 
- private:
-  void Print(std::ostream& os) const override;
-
-  int num_;
-  int competitor_num_;
-  int lap_num_;
-  Interval time_;
-};
-
-
+    int num_;
+    int competitor_num_;
+    int lap_num_;
+    Interval time_;
+  };
 }  // namespace olap
 
 #endif  // MESSAGES_SECTOR_H_

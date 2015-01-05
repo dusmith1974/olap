@@ -1,3 +1,9 @@
+slow down retries if connect with no server
+ (same as retries if server dies?)
+use -h if no args
+dont start server if bind to port is in use
+make timing.html available from websrv (fileshare or apache ws?)
+
 log all program args in log header
 clean exit of client and server on ctrl-c
 cpplint/gsg/valgrind/vs static code analysis

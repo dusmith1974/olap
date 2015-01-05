@@ -15,11 +15,11 @@
 
 // Implements the ReadLapAnalysis class.
 
-#include "olreplay_pch.h"
+#include "olreplay_pch.h"  // NOLINT
 
 #include "readers/read_lap_analysis.h"
 
-#include <fstream>
+#include <fstream>  // NOLINT
 
 #include "boost/lexical_cast.hpp"
 
@@ -27,29 +27,27 @@
 #include "olcore/time/long_interval.h"
 
 namespace olap {
+  LongInterval ReadLapAnalysis(const Lap& leaders_lap, CompetitorLapMap* lap_analysis) {
+    if (!lap_analysis) return LongInterval(0);
 
-LongInterval ReadLapAnalysis(const Lap& leaders_lap, CompetitorLapMap* lap_analysis) {
-  if (!lap_analysis) return LongInterval(0);
+    std::ifstream file;
+    std::string filename("RaceLapAnalysis.txt");
 
-  std::ifstream file;
-  std::string filename("RaceLapAnalysis.txt");
+    file.open(filename);
+    if (!file.is_open())
+      throw std::runtime_error("Could not open " + filename);
 
-  file.open(filename);
-  if (!file.is_open())
-    throw std::runtime_error("Could not open " + filename);
+    LongInterval race_start_time;
+    std::string line;
+    while (std::getline(file, line)) {
+      auto lap = boost::lexical_cast<Lap>(line);
+      if (lap.num() > 1)
+        (*lap_analysis)[lap.competitor_num()].push_back(lap);
+      else if (lap.num() == 1
+               && lap.competitor_num() == leaders_lap.competitor_num())
+               race_start_time = LongInterval(lap.time() - leaders_lap.time());
+    }
 
-  LongInterval race_start_time;
-  std::string line;
-  while (std::getline(file, line)) {
-    auto lap = boost::lexical_cast<Lap>(line);
-    if (lap.num() > 1)
-      (*lap_analysis)[lap.competitor_num()].push_back(lap);
-    else if (lap.num() == 1
-             && lap.competitor_num() == leaders_lap.competitor_num())
-      race_start_time = LongInterval(lap.time() - leaders_lap.time());
+    return race_start_time;
   }
-
-  return race_start_time;
-}
-
 }  // namespace olap

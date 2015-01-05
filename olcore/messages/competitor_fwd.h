@@ -21,10 +21,8 @@
 #include <map>
 
 namespace olap {
-
-class Competitor;
-typedef std::map<int, Competitor> CompetitorMap;
-
+  class Competitor;
+  typedef std::map<int, Competitor> CompetitorMap;
 }  // namespace
 
 #endif // MESSAGES_COMPETITOR_FWD_H_

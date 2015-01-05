@@ -24,11 +24,9 @@
 #include "messages/message_fwd.h"
 
 namespace olap {
-
-class Sector;
-typedef std::vector<Sector> SectorVec;
-typedef std::map<int, SectorVec> CompetitorSectorMap;
-
+  class Sector;
+  typedef std::vector<Sector> SectorVec;
+  typedef std::map<int, SectorVec> CompetitorSectorMap;
 }  // namespace olap
 
 #endif  // MESSAGES_SECTOR_FWD_H_

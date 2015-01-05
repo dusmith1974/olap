@@ -15,17 +15,15 @@
 
 // Contains ReadCompetitors.
 
-#ifndef READERS__READ_COMPETITORS_H_
-#define READERS__READ_COMPETITORS_H_
+#ifndef READERS_READ_COMPETITORS_H_
+#define READERS_READ_COMPETITORS_H_
 
 #include "olcore/messages/competitor_fwd.h"
 
 namespace olap {
+  // TODO(ds) mv BestSectors to own cc?
+  void ReadBestSectors(CompetitorMap* competitors);
 
-// TODO(ds) mv BestSectors to own cc?
-void ReadBestSectors(CompetitorMap* competitors);
-
-void ReadCompetitors(CompetitorMap* competitors);
-
+  void ReadCompetitors(CompetitorMap* competitors);
 }  // namespace olap
-#endif  // READERS__READ_COMPETITORS_H_
+#endif  // READERS_READ_COMPETITORS_H_

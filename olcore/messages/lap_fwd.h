@@ -22,11 +22,9 @@
 #include <vector>
 
 namespace olap {
+  class Lap;
 
-class Lap;
-
-typedef std::vector<Lap> LapVec;
-typedef std::map<int, LapVec> CompetitorLapMap;
-
+  typedef std::vector<Lap> LapVec;
+  typedef std::map<int, LapVec> CompetitorLapMap;
 }  // namespace olap
 #endif  // MESSAGES_LAP_FWD_H_

@@ -22,9 +22,7 @@
 #include <vector>
 
 namespace olap {
-
-class Message;
-typedef std::vector<std::string> MsgVec;
-
+  class Message;
+  typedef std::vector<std::string> MsgVec;
 }  // namespace olap
 #endif  // MESSAGES_MESSAGE_FWD_H_

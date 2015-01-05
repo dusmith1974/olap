@@ -24,32 +24,30 @@
 #include "boost/chrono.hpp"
 
 namespace olap {
+  // Represents a timespan.
+  class Interval {
+  public:
+    Interval();
+    virtual ~Interval();
 
-// Represents a timespan.
-class Interval {
- public:
-  Interval();
-  virtual ~Interval();
+    explicit Interval(long val);
+    explicit Interval(const boost::chrono::milliseconds& val);
 
-  explicit Interval(long val);
-  explicit Interval(const boost::chrono::milliseconds& val);
+    const std::string& str() const;
 
-  const std::string& str() const;
+    operator long() const;
+    operator boost::chrono::milliseconds() const;
 
-  operator long() const;
-  operator boost::chrono::milliseconds() const;
+    const Interval& operator+=(const Interval& interval);
 
-  const Interval& operator+=(const Interval& interval);
+  protected:
+    boost::chrono::milliseconds milliseconds_;
+    std::string str_;
 
- protected:
-  boost::chrono::milliseconds milliseconds_;
-  std::string str_;
-
- private:
-  friend std::istream& operator>>(std::istream& is, Interval& interval);
-  friend std::ostream& operator<<(std::ostream& os, const Interval& interval);
-};
-
+  private:
+    friend std::istream& operator>>(std::istream& is, Interval& interval);
+    friend std::ostream& operator<<(std::ostream& os, const Interval& interval);
+  };
 }  // namespace olap
 
 #endif  // TIME_INTERVAL_H_

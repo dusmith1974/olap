@@ -15,39 +15,39 @@
 
 // Contains a class representing a Pit.
 
-#ifndef MESSAGES__PIT_H_
-#define MESSAGES__PIT_H_
+#ifndef OLCORE_MESSAGES_PIT_H_
+#define OLCORE_MESSAGES_PIT_H_
+
+#include <string>
 
 #include "messages/message.h"
 #include "messages/pit_fwd.h"
 
 namespace olap {
+  // The Pit class.
+  class Pit : public Message {
+  public:
+    Pit();
 
-// The Pit class.
-class Pit : public Message {
- public:
-  Pit();
+    virtual ~Pit();
 
-  virtual ~Pit();
+    Message* Clone() const;
 
-  Message* Clone() const;
+    operator std::string() const;
 
-  operator std::string() const;
+    int lap_num() const;
+    void set_lap_num(int val);
 
-  int lap_num() const;
-  void set_lap_num(int val);
+  protected:
+    int competitor_num_;
+    int lap_num_;
+    int num_;
 
- protected:
-  int competitor_num_;
-  int lap_num_;
-  int num_;
+  private:
+    friend std::istream& operator>>(std::istream& is, Pit& pit);
 
- private:
-  friend std::istream& operator>>(std::istream& is, Pit& pit);
-
-  void Print(std::ostream& os) const override;
-};
-
+    void Print(std::ostream* os) const override;
+  };
 }  // namespace olap
 
-#endif  // MESSAGES__PIT_H_
+#endif  // OLCORE_MESSAGES_PIT_H_

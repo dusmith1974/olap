@@ -15,14 +15,14 @@
 
 // Recreates an events timing messages from the results.
 
-#include "olreplay_pch.h"
+#include "olreplay_pch.h"  // NOLINT
 
-#include <iostream>
-#include <map>
-#include <numeric>
-#include <string>
-#include <thread>
-#include <vector>
+#include <iostream>  // NOLINT
+#include <map>  // NOLINT
+#include <numeric>  // NOLINT
+#include <string>  // NOLINT
+#include <thread>  // NOLINT
+#include <vector>  // NOLINT
 
 #include "boost/asio.hpp"
 #include "boost/optional.hpp"
@@ -46,161 +46,159 @@ using boost::optional;
 olap::Replay replay;
 
 namespace olap {
+  void PublishMessage(const boost::system::error_code&,
+                      const std::string& message) {
+    replay.AddTopicMessage("data", message, 1);
+  }
 
-void PublishMessage(const boost::system::error_code&,
-                    const std::string& message) {
-  replay.AddTopicMessage("data", message, 1);
-}
+  int run() {
+    MsgVec msgs;
+    CompetitorMap competitors;
+    CompetitorLapMap lap_history, lap_analysis, all_laps;
+    CompetitorSectorMap sectors;
 
-int run() {
-  MsgVec msgs;
-  CompetitorMap competitors;
-  CompetitorLapMap lap_history, lap_analysis, all_laps;
-  CompetitorSectorMap sectors;
+    ReadCompetitors(&competitors);
+    boost::copy(competitors | adaptors::map_values,
+                std::back_inserter(msgs));
 
-  ReadCompetitors(&competitors);
-  boost::copy(competitors | adaptors::map_values,
-              std::back_inserter(msgs));
+    MessageMap message_map;
+    AddMessages(competitors | adaptors::map_values, &message_map);
 
-  MessageMap message_map;
-  AddMessages(competitors | adaptors::map_values, &message_map);
+    Lap leaders_lap;
+    ReadLapHistory(&lap_history, &leaders_lap);
+    for (const auto& laps : lap_history | adaptors::map_values)
+      all_laps[laps.begin()->competitor_num()].push_back(*laps.begin());
 
-  Lap leaders_lap;
-  ReadLapHistory(&lap_history, &leaders_lap);
-  for (const auto& laps : lap_history | adaptors::map_values)
-    all_laps[laps.begin()->competitor_num()].push_back(*laps.begin());
+    Message::set_race_start_time(ReadLapAnalysis(leaders_lap, &lap_analysis));
 
-  Message::set_race_start_time(ReadLapAnalysis(leaders_lap, &lap_analysis));
-
-  for (auto& laps : lap_analysis) {
-    const auto other = lap_history.find(laps.first);
-    if (other != lap_history.end() && other->second.size()) {
-      std::transform(laps.second.begin(), std::next(laps.second.begin(),
-                                                    other->second.size() - 1),
-                     std::next(other->second.begin()),
-                     laps.second.begin(),
-                     [] (Lap& a, const Lap& b) {
-                       a.set_gap(b.gap());
-                       return a;
-                     });
+    for (auto& laps : lap_analysis) {
+      const auto other = lap_history.find(laps.first);
+      if (other != lap_history.end() && other->second.size()) {
+        std::transform(laps.second.begin(), std::next(laps.second.begin(),
+          other->second.size() - 1),
+          std::next(other->second.begin()),
+          laps.second.begin(),
+          [](Lap& a, const Lap& b) {
+          a.set_gap(b.gap());
+          return a;
+        });
+      }
     }
-  }
 
-  for (const auto& laps : lap_analysis | adaptors::map_values)
-    std::copy(laps.begin(), laps.end(), std::back_inserter(
-          all_laps[laps.begin()->competitor_num()]));
+    for (const auto& laps : lap_analysis | adaptors::map_values)
+      std::copy(laps.begin(), laps.end(), std::back_inserter(
+      all_laps[laps.begin()->competitor_num()]));
 
-  for (auto& laps : all_laps)
-    std::partial_sum(laps.second.begin(), laps.second.end(),
-                     laps.second.begin(),
-                     [] (Lap&a, Lap&b) {
-                       b.set_race_time(Interval(a.race_time() + b.time()));
-                       return b;
-                     });
+    for (auto& laps : all_laps)
+      std::partial_sum(laps.second.begin(), laps.second.end(),
+      laps.second.begin(),
+      [](Lap&a, Lap&b) {
+      b.set_race_time(Interval(a.race_time() + b.time()));
+      return b;
+    });
 
-  // Set the time of day on the first laps.
-  for (auto& laps : all_laps) {
-    decltype(laps.second)::iterator iter = std::next(laps.second.begin());
-    iter = (iter > laps.second.end()) ? laps.second.end() : iter;
+    // Set the time of day on the first laps.
+    for (auto& laps : all_laps) {
+      decltype(laps.second)::iterator iter = std::next(laps.second.begin());
+      iter = (iter > laps.second.end()) ? laps.second.end() : iter;
 
-    std::for_each(laps.second.begin(), iter,
-                  [] (Lap& lap) {
-                    lap.set_time_of_day(LongInterval(
-                        lap.time_of_day() + Message::race_start_time()));
-                  });
-  }
-
-  for (const auto& laps : all_laps | adaptors::map_values) {
-    std::copy(laps.begin(), laps.end(), std::back_inserter(msgs));
-    AddMessages(laps, &message_map);
-  }
-
-  // Doesn't look as though the sector analysis pdf is published (to the public)
-  // so we'll have to guess the sector times based on the current lap time and
-  // the fastest sectors.
-  long sector_1, sector_2, sector_3;
-  for (const auto& laps : all_laps | adaptors::map_values) {
-    for (const auto& lap : laps) {
-      sector_1 = cpp_dec_float_3(static_cast<long>(lap.time()) * competitors[lap.competitor_num()].sector_1_percent()).convert_to<long>();
-      sector_2 = cpp_dec_float_3(static_cast<long>(lap.time()) * competitors[lap.competitor_num()].sector_2_percent()).convert_to<long>();
-      sector_3 = cpp_dec_float_3(static_cast<long>(lap.time()) * competitors[lap.competitor_num()].sector_3_percent()).convert_to<long>();
-      sector_3 += static_cast<long>(lap.time()) - (sector_1 + sector_2 + sector_3);
-
-      assert(static_cast<long>(lap.time()) == (sector_1 + sector_2 + sector_3));
-
-      Sector s1(1, lap.competitor_num(), lap.num(), sector_1);
-      Sector s2(2, lap.competitor_num(), lap.num(), sector_2);
-      Sector s3(3, lap.competitor_num(), lap.num(), sector_3);
-
-      s1.set_race_time(Interval(lap.race_time() - lap.time() + s1.time()));
-      s2.set_race_time(Interval(s1.race_time() + s2.time()));
-      s3.set_race_time(Interval(s2.race_time() + s3.time()));
-
-      sectors[lap.competitor_num()].push_back(s1);
-      sectors[lap.competitor_num()].push_back(s2);
-      sectors[lap.competitor_num()].push_back(s3);
+      std::for_each(laps.second.begin(), iter,
+                    [](Lap& lap) {
+        lap.set_time_of_day(LongInterval(
+          lap.time_of_day() + Message::race_start_time()));
+      });
     }
-  }
 
-  for (const auto& competitor_sectors : sectors | adaptors::map_values) {
-    std::copy(competitor_sectors.begin(), competitor_sectors.end(), std::back_inserter(msgs));
-    AddMessages(competitor_sectors, &message_map);
-  }
+    for (const auto& laps : all_laps | adaptors::map_values) {
+      std::copy(laps.begin(), laps.end(), std::back_inserter(msgs));
+      AddMessages(laps, &message_map);
+    }
 
-  PitVec pits;
-  OutVec outs;
-  pits.reserve(50);
-  outs.reserve(50);
-  ReadPits(Message::race_start_time(), &pits, &outs);
+    // Doesn't look as though the sector analysis pdf is published (to the public)
+    // so we'll have to guess the sector times based on the current lap time and
+    // the fastest sectors.
+    long sector_1, sector_2, sector_3;
+    for (const auto& laps : all_laps | adaptors::map_values) {
+      for (const auto& lap : laps) {
+        sector_1 = cpp_dec_float_3(static_cast<long>(lap.time()) * competitors[lap.competitor_num()].sector_1_percent()).convert_to<long>();
+        sector_2 = cpp_dec_float_3(static_cast<long>(lap.time()) * competitors[lap.competitor_num()].sector_2_percent()).convert_to<long>();
+        sector_3 = cpp_dec_float_3(static_cast<long>(lap.time()) * competitors[lap.competitor_num()].sector_3_percent()).convert_to<long>();
+        sector_3 += static_cast<long>(lap.time()) - (sector_1 + sector_2 + sector_3);
 
-  AddMessages(pits, &message_map);
-  AddMessages(outs, &message_map);
+        assert(static_cast<long>(lap.time()) == (sector_1 + sector_2 + sector_3));
 
-  // Cut race time for quick debug/test.
-//#define OLAP_SHORT_RACE
+        Sector s1(1, lap.competitor_num(), lap.num(), sector_1);
+        Sector s2(2, lap.competitor_num(), lap.num(), sector_2);
+        Sector s3(3, lap.competitor_num(), lap.num(), sector_3);
+
+        s1.set_race_time(Interval(lap.race_time() - lap.time() + s1.time()));
+        s2.set_race_time(Interval(s1.race_time() + s2.time()));
+        s3.set_race_time(Interval(s2.race_time() + s3.time()));
+
+        sectors[lap.competitor_num()].push_back(s1);
+        sectors[lap.competitor_num()].push_back(s2);
+        sectors[lap.competitor_num()].push_back(s3);
+      }
+    }
+
+    for (const auto& competitor_sectors : sectors | adaptors::map_values) {
+      std::copy(competitor_sectors.begin(), competitor_sectors.end(), std::back_inserter(msgs));
+      AddMessages(competitor_sectors, &message_map);
+    }
+
+    PitVec pits;
+    OutVec outs;
+    pits.reserve(50);
+    outs.reserve(50);
+    ReadPits(Message::race_start_time(), &pits, &outs);
+
+    AddMessages(pits, &message_map);
+    AddMessages(outs, &message_map);
+
+    // Cut race time for quick debug/test.
+    //#define OLAP_SHORT_RACE
 #ifdef OLAP_SHORT_RACE
-  auto pos = message_map.begin();
-  std::advance(pos, 50);
-  message_map.erase(pos, message_map.end());
+    auto pos = message_map.begin();
+    std::advance(pos, 50);
+    message_map.erase(pos, message_map.end());
 #endif  // OLAP_SHORT_RACE
 
-  boost::asio::io_service io_service;
+    boost::asio::io_service io_service;
 
-  int continue_replay = false;
+    int continue_replay = false;
 #define OLAP_CONTINUOUS_REPLAY
 #ifdef OLAP_CONTINUOUS_REPLAY
-  continue_replay = true;
+    continue_replay = true;
 #endif
 
-  do {
-    for (const auto& message : message_map)
-      message.second->set_timer(&io_service);
+    do {
+      for (const auto& message : message_map)
+        message.second->set_timer(&io_service);
 
-    for (const auto& message : message_map)
-      message.second->start_timer(PublishMessage);
+      for (const auto& message : message_map)
+        message.second->start_timer(PublishMessage);
 
-    io_service.run();
-    io_service.reset();
-    Message::reset_quick_time();
-  } while (continue_replay);
+      io_service.run();
+      io_service.reset();
+      Message::reset_quick_time();
+    } while (continue_replay);
 
-  msgs.clear();
-  competitors.clear();
-  lap_history.clear();
-  lap_analysis.clear();
-  all_laps.clear();
-  sectors.clear();
-  message_map.clear();
+    msgs.clear();
+    competitors.clear();
+    lap_history.clear();
+    lap_analysis.clear();
+    all_laps.clear();
+    sectors.clear();
+    message_map.clear();
 
-  return 0;
-}
+    return 0;
+  }
 }  // namespace olap
 
 int main(int argc, const char* argv[]) {
   osoa::Error code = replay.Initialize(argc, argv);
   if (osoa::Error::kSuccess != code)
     return static_cast<int>(code);
-  
 
   BOOST_LOG_SEV(*osoa::Logging::logger(), blt::info) << "olap run";
   if (osoa::Error::kSuccess == replay.Start()) {

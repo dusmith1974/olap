@@ -23,16 +23,15 @@
 #include "time/interval.h"
 
 namespace olap {
+  class LongInterval : public Interval {
+  public:
+    LongInterval();
+    explicit LongInterval(long val);
 
-class LongInterval : public Interval {
- public:
-  LongInterval();
-  explicit LongInterval(long val);
-
- private:
-  friend std::ostream& operator<<(std::ostream& os,
-                                  const LongInterval& long_interval);
-};
+  private:
+    friend std::ostream& operator<<(std::ostream& os,
+                                    const LongInterval& long_interval);
+  };
 }  // namespace olap
 
 #endif  // TIME_LONG_INTERVAL_H_

@@ -15,7 +15,7 @@
 
 // Implements the base class for all timing messages.
 
-#include "olcore_pch.h"
+#include "olcore_pch.h"  // NOLINT
 
 #include "messages/message.h"
 
@@ -24,73 +24,71 @@
 namespace asio = boost::asio;
 
 namespace olap {
+  LongInterval Message::race_start_time_;
+  std::atomic<int> Message::quick_time_{500};
 
-LongInterval Message::race_start_time_;
-std::atomic<int> Message::quick_time_{500};
-
-Message::Message()
-  : race_time_(Interval()),
+  Message::Message()
+    : race_time_(Interval()),
     time_of_day_{},
     timer_{} {
-}
+  }
 
-Message::~Message() {
-}
+  Message::~Message() {
+  }
 
-void Message::set_timer(boost::asio::io_service* service) {
-  if (!service) return;
+  void Message::set_timer(boost::asio::io_service* service) {
+    if (!service) return;
 
-  Interval time = race_time();
-//#define OLAP_QUICK_RACE
+    Interval time = race_time();
+    //#define OLAP_QUICK_RACE
 #ifdef OLAP_QUICK_RACE
-  //static int quick_time = 500;
-  quick_time_ += 100;
-  time = Interval(quick_time_);
+    //static int quick_time = 500;
+    quick_time_ += 100;
+    time = Interval(quick_time_);
 #endif  // OLAP_QUICK_RACE
 
-  timer_ = std::shared_ptr<boost::asio::deadline_timer>(
-    new asio::deadline_timer(*service,
-                             boost::posix_time::milliseconds(time)));
-}
+    timer_ = std::shared_ptr<boost::asio::deadline_timer>(
+      new asio::deadline_timer(*service,
+      boost::posix_time::milliseconds(time)));
+  }
 
-void Message::start_timer(std::function<void(const boost::system::error_code&, const std::string&)> fn) {
-  using boost::bind;
-  timer_->async_wait(bind(fn,
-                          asio::placeholders::error,
-                          static_cast<std::string>(*this)));
-  //timer_->async_wait(fn);
-}
+  void Message::start_timer(std::function<void(const boost::system::error_code&, const std::string&)> fn) {
+    using boost::bind;
+    timer_->async_wait(bind(fn,
+      asio::placeholders::error,
+      static_cast<std::string>(*this)));
+    //timer_->async_wait(fn);
+  }
 
-Message::operator std::string() const {
-  std::stringstream ss;
-  ss << *this;
+  Message::operator std::string() const {
+    std::stringstream ss;
+    ss << *this;
 
-  return ss.str();
-}
+    return ss.str();
+  }
 
-LongInterval Message::race_start_time() { return race_start_time_; }
+  LongInterval Message::race_start_time() { return race_start_time_; }
 
-void Message::set_race_start_time(const LongInterval& val) {
-  race_start_time_ = val;
-}
+  void Message::set_race_start_time(const LongInterval& val) {
+    race_start_time_ = val;
+  }
 
-LongInterval Message::time_of_day() const { return time_of_day_; }
-void Message::set_time_of_day(const LongInterval& val) { time_of_day_ = val; }
+  LongInterval Message::time_of_day() const { return time_of_day_; }
+  void Message::set_time_of_day(const LongInterval& val) { time_of_day_ = val; }
 
-Interval Message::race_time() const { return race_time_; }
+  Interval Message::race_time() const { return race_time_; }
 
-void Message::set_race_time(const Interval& val) {
-  race_time_ = val;
-  time_of_day_ = LongInterval(Message::race_start_time() + race_time());
-}
+  void Message::set_race_time(const Interval& val) {
+    race_time_ = val;
+    time_of_day_ = LongInterval(Message::race_start_time() + race_time());
+  }
 
-void Message::reset_quick_time() {
-  quick_time_ = 500;
-}
+  void Message::reset_quick_time() {
+    quick_time_ = 500;
+  }
 
-std::ostream& operator<<(std::ostream& os, const Message& message) {
-  message.Print(os);
-  return os;
-}
-
+  std::ostream& operator<<(std::ostream* os, const Message& message) {
+    message.Print(&os);
+    return os;
+  }
 }  // namespace olap

@@ -22,64 +22,63 @@
 #include "messages/message.h"
 
 namespace olap {
+  // The lap message.
+  class Lap final : public Message {
+  public:
+    Lap();
+    virtual ~Lap();
 
-// The lap message.
-class Lap final : public Message {
- public:
-  Lap();
-  virtual ~Lap();
+    Message* Clone() const;
 
-  Message* Clone() const;
+    operator std::string() const;
 
-  operator std::string() const;
+    int num() const;
+    void set_num(int val);
 
-  int num() const;
-  void set_num(int val);
+    Interval gap() const;
+    void set_gap(Interval val);
 
-  Interval gap() const;
-  void set_gap(Interval val);
+    int competitor_num() const;
 
-  int competitor_num() const;
+    LongInterval time() const;
 
-  LongInterval time() const;
+    operator Interval() const;
+    operator LongInterval() const;
 
-  operator Interval() const;
-  operator LongInterval() const;
+  private:
+    friend std::istream& operator>>(std::istream& is, Lap& lap);
 
- private:
-  friend std::istream& operator>>(std::istream& is, Lap& lap);
+    void Print(std::ostream* os) const override;
 
-  void Print(std::ostream& os) const override;
+    int num_;
+    int competitor_num_;
+    Interval gap_;
+    LongInterval time_;
+  };
 
-  int num_;
-  int competitor_num_;
-  Interval gap_;
-  LongInterval time_;
-};
+  inline bool operator<(const Lap& lhs, const Lap& rhs) {
+    return lhs.num() < rhs.num();
+  }
 
-inline bool operator<(const Lap& lhs, const Lap& rhs) {
-  return lhs.num() < rhs.num();
-}
+  inline bool operator>(const Lap& lhs, const Lap& rhs) {
+    return rhs < lhs;
+  }
 
-inline bool operator>(const Lap& lhs, const Lap& rhs) {
-  return rhs < lhs;
-}
+  inline bool operator<=(const Lap& lhs, const Lap& rhs) {
+    return !(lhs > rhs);
+  }
 
-inline bool operator<=(const Lap& lhs, const Lap& rhs) {
-  return !(lhs > rhs);
-}
+  inline bool operator>=(const Lap& lhs, const Lap& rhs) {
+    return !(lhs < rhs);
+  }
 
-inline bool operator>=(const Lap& lhs, const Lap& rhs) {
-  return !(lhs < rhs);
-}
+  inline bool operator==(const Lap& lhs, const Lap& rhs) {
+    return lhs.num() == rhs.num();
+  }
 
-inline bool operator==(const Lap& lhs, const Lap& rhs) {
-  return lhs.num() == rhs.num();
-}
-
-inline bool operator!=(const Lap& lhs, const Lap& rhs) {
-  return !(lhs == rhs);
-}
+  inline bool operator!=(const Lap& lhs, const Lap& rhs) {
+    return !(lhs == rhs);
+  }
 }  // namespace olap
 
 #endif  // MESSAGES_LAP_H_
