@@ -15,8 +15,8 @@
 
 // Contains the forward declarations for all message types.
 
-#ifndef MESSAGES_MESSAGES_FWD_H_
-#define MESSAGES_MESSAGES_FWD_H_
+#ifndef OLCORE_MESSAGES_MESSAGES_FWD_H_
+#define OLCORE_MESSAGES_MESSAGES_FWD_H_
 
 #include "messages/competitor_fwd.h"
 #include "messages/lap_fwd.h"
@@ -25,4 +25,4 @@
 #include "messages/pit_fwd.h"
 #include "messages/sector_fwd.h"
 
-#endif  // MESSAGES_MESSAGES_FWD_H_
+#endif  // OLCORE_MESSAGES_MESSAGES_FWD_H_

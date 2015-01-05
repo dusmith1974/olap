@@ -15,8 +15,8 @@
 
 // Contains the Interval class.
 
-#ifndef TIME_INTERVAL_H_
-#define TIME_INTERVAL_H_
+#ifndef OLCORE_TIME_INTERVAL_H_
+#define OLCORE_TIME_INTERVAL_H_
 
 #include <iosfwd>
 #include <string>
@@ -30,12 +30,12 @@ namespace olap {
     Interval();
     virtual ~Interval();
 
-    explicit Interval(long val);
+    explicit Interval(int64_t val);
     explicit Interval(const boost::chrono::milliseconds& val);
 
     const std::string& str() const;
 
-    operator long() const;
+    operator int64_t() const;
     operator boost::chrono::milliseconds() const;
 
     const Interval& operator+=(const Interval& interval);
@@ -46,8 +46,8 @@ namespace olap {
 
   private:
     friend std::istream& operator>>(std::istream& is, Interval& interval);
-    friend std::ostream& operator<<(std::ostream& os, const Interval& interval);
+    friend std::ostream& operator<<(std::ostream& os, const Interval& interval);  // NOLINT
   };
 }  // namespace olap
 
-#endif  // TIME_INTERVAL_H_
+#endif  // OLCORE_TIME_INTERVAL_H_

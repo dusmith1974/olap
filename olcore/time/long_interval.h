@@ -15,8 +15,8 @@
 
 // Contains the LongInterval class.
 
-#ifndef TIME_LONG_INTERVAL_H_
-#define TIME_LONG_INTERVAL_H_
+#ifndef OLCORE_TIME_LONG_INTERVAL_H_
+#define OLCORE_TIME_LONG_INTERVAL_H_
 
 #include <iosfwd>
 
@@ -26,12 +26,12 @@ namespace olap {
   class LongInterval : public Interval {
   public:
     LongInterval();
-    explicit LongInterval(long val);
+    explicit LongInterval(int64_t val);
 
   private:
     friend std::ostream& operator<<(std::ostream& os,
-                                    const LongInterval& long_interval);
+                                    const LongInterval& long_interval);  // NOLINT
   };
 }  // namespace olap
 
-#endif  // TIME_LONG_INTERVAL_H_
+#endif  // OLCORE_TIME_LONG_INTERVAL_H_

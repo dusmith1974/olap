@@ -15,8 +15,8 @@
 
 // Contains the forward declarations for a Pit message.
 
-#ifndef MESSAGES_PIT_FWD_H_
-#define MESSAGES_PIT_FWD_H_
+#ifndef OLCORE_MESSAGES_PIT_FWD_H_
+#define OLCORE_MESSAGES_PIT_FWD_H_
 
 #include <vector>
 
@@ -25,4 +25,4 @@ namespace olap {
   typedef std::vector<Pit> PitVec;
 }  // namespace olap
 
-#endif  // MESSAGES_PIT_FWD_H_
+#endif  // OLCORE_MESSAGES_PIT_FWD_H_

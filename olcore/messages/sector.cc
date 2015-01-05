@@ -27,7 +27,10 @@ namespace olap {
     time_(Interval()) {
   }
 
-  Sector::Sector(int num_val, int competitor_num_val, int lap_num_val, long time_val)
+  Sector::Sector(int num_val,
+                 int competitor_num_val,
+                 int lap_num_val,
+                 int64_t time_val)
     : num_(num_val),
     competitor_num_(competitor_num_val),
     lap_num_(lap_num_val),
@@ -55,9 +58,8 @@ namespace olap {
 
   Sector::operator Interval() const { return time_; }
 
-  void Sector::Print(std::ostream* os) const {
-    if (!os) return;
-    *os << "sec," << static_cast<LongInterval>(race_time_)
+  void Sector::Print(std::ostream& os) const {  // NOLINT
+    os << "sec," << static_cast<LongInterval>(race_time_)
       << "," << time_of_day_ << "," << competitor_num_ << "," << lap_num_
       << "," << num_ << "," << time_ << std::endl;
   }

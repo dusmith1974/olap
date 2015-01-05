@@ -15,8 +15,10 @@
 
 // Contains a class representing a Out.
 
-#ifndef MESSAGES_OUT_H_
-#define MESSAGES_OUT_H_
+#ifndef OLCORE_MESSAGES_OUT_H_
+#define OLCORE_MESSAGES_OUT_H_
+
+#include <string>
 
 #include "messages/message.h"
 
@@ -48,8 +50,8 @@ namespace olap {
   private:
     friend std::istream& operator>>(std::istream& is, Out& out);
 
-    void Print(std::ostream* os) const override;
+    void Print(std::ostream& os) const override;  // NOLINT
   };
 }  // namespace olap
 
-#endif  // MESSAGES_OUT_H_
+#endif  // OLCORE_MESSAGES_OUT_H_

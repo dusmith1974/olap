@@ -15,10 +15,12 @@
 
 // Contains a class representing a competitors lap.
 
-#ifndef MESSAGES_LAP_H_
-#define MESSAGES_LAP_H_
+#ifndef OLCORE_MESSAGES_LAP_H_
+#define OLCORE_MESSAGES_LAP_H_
 
-#include "lap_fwd.h"
+#include <string>
+
+#include "messages/lap_fwd.h"
 #include "messages/message.h"
 
 namespace olap {
@@ -48,7 +50,7 @@ namespace olap {
   private:
     friend std::istream& operator>>(std::istream& is, Lap& lap);
 
-    void Print(std::ostream* os) const override;
+    void Print(std::ostream& os) const override;  // NOLINT
 
     int num_;
     int competitor_num_;
@@ -81,4 +83,4 @@ namespace olap {
   }
 }  // namespace olap
 
-#endif  // MESSAGES_LAP_H_
+#endif  // OLCORE_MESSAGES_LAP_H_

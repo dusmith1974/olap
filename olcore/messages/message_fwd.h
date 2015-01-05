@@ -15,8 +15,8 @@
 
 // Contains the forward declarations for the message base class.
 
-#ifndef MESSAGES_MESSAGE_FWD_H_
-#define MESSAGES_MESSAGE_FWD_H_
+#ifndef OLCORE_MESSAGES_MESSAGE_FWD_H_
+#define OLCORE_MESSAGES_MESSAGE_FWD_H_
 
 #include <string>
 #include <vector>
@@ -25,4 +25,4 @@ namespace olap {
   class Message;
   typedef std::vector<std::string> MsgVec;
 }  // namespace olap
-#endif  // MESSAGES_MESSAGE_FWD_H_
+#endif  // OLCORE_MESSAGES_MESSAGE_FWD_H_

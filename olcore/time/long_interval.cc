@@ -26,20 +26,22 @@ namespace olap {
   LongInterval::LongInterval() : Interval(0) {
   }
 
-  LongInterval::LongInterval(long val) : Interval(val) {
+  LongInterval::LongInterval(int64_t val) : Interval(val) {
   }
 
-  std::ostream& operator<<(std::ostream& os, const LongInterval& long_interval) {
-    boost::chrono::hours hours = boost::chrono::duration_cast<boost::chrono::hours>(
+  std::ostream& operator<<(std::ostream& os,
+                           const LongInterval& long_interval) {  // NOLINT
+    using boost::chrono::hours;
+    hours the_hours = boost::chrono::duration_cast<boost::chrono::hours>(
       long_interval.milliseconds_);
 
-    if (hours.count()) {
-      os << hours.count() << ":";
+    if (the_hours.count()) {
+      os << the_hours.count() << ":";
       os << std::setw(2) << std::setfill('0');
     }
 
     os << boost::chrono::duration_cast<
-      boost::chrono::minutes>((hours.count())
+      boost::chrono::minutes>((the_hours.count())
       ? long_interval.milliseconds_ % boost::chrono::hours(1)
       : long_interval.milliseconds_).count();
 

@@ -15,14 +15,14 @@
 
 // Contains the forward declarations for a competitor.
 
-#ifndef MESSAGES_COMPETITOR_FWD_H_
-#define MESSAGES_COMPETITOR_FWD_H_
+#ifndef OLCORE_MESSAGES_COMPETITOR_FWD_H_
+#define OLCORE_MESSAGES_COMPETITOR_FWD_H_
 
 #include <map>
 
 namespace olap {
   class Competitor;
   typedef std::map<int, Competitor> CompetitorMap;
-}  // namespace
+}  // namespace olap
 
-#endif // MESSAGES_COMPETITOR_FWD_H_
+#endif  // OLCORE_MESSAGES_COMPETITOR_FWD_H_

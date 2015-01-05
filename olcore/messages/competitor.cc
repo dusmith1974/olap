@@ -46,18 +46,32 @@ namespace olap {
   std::string Competitor::name() const { return name_; }
   int Competitor::num() const { return num_; }
 
-  cpp_dec_float_3 Competitor::sector_1_percent() const { return sector_1_percent_; }
-  void Competitor::set_sector_1_percent(cpp_dec_float_3 val) { sector_1_percent_ = val; }
+  cpp_dec_float_3 Competitor::sector_1_percent() const {
+    return sector_1_percent_;
+  }
 
-  cpp_dec_float_3 Competitor::sector_2_percent() const { return sector_2_percent_; }
-  void Competitor::set_sector_2_percent(cpp_dec_float_3 val) { sector_2_percent_ = val; }
+  void Competitor::set_sector_1_percent(cpp_dec_float_3 val) {
+    sector_1_percent_ = val;
+  }
 
-  cpp_dec_float_3 Competitor::sector_3_percent() const { return sector_3_percent_; }
-  void Competitor::set_sector_3_percent(cpp_dec_float_3 val) { sector_3_percent_ = val; }
+  cpp_dec_float_3 Competitor::sector_2_percent() const {
+    return sector_2_percent_;
+  }
 
-  void Competitor::Print(std::ostream* os) const {
-    if (!os) return;
-    *os << "com," << "0,0," << num_ << "," << grid_pos_ << "," << short_name_
+  void Competitor::set_sector_2_percent(cpp_dec_float_3 val) {
+    sector_2_percent_ = val;
+  }
+
+  cpp_dec_float_3 Competitor::sector_3_percent() const {
+    return sector_3_percent_;
+  }
+
+  void Competitor::set_sector_3_percent(cpp_dec_float_3 val) {
+    sector_3_percent_ = val;
+  }
+
+  void Competitor::Print(std::ostream& os) const {  // NOLINT
+    os << "com," << "0,0," << num_ << "," << grid_pos_ << "," << short_name_
       << "," << name_ << "," << team_ << std::endl;
   }
 

@@ -55,9 +55,8 @@ namespace olap {
   Lap::operator Interval() const { return gap_; }
   Lap::operator LongInterval() const { return time_; }
 
-  void Lap::Print(std::ostream* os) const {
-    if (!os) return;
-    *os << "lap," << static_cast<LongInterval>(race_time_)
+  void Lap::Print(std::ostream& os) const {  // NOLINT
+    os << "lap," << static_cast<LongInterval>(race_time_)
       << "," << time_of_day_ << "," << competitor_num_
       << "," << num_ << "," << gap_ << "," << time_ << std::endl;
   }

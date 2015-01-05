@@ -15,8 +15,8 @@
 
 // General utility functions.
 
-#ifndef UTIL_UTILITIES_H_
-#define UTIL_UTILITIES_H_
+#ifndef OLCORE_UTIL_UTILITIES_H_
+#define OLCORE_UTIL_UTILITIES_H_
 
 #include "boost/optional.hpp"
 
@@ -25,7 +25,8 @@
 using boost::optional;
 
 namespace olap {
-  const optional<CompetitorMap::mapped_type&> FindPole(CompetitorMap* competitors);
-}  // namespace olap;
+  const optional<CompetitorMap::mapped_type&>
+  FindPole(CompetitorMap* competitors);
+}  // namespace olap
 
-#endif  // UTIL_UTILITIES_H_
+#endif  // OLCORE_UTIL_UTILITIES_H_

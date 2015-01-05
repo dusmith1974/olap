@@ -46,7 +46,7 @@ namespace olap {
   private:
     friend std::istream& operator>>(std::istream& is, Pit& pit);
 
-    void Print(std::ostream* os) const override;
+    void Print(std::ostream& os) const override;  // NOLINT
   };
 }  // namespace olap
 

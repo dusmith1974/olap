@@ -43,11 +43,12 @@ namespace olap {
   int Pit::lap_num() const { return lap_num_; }
   void Pit::set_lap_num(int val) { lap_num_ = val; }
 
-  void Pit::Print(std::ostream* os) const {
-    if (!os) return;
-    *os << "pit," << static_cast<LongInterval>(race_time_) << ","
-      << time_of_day_ << "," << competitor_num_ << "," << lap_num_ << "," << num_
-      << std::endl;
+  void Pit::Print(std::ostream& os) const {  // NOLINT
+    os << "pit," << static_cast<LongInterval>(race_time_) << ","
+      << time_of_day_ << ","
+      << competitor_num_ << ","
+      << lap_num_ << ","
+      << num_ << std::endl;
   }
 
   std::istream& operator>>(std::istream& is, Pit& pit) {

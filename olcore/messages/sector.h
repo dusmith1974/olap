@@ -15,8 +15,10 @@
 
 // Contains the sector message class.
 
-#ifndef MESSAGES_SECTOR_H_
-#define MESSAGES_SECTOR_H_
+#ifndef OLCORE_MESSAGES_SECTOR_H_
+#define OLCORE_MESSAGES_SECTOR_H_
+
+#include <string>
 
 #include "messages/message.h"
 #include "messages/sector_fwd.h"
@@ -25,7 +27,10 @@ namespace olap {
   class Sector final : public Message {
   public:
     Sector();
-    Sector(int num_val, int competitor_num_val, int lap_num_val, long time_val);
+    Sector(int num_val,
+           int competitor_num_val,
+           int lap_num_val,
+           int64_t time_val);
 
     virtual ~Sector();
 
@@ -43,7 +48,7 @@ namespace olap {
     operator Interval() const;
 
   private:
-    void Print(std::ostream* os) const override;
+    void Print(std::ostream& os) const override;  // NOLINT
 
     int num_;
     int competitor_num_;
@@ -52,4 +57,4 @@ namespace olap {
   };
 }  // namespace olap
 
-#endif  // MESSAGES_SECTOR_H_
+#endif  // OLCORE_MESSAGES_SECTOR_H_

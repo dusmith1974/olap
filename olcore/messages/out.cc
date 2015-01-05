@@ -49,9 +49,8 @@ namespace olap {
   int Out::lap_num() const { return lap_num_; }
   void Out::set_lap_num(int val) { lap_num_ = val; }
 
-  void Out::Print(std::ostream* os) const {
-    if (!os) return;
-    *os << "out," << static_cast<LongInterval>(race_time_) << ","
+  void Out::Print(std::ostream& os) const {  // NOLINT
+    os << "out," << static_cast<LongInterval>(race_time_) << ","
       << time_of_day_ << "," << competitor_num_ << "," << lap_num_ << ","
       << num_ << "," << time_ << "," << total_time_ << std::endl;
   }
@@ -74,8 +73,6 @@ namespace olap {
 
     std::getline(is, str, ',');
     out.total_time_ = boost::lexical_cast<LongInterval>(str);
-
-    //out.race_time_ = Interval(1);
 
     return is;
   }

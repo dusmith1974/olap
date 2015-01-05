@@ -1,3 +1,5 @@
+astyle after codemaid
+define POCO_LIBS and only use when required
 slow down retries if connect with no server
  (same as retries if server dies?)
 use -h if no args

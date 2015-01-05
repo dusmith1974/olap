@@ -114,18 +114,32 @@ namespace olap {
       AddMessages(laps, &message_map);
     }
 
-    // Doesn't look as though the sector analysis pdf is published (to the public)
-    // so we'll have to guess the sector times based on the current lap time and
-    // the fastest sectors.
-    long sector_1, sector_2, sector_3;
+    // Doesn't look as though the sector analysis pdf is published (to the
+    // public) so we'll have to guess the sector times based on the current lap
+    // time and the fastest sectors.
+    int64_t sector_1, sector_2, sector_3;
     for (const auto& laps : all_laps | adaptors::map_values) {
       for (const auto& lap : laps) {
-        sector_1 = cpp_dec_float_3(static_cast<long>(lap.time()) * competitors[lap.competitor_num()].sector_1_percent()).convert_to<long>();
-        sector_2 = cpp_dec_float_3(static_cast<long>(lap.time()) * competitors[lap.competitor_num()].sector_2_percent()).convert_to<long>();
-        sector_3 = cpp_dec_float_3(static_cast<long>(lap.time()) * competitors[lap.competitor_num()].sector_3_percent()).convert_to<long>();
-        sector_3 += static_cast<long>(lap.time()) - (sector_1 + sector_2 + sector_3);
+        sector_1 = cpp_dec_float_3(
+          static_cast<int64_t>(lap.time())
+          * competitors[lap.competitor_num()].sector_1_percent())
+          .convert_to<int64_t>();
 
-        assert(static_cast<long>(lap.time()) == (sector_1 + sector_2 + sector_3));
+        sector_2 = cpp_dec_float_3(
+          static_cast<int64_t>(lap.time())
+          * competitors[lap.competitor_num()].sector_2_percent())
+          .convert_to<int64_t>();
+
+        sector_3 = cpp_dec_float_3(
+          static_cast<int64_t>(lap.time())
+          * competitors[lap.competitor_num()].sector_3_percent())
+          .convert_to<int64_t>();
+
+        sector_3 += static_cast<int64_t>(lap.time())
+          - (sector_1 + sector_2 + sector_3);
+
+        assert(static_cast<int64_t>(lap.time())
+               == (sector_1 + sector_2 + sector_3));
 
         Sector s1(1, lap.competitor_num(), lap.num(), sector_1);
         Sector s2(2, lap.competitor_num(), lap.num(), sector_2);
@@ -142,7 +156,11 @@ namespace olap {
     }
 
     for (const auto& competitor_sectors : sectors | adaptors::map_values) {
-      std::copy(competitor_sectors.begin(), competitor_sectors.end(), std::back_inserter(msgs));
+      std::copy(
+        competitor_sectors.begin(),
+        competitor_sectors.end(),
+        std::back_inserter(msgs));
+
       AddMessages(competitor_sectors, &message_map);
     }
 
@@ -156,7 +174,7 @@ namespace olap {
     AddMessages(outs, &message_map);
 
     // Cut race time for quick debug/test.
-    //#define OLAP_SHORT_RACE
+    // #define OLAP_SHORT_RACE
 #ifdef OLAP_SHORT_RACE
     auto pos = message_map.begin();
     std::advance(pos, 50);
@@ -204,7 +222,6 @@ int main(int argc, const char* argv[]) {
   if (osoa::Error::kSuccess == replay.Start()) {
     if (replay.publishing()) {
       olap::run();
-      //socket_thread.join();
     }
 
     replay.Stop();

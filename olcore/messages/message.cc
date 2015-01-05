@@ -40,9 +40,8 @@ namespace olap {
     if (!service) return;
 
     Interval time = race_time();
-    //#define OLAP_QUICK_RACE
+    // #define OLAP_QUICK_RACE
 #ifdef OLAP_QUICK_RACE
-    //static int quick_time = 500;
     quick_time_ += 100;
     time = Interval(quick_time_);
 #endif  // OLAP_QUICK_RACE
@@ -52,12 +51,12 @@ namespace olap {
       boost::posix_time::milliseconds(time)));
   }
 
-  void Message::start_timer(std::function<void(const boost::system::error_code&, const std::string&)> fn) {
+  void Message::start_timer(std::function<void(const boost::system::error_code&,
+                            const std::string&)> fn) {
     using boost::bind;
     timer_->async_wait(bind(fn,
       asio::placeholders::error,
       static_cast<std::string>(*this)));
-    //timer_->async_wait(fn);
   }
 
   Message::operator std::string() const {
@@ -87,8 +86,8 @@ namespace olap {
     quick_time_ = 500;
   }
 
-  std::ostream& operator<<(std::ostream* os, const Message& message) {
-    message.Print(&os);
+  std::ostream& operator<<(std::ostream& os, const Message& message) {  // NOLINT
+    message.Print(os);
     return os;
   }
 }  // namespace olap

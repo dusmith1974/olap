@@ -15,8 +15,10 @@
 
 // Contains a class representing a competitor.
 
-#ifndef MESSAGES_COMPETITOR_H_
-#define MESSAGES_COMPETITOR_H_
+#ifndef OLCORE_MESSAGES_COMPETITOR_H_
+#define OLCORE_MESSAGES_COMPETITOR_H_
+
+#include <string>
 
 #include "boost/multiprecision/cpp_dec_float.hpp"
 
@@ -55,7 +57,7 @@ namespace olap {
   private:
     friend std::istream& operator>>(std::istream& is, Competitor& competitor);
 
-    void Print(std::ostream* os) const override;
+    void Print(std::ostream& os) const override;  // NOLINT
 
     int num_;
     int grid_pos_;
@@ -66,6 +68,6 @@ namespace olap {
     cpp_dec_float_3 sector_2_percent_;
     cpp_dec_float_3 sector_3_percent_;
   };
-}  // namespace
+}  // namespace olap
 
-#endif // MESSAGES_COMPETITOR_H_
+#endif  // OLCORE_MESSAGES_COMPETITOR_H_

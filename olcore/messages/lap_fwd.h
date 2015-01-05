@@ -15,8 +15,8 @@
 
 // Contains the forward declarations for a competitors lap.
 
-#ifndef MESSAGES_LAP_FWD_H_
-#define MESSAGES_LAP_FWD_H_
+#ifndef OLCORE_MESSAGES_LAP_FWD_H_
+#define OLCORE_MESSAGES_LAP_FWD_H_
 
 #include <map>
 #include <vector>
@@ -27,4 +27,4 @@ namespace olap {
   typedef std::vector<Lap> LapVec;
   typedef std::map<int, LapVec> CompetitorLapMap;
 }  // namespace olap
-#endif  // MESSAGES_LAP_FWD_H_
+#endif  // OLCORE_MESSAGES_LAP_FWD_H_

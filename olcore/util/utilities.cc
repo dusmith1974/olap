@@ -18,10 +18,14 @@
 #include "olcore_pch.h"  // NOLINT
 
 #include "util/utilities.h"
+
+#include <utility>  // NOLINT
+
 #include "messages/competitor.h"
 
 namespace olap {
-  const optional<CompetitorMap::mapped_type&> FindPole(CompetitorMap* competitors) {
+  const optional<CompetitorMap::mapped_type&>
+  FindPole(CompetitorMap* competitors) {
     if (!competitors) return optional<CompetitorMap::mapped_type&>();
 
     auto pole = std::find_if(competitors->begin(), competitors->end(),
@@ -29,7 +33,8 @@ namespace olap {
       return elem.second.grid_pos() == 1;
     });
 
-    return (pole == competitors->end()) ? optional<CompetitorMap::mapped_type&>()
+    return (pole == competitors->end())
+      ? optional<CompetitorMap::mapped_type&>()
       : optional<CompetitorMap::mapped_type&>(pole->second);
   }
 }  // namespace olap

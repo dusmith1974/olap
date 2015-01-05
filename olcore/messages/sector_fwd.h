@@ -15,8 +15,8 @@
 
 // Contains the forward declarations for a sector message.
 
-#ifndef MESSAGES_SECTOR_FWD_H_
-#define MESSAGES_SECTOR_FWD_H_
+#ifndef OLCORE_MESSAGES_SECTOR_FWD_H_
+#define OLCORE_MESSAGES_SECTOR_FWD_H_
 
 #include <map>
 #include <vector>
@@ -29,4 +29,4 @@ namespace olap {
   typedef std::map<int, SectorVec> CompetitorSectorMap;
 }  // namespace olap
 
-#endif  // MESSAGES_SECTOR_FWD_H_
+#endif  // OLCORE_MESSAGES_SECTOR_FWD_H_

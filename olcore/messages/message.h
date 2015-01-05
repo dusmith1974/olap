@@ -65,11 +65,11 @@ namespace olap {
     LongInterval time_of_day_;
 
   private:
-    friend std::ostream& operator<<(std::ostream& os, const Message& message);
+    friend std::ostream& operator<<(std::ostream& os, const Message& message);  // NOLINT
 
     static LongInterval race_start_time_;
 
-    virtual void Print(std::ostream* os) const = 0;
+    virtual void Print(std::ostream& os) const = 0;  // NOLINT
 
     static std::atomic<int> quick_time_;
     std::shared_ptr<boost::asio::deadline_timer> timer_;

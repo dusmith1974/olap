@@ -15,8 +15,8 @@
 
 // Contains the forward declarations for an Out message.
 
-#ifndef MESSAGES_OUT_FWD_H_
-#define MESSAGES_OUT_FWD_H_
+#ifndef OLCORE_MESSAGES_OUT_FWD_H_
+#define OLCORE_MESSAGES_OUT_FWD_H_
 
 #include <vector>
 
@@ -25,4 +25,4 @@ namespace olap {
   typedef std::vector<Out> OutVec;
 }  // namespace olap
 
-#endif  // MESSAGES_OUT_FWD_H_
+#endif  // OLCORE_MESSAGES_OUT_FWD_H_

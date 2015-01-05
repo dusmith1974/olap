@@ -31,7 +31,7 @@ namespace olap {
     str_{} {
   }
 
-  Interval::Interval(long val)
+  Interval::Interval(int64_t val)
     : milliseconds_(val),
     str_{} {
   }
@@ -46,8 +46,13 @@ namespace olap {
 
   const std::string& Interval::str() const { return str_; }
 
-  Interval::operator long() const { return static_cast<long>(milliseconds_.count()); }
-  Interval::operator boost::chrono::milliseconds() const { return milliseconds_; }
+  Interval::operator int64_t() const {
+    return static_cast<int64_t>(milliseconds_.count());
+  }
+
+  Interval::operator boost::chrono::milliseconds() const {
+    return milliseconds_;
+  }
 
   const Interval& Interval::operator+=(const Interval& interval) {
     milliseconds_ += interval.milliseconds_;
@@ -102,7 +107,7 @@ namespace olap {
     return is;
   }
 
-  std::ostream& operator<<(std::ostream& os, const Interval& interval) {
+  std::ostream& operator<<(std::ostream& os, const Interval& interval) {  // NOLINT
     if (!interval.str_.empty()) {
       os << interval.str_;
       return os;
@@ -117,4 +122,4 @@ namespace olap {
 
     return os;
   }
-}  // namespace
+}  // namespace olap
