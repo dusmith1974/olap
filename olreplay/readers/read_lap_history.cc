@@ -19,7 +19,9 @@
 
 #include "readers/read_lap_history.h"
 
+#include <algorithm>  // NOLINT
 #include <fstream>  // NOLINT
+#include <string>  // NOLINT
 
 #include "boost/algorithm/string.hpp"
 #include "boost/lexical_cast.hpp"

@@ -18,6 +18,8 @@
 #include "olreplay_pch.h"  // NOLINT
 #include "replay/replay.h"
 
+#include <vector>  // NOLINT
+
 #include "boost/algorithm/string.hpp"
 
 #include "osoa/service/args.h"
@@ -44,7 +46,8 @@ namespace olap {
     return result;
   }
 
-  // Starts the base class service, logs messages and connects to other services.
+  // Starts the base class service, logs messages and connects to other
+  // services.
   Error Replay::Start() {
     Error code = super::Start();
     if (Error::kSuccess != code) return code;
@@ -68,12 +71,13 @@ namespace olap {
 
   // No tidy up is required except to stop the base class service.
   Error Replay::Stop() {
-    comms()->Shutdown(); // mv into super::Stop() ?
+    comms()->Shutdown();  // mv into super::Stop() ?
     return super::Stop();
   }
 
   // TODO(ds) ren PublishMessage, drop num.
-  void Replay::AddTopicMessage(const std::string& topic, const std::string& message, int num) {
+  void Replay::AddTopicMessage(const std::string& topic,
+                               const std::string& message, int num) {
     (void)num;
     (void)topic;
     comms()->PublishMessage(message);

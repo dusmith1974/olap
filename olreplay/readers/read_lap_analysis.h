@@ -15,8 +15,8 @@
 
 // Contains a class representing a ReadLapAnalysis.
 
-#ifndef READERS_READ_LAP_ANALYSIS_H_
-#define READERS_READ_LAP_ANALYSIS_H_
+#ifndef OLREPLAY_READERS_READ_LAP_ANALYSIS_H_
+#define OLREPLAY_READERS_READ_LAP_ANALYSIS_H_
 
 #include "olcore/messages/lap_fwd.h"
 
@@ -24,7 +24,8 @@ namespace olap {
   class Lap;
   class LongInterval;
 
-  LongInterval ReadLapAnalysis(const Lap& leaders_lap, CompetitorLapMap* lap_analysis);
+  LongInterval ReadLapAnalysis(const Lap& leaders_lap,
+                               CompetitorLapMap* lap_analysis);
 }  // namespace olap
 
-#endif  // READERS_READ_LAP_ANALYSIS_H_
+#endif  // OLREPLAY_READERS_READ_LAP_ANALYSIS_H_

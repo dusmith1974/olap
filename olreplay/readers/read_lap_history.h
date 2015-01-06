@@ -15,8 +15,8 @@
 
 // Contains a class representing a ReadLapHistory.
 
-#ifndef READERS_READ_LAP_HISTORY_H_
-#define READERS_READ_LAP_HISTORY_H_
+#ifndef OLREPLAY_READERS_READ_LAP_HISTORY_H_
+#define OLREPLAY_READERS_READ_LAP_HISTORY_H_
 
 #include "olcore/messages/lap_fwd.h"
 
@@ -24,4 +24,4 @@ namespace olap {
   void ReadLapHistory(CompetitorLapMap* lap_history, Lap* leaders_lap);
 }  // namespace olap
 
-#endif  // READERS_READ_LAP_HISTORY_H_
+#endif  // OLREPLAY_READERS_READ_LAP_HISTORY_H_

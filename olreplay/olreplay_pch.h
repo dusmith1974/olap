@@ -15,8 +15,8 @@
 
 // Pre-compiled header.
 
-#ifndef OLREPLAY_PCH_H_
-#define OLREPLAY_PCH_H_
+#ifndef OLREPLAY_OLREPLAY_PCH_H_
+#define OLREPLAY_OLREPLAY_PCH_H_
 
 #ifdef USE_PCH
 #if defined(_MSC_VER) && _MSC_VER >= 1400
@@ -49,4 +49,4 @@
 
 #endif
 #endif  // USE_PCH
-#endif  // OLREPLAY_PCH_H_
+#endif  // OLREPLAY_OLREPLAY_PCH_H_

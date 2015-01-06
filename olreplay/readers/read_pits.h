@@ -15,8 +15,8 @@
 
 // Contains ReadPits.
 
-#ifndef READERS_READ_PITS_H_
-#define READERS_READ_PITS_H_
+#ifndef OLREPLAY_READERS_READ_PITS_H_
+#define OLREPLAY_READERS_READ_PITS_H_
 
 #include "olcore/messages/out_fwd.h"
 #include "olcore/messages/pit_fwd.h"
@@ -27,4 +27,4 @@ namespace olap {
   void ReadPits(const Interval& race_start_time, PitVec* pits, OutVec *outs);
 }  // namespace olap
 
-#endif  // READERS_READ_PITS_H_
+#endif  // OLREPLAY_READERS_READ_PITS_H_

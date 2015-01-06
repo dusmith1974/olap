@@ -20,6 +20,7 @@
 #include "readers/read_pits.h"
 
 #include <fstream>  // NOLINT
+#include <string>  // NOLINT
 
 #include "boost/lexical_cast.hpp"
 

@@ -20,6 +20,7 @@
 #include "readers/read_lap_analysis.h"
 
 #include <fstream>  // NOLINT
+#include <string>  // NOLINT
 
 #include "boost/lexical_cast.hpp"
 
@@ -27,7 +28,8 @@
 #include "olcore/time/long_interval.h"
 
 namespace olap {
-  LongInterval ReadLapAnalysis(const Lap& leaders_lap, CompetitorLapMap* lap_analysis) {
+  LongInterval ReadLapAnalysis(const Lap& leaders_lap,
+                               CompetitorLapMap* lap_analysis) {
     if (!lap_analysis) return LongInterval(0);
 
     std::ifstream file;

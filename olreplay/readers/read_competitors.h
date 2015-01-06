@@ -15,8 +15,8 @@
 
 // Contains ReadCompetitors.
 
-#ifndef READERS_READ_COMPETITORS_H_
-#define READERS_READ_COMPETITORS_H_
+#ifndef OLREPLAY_READERS_READ_COMPETITORS_H_
+#define OLREPLAY_READERS_READ_COMPETITORS_H_
 
 #include "olcore/messages/competitor_fwd.h"
 
@@ -26,4 +26,4 @@ namespace olap {
 
   void ReadCompetitors(CompetitorMap* competitors);
 }  // namespace olap
-#endif  // READERS_READ_COMPETITORS_H_
+#endif  // OLREPLAY_READERS_READ_COMPETITORS_H_

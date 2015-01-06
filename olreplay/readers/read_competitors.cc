@@ -20,6 +20,7 @@
 #include "readers/read_competitors.h"
 
 #include <fstream>  // NOLINT
+#include <string>  // NOLINT
 
 #include "olcore/messages/competitor.h"
 

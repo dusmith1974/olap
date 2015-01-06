@@ -15,8 +15,10 @@
 
 // Contains a class representing a Replay.
 
-#ifndef REPLAY_REPLAY_H_
-#define REPLAY_REPLAY_H_
+#ifndef OLREPLAY_REPLAY_REPLAY_H_
+#define OLREPLAY_REPLAY_REPLAY_H_
+
+#include <string>
 
 #include "boost/noncopyable.hpp"
 
@@ -32,6 +34,7 @@ namespace olap {
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif
+
   public:
     Replay();
     virtual ~Replay();
@@ -46,7 +49,8 @@ namespace olap {
     // Stops the service.
     osoa::Error Stop() override;
 
-    void AddTopicMessage(const std::string& topic, const std::string& message, int num);
+    void AddTopicMessage(const std::string& topic,
+                         const std::string& message, int num);
 
     // TODO(ds) mv to base?
     bool publishing() const;
@@ -59,4 +63,4 @@ namespace olap {
   };
 }  // namespace olap
 
-#endif  // REPLAY_REPLAY_H_
+#endif  // OLREPLAY_REPLAY_REPLAY_H_

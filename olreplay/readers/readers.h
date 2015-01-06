@@ -15,12 +15,12 @@
 
 // Includes all readers.
 
-#ifndef READERS_READERS_H_
-#define READERS_READERS_H_
+#ifndef OLREPLAY_READERS_READERS_H_
+#define OLREPLAY_READERS_READERS_H_
 
 #include "readers/read_competitors.h"
 #include "readers/read_lap_analysis.h"
 #include "readers/read_lap_history.h"
 #include "readers/read_pits.h"
 
-#endif  // READERS_READERS_H_
+#endif  // OLREPLAY_READERS_READERS_H_
