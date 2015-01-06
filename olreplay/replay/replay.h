@@ -25,42 +25,42 @@
 #include "osoa/service/service.h"
 
 namespace olap {
-  // The Replay class.
+// The Replay class.
 #ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Weffc++"
 #endif
-  class Replay final : public osoa::Service, private boost::noncopyable {
+class Replay final : public osoa::Service, private boost::noncopyable {
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif
 
-  public:
-    Replay();
-    virtual ~Replay();
+ public:
+  Replay();
+  virtual ~Replay();
 
-    // Initializes the service ready for use and adds command line options
-    // specific to this service.
-    osoa::Error Initialize(int argc, const char *argv[]) override;
+  // Initializes the service ready for use and adds command line options
+  // specific to this service.
+  osoa::Error Initialize(int argc, const char* argv[]) override;
 
-    // Starts the service, logs messages and connects to other services.
-    osoa::Error Start() override;
+  // Starts the service, logs messages and connects to other services.
+  osoa::Error Start() override;
 
-    // Stops the service.
-    osoa::Error Stop() override;
+  // Stops the service.
+  osoa::Error Stop() override;
 
-    void AddTopicMessage(const std::string& topic,
-                         const std::string& message, int num);
+  void AddTopicMessage(const std::string& topic,
+                       const std::string& message, int num);
 
-    // TODO(ds) mv to base?
-    bool publishing() const;
-    void set_publishing(bool val);
+  // TODO(ds) mv to base?
+  bool publishing() const;
+  void set_publishing(bool val);
 
-  private:
-    typedef Service super;
+ private:
+  typedef Service super;
 
-    bool publishing_;
-  };
+  bool publishing_;
+};
 }  // namespace olap
 
 #endif  // OLREPLAY_REPLAY_REPLAY_H_

@@ -30,49 +30,50 @@
 #include "time/long_interval.h"
 
 namespace olap {
-  // The message class.
-  class Message {
-  public:
-    Message();
-    virtual ~Message();
+// The message class.
+class Message {
+ public:
+  Message();
+  virtual ~Message();
 
-    virtual Message* Clone() const = 0;
+  virtual Message* Clone() const = 0;
 
-    void set_timer(boost::asio::io_service* service);
+  void set_timer(boost::asio::io_service* service);
 
-    void start_timer(std::function <void(const boost::system::error_code&,
-      const std::string&)> fn);
+  void start_timer(std::function <void(const boost::system::error_code&,
+                                       const std::string&)> fn);
 
-    operator std::string() const;
+  operator std::string() const;
 
-    static LongInterval race_start_time();
+  static LongInterval race_start_time();
 
-    static void set_race_start_time(const LongInterval& val);
+  static void set_race_start_time(const LongInterval& val);
 
-    LongInterval time_of_day() const;
-    void set_time_of_day(const LongInterval& val);
+  LongInterval time_of_day() const;
+  void set_time_of_day(const LongInterval& val);
 
-    Interval race_time() const;
-    void set_race_time(const Interval& val);
+  Interval race_time() const;
+  void set_race_time(const Interval& val);
 
-    // Reset the (now) incremented value of quick_time_ back to its initial
-    // value Call before re-running a race to prevent a pause before the first
-    // message.
-    static void reset_quick_time();
+  // Reset the (now) incremented value of quick_time_ back to its initial
+  // value Call before re-running a race to prevent a pause before the first
+  // message.
+  static void reset_quick_time();
 
-  protected:
-    Interval race_time_;
-    LongInterval time_of_day_;
+ protected:
+  Interval race_time_;
+  LongInterval time_of_day_;
 
-  private:
-    friend std::ostream& operator<<(std::ostream& os, const Message& message);  // NOLINT
+ private:
+  friend std::ostream& operator<<(std::ostream& os,
+                                  const Message& message);  // NOLINT
 
-    static LongInterval race_start_time_;
+  static LongInterval race_start_time_;
 
-    virtual void Print(std::ostream& os) const = 0;  // NOLINT
+  virtual void Print(std::ostream& os) const = 0;  // NOLINT
 
-    static std::atomic<int> quick_time_;
-    std::shared_ptr<boost::asio::deadline_timer> timer_;
-  };
+  static std::atomic<int> quick_time_;
+  std::shared_ptr<boost::asio::deadline_timer> timer_;
+};
 }  // namespace olap
 #endif  // OLCORE_MESSAGES_MESSAGE_H_

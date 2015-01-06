@@ -29,26 +29,26 @@
 #include "olcore/time/interval.h"
 
 namespace olap {
-  void ReadPits(const Interval& race_start_time, PitVec* pits, OutVec *outs) {
-    if (!pits || !outs) return;
+void ReadPits(const Interval& race_start_time, PitVec* pits, OutVec* outs) {
+  if (!pits || !outs) return;
 
-    std::ifstream file;
-    std::string filename("PitStopSummary.txt");
+  std::ifstream file;
+  std::string filename("PitStopSummary.txt");
 
-    file.open(filename);
-    if (!file.is_open())
-      throw std::runtime_error("Could not open " + filename);
+  file.open(filename);
+  if (!file.is_open())
+    throw std::runtime_error("Could not open " + filename);
 
-    std::string str;
-    while (std::getline(file, str)) {
-      Pit pit = boost::lexical_cast<Pit>(str);
-      Out out = boost::lexical_cast<Out>(str);
+  std::string str;
+  while (std::getline(file, str)) {
+    Pit pit = boost::lexical_cast<Pit>(str);
+    Out out = boost::lexical_cast<Out>(str);
 
-      pit.set_race_time(LongInterval(pit.time_of_day() - race_start_time));
-      out.set_race_time(Interval(pit.race_time() + out.time()));
+    pit.set_race_time(LongInterval(pit.time_of_day() - race_start_time));
+    out.set_race_time(Interval(pit.race_time() + out.time()));
 
-      pits->push_back(pit);
-      outs->push_back(out);
-    }
+    pits->push_back(pit);
+    outs->push_back(out);
   }
+}
 }  // namespace olap

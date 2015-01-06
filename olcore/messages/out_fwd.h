@@ -21,8 +21,8 @@
 #include <vector>
 
 namespace olap {
-  class Out;
-  typedef std::vector<Out> OutVec;
+class Out;
+typedef std::vector<Out> OutVec;
 }  // namespace olap
 
 #endif  // OLCORE_MESSAGES_OUT_FWD_H_

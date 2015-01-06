@@ -21,9 +21,9 @@
 #include "olcore/messages/competitor_fwd.h"
 
 namespace olap {
-  // TODO(ds) mv BestSectors to own cc?
-  void ReadBestSectors(CompetitorMap* competitors);
+// TODO(ds) mv BestSectors to own cc?
+void ReadBestSectors(CompetitorMap* competitors);
 
-  void ReadCompetitors(CompetitorMap* competitors);
+void ReadCompetitors(CompetitorMap* competitors);
 }  // namespace olap
 #endif  // OLREPLAY_READERS_READ_COMPETITORS_H_

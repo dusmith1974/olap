@@ -21,8 +21,8 @@
 #include <vector>
 
 namespace olap {
-  class Pit;
-  typedef std::vector<Pit> PitVec;
+class Pit;
+typedef std::vector<Pit> PitVec;
 }  // namespace olap
 
 #endif  // OLCORE_MESSAGES_PIT_FWD_H_

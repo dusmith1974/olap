@@ -23,36 +23,37 @@
 #include <iostream>  // NOLINT
 
 namespace olap {
-  LongInterval::LongInterval() : Interval(0) {
+LongInterval::LongInterval() : Interval(0) {
+}
+
+LongInterval::LongInterval(int64_t val) : Interval(val) {
+}
+
+std::ostream& operator<<(std::ostream& os,
+                         const LongInterval& long_interval) {  // NOLINT
+  using boost::chrono::hours;
+  hours the_hours = boost::chrono::duration_cast<boost::chrono::hours>(
+                      long_interval.milliseconds_);
+
+  if (the_hours.count()) {
+    os << the_hours.count() << ":";
+    os << std::setw(2) << std::setfill('0');
   }
 
-  LongInterval::LongInterval(int64_t val) : Interval(val) {
-  }
+  using boost::chrono::hours;
+  os << boost::chrono::duration_cast<
+     boost::chrono::minutes>((the_hours.count())
+                             ? long_interval.milliseconds_ % hours(1)
+                             : long_interval.milliseconds_).count();
 
-  std::ostream& operator<<(std::ostream& os,
-                           const LongInterval& long_interval) {  // NOLINT
-    using boost::chrono::hours;
-    hours the_hours = boost::chrono::duration_cast<boost::chrono::hours>(
-      long_interval.milliseconds_);
+  os << ":" << std::setw(2) << std::setfill('0')
+     << boost::chrono::duration_cast<boost::chrono::seconds>(
+       long_interval.milliseconds_ % boost::chrono::minutes(1)).count();
 
-    if (the_hours.count()) {
-      os << the_hours.count() << ":";
-      os << std::setw(2) << std::setfill('0');
-    }
+  os << "." << std::setw(3)
+     << boost::chrono::duration_cast<boost::chrono::milliseconds>(
+       long_interval.milliseconds_ % boost::chrono::seconds(1)).count();
 
-    os << boost::chrono::duration_cast<
-      boost::chrono::minutes>((the_hours.count())
-      ? long_interval.milliseconds_ % boost::chrono::hours(1)
-      : long_interval.milliseconds_).count();
-
-    os << ":" << std::setw(2) << std::setfill('0')
-      << boost::chrono::duration_cast<boost::chrono::seconds>(
-      long_interval.milliseconds_ % boost::chrono::minutes(1)).count();
-
-    os << "." << std::setw(3)
-      << boost::chrono::duration_cast<boost::chrono::milliseconds>(
-      long_interval.milliseconds_ % boost::chrono::seconds(1)).count();
-
-    return os;
-  }
+  return os;
+}
 }  // namespace olap

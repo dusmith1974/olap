@@ -20,71 +20,71 @@
 #include "messages/sector.h"
 
 namespace olap {
-  Sector::Sector()
-    : num_(0),
+Sector::Sector()
+  : num_(0),
     competitor_num_(0),
     lap_num_(0),
     time_(Interval()) {
-  }
+}
 
-  Sector::Sector(int num_val,
-                 int competitor_num_val,
-                 int lap_num_val,
-                 int64_t time_val)
-    : num_(num_val),
+Sector::Sector(int num_val,
+               int competitor_num_val,
+               int lap_num_val,
+               int64_t time_val)
+  : num_(num_val),
     competitor_num_(competitor_num_val),
     lap_num_(lap_num_val),
     time_(time_val) {
-  }
+}
 
-  Sector::~Sector() {
-  }
+Sector::~Sector() {
+}
 
-  Message* Sector::Clone() const { return new Sector(*this); }
+Message* Sector::Clone() const { return new Sector(*this); }
 
-  Sector::operator std::string() const {
-    std::stringstream ss;
-    ss << *this;
+Sector::operator std::string() const {
+  std::stringstream ss;
+  ss << *this;
 
-    return ss.str();
-  }
+  return ss.str();
+}
 
-  int Sector::num() const { return num_; }
-  void Sector::set_num(int val) { num_ = val; }
+int Sector::num() const { return num_; }
+void Sector::set_num(int val) { num_ = val; }
 
-  int Sector::competitor_num() const { return competitor_num_; }
+int Sector::competitor_num() const { return competitor_num_; }
 
-  Interval Sector::time() const { return time_; }
+Interval Sector::time() const { return time_; }
 
-  Sector::operator Interval() const { return time_; }
+Sector::operator Interval() const { return time_; }
 
-  void Sector::Print(std::ostream& os) const {  // NOLINT
-    os << "sec," << static_cast<LongInterval>(race_time_)
-      << "," << time_of_day_ << "," << competitor_num_ << "," << lap_num_
-      << "," << num_ << "," << time_ << std::endl;
-  }
+void Sector::Print(std::ostream& os) const {  // NOLINT
+  os << "sec," << static_cast<LongInterval>(race_time_)
+     << "," << time_of_day_ << "," << competitor_num_ << "," << lap_num_
+     << "," << num_ << "," << time_ << std::endl;
+}
 
-  inline bool operator<(const Sector& lhs, const Sector& rhs) {
-    return lhs.num() < rhs.num();
-  }
+inline bool operator<(const Sector& lhs, const Sector& rhs) {
+  return lhs.num() < rhs.num();
+}
 
-  inline bool operator>(const Sector& lhs, const Sector& rhs) {
-    return rhs < lhs;
-  }
+inline bool operator>(const Sector& lhs, const Sector& rhs) {
+  return rhs < lhs;
+}
 
-  inline bool operator<=(const Sector& lhs, const Sector& rhs) {
-    return !(lhs > rhs);
-  }
+inline bool operator<=(const Sector& lhs, const Sector& rhs) {
+  return !(lhs > rhs);
+}
 
-  inline bool operator>=(const Sector& lhs, const Sector& rhs) {
-    return !(lhs < rhs);
-  }
+inline bool operator>=(const Sector& lhs, const Sector& rhs) {
+  return !(lhs < rhs);
+}
 
-  inline bool operator==(const Sector& lhs, const Sector& rhs) {
-    return lhs.num() == rhs.num();
-  }
+inline bool operator==(const Sector& lhs, const Sector& rhs) {
+  return lhs.num() == rhs.num();
+}
 
-  inline bool operator!=(const Sector& lhs, const Sector& rhs) {
-    return !(lhs == rhs);
-  }
+inline bool operator!=(const Sector& lhs, const Sector& rhs) {
+  return !(lhs == rhs);
+}
 }  // namespace olap

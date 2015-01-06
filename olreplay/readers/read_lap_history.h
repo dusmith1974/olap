@@ -21,7 +21,7 @@
 #include "olcore/messages/lap_fwd.h"
 
 namespace olap {
-  void ReadLapHistory(CompetitorLapMap* lap_history, Lap* leaders_lap);
+void ReadLapHistory(CompetitorLapMap* lap_history, Lap* leaders_lap);
 }  // namespace olap
 
 #endif  // OLREPLAY_READERS_READ_LAP_HISTORY_H_

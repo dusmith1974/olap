@@ -24,30 +24,30 @@
 #include "messages/pit_fwd.h"
 
 namespace olap {
-  // The Pit class.
-  class Pit : public Message {
-  public:
-    Pit();
+// The Pit class.
+class Pit : public Message {
+ public:
+  Pit();
 
-    virtual ~Pit();
+  virtual ~Pit();
 
-    Message* Clone() const;
+  Message* Clone() const;
 
-    operator std::string() const;
+  operator std::string() const;
 
-    int lap_num() const;
-    void set_lap_num(int val);
+  int lap_num() const;
+  void set_lap_num(int val);
 
-  protected:
-    int competitor_num_;
-    int lap_num_;
-    int num_;
+ protected:
+  int competitor_num_;
+  int lap_num_;
+  int num_;
 
-  private:
-    friend std::istream& operator>>(std::istream& is, Pit& pit);
+ private:
+  friend std::istream& operator>>(std::istream& is, Pit& pit);
 
-    void Print(std::ostream& os) const override;  // NOLINT
-  };
+  void Print(std::ostream& os) const override;  // NOLINT
+};
 }  // namespace olap
 
 #endif  // OLCORE_MESSAGES_PIT_H_

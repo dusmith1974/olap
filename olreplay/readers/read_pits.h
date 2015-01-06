@@ -24,7 +24,7 @@
 class Interval;
 
 namespace olap {
-  void ReadPits(const Interval& race_start_time, PitVec* pits, OutVec *outs);
+void ReadPits(const Interval& race_start_time, PitVec* pits, OutVec* outs);
 }  // namespace olap
 
 #endif  // OLREPLAY_READERS_READ_PITS_H_

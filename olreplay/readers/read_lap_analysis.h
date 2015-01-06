@@ -21,11 +21,11 @@
 #include "olcore/messages/lap_fwd.h"
 
 namespace olap {
-  class Lap;
-  class LongInterval;
+class Lap;
+class LongInterval;
 
-  LongInterval ReadLapAnalysis(const Lap& leaders_lap,
-                               CompetitorLapMap* lap_analysis);
+LongInterval ReadLapAnalysis(const Lap& leaders_lap,
+                             CompetitorLapMap* lap_analysis);
 }  // namespace olap
 
 #endif  // OLREPLAY_READERS_READ_LAP_ANALYSIS_H_

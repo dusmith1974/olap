@@ -24,19 +24,19 @@
 #include "time/interval.h"
 
 namespace olap {
-  typedef boost::ptr_multimap<Interval, Message> MessageMap;
+typedef boost::ptr_multimap<Interval, Message> MessageMap;
 
-  void AddMessage(const Message& msg, MessageMap* message_map) {
-    Interval race_time = msg.race_time();
-    message_map->insert(race_time, msg.Clone());
-  }
+void AddMessage(const Message& msg, MessageMap* message_map) {
+  Interval race_time = msg.race_time();
+  message_map->insert(race_time, msg.Clone());
+}
 
-  template<typename T>
-  void AddMessages(T coll, MessageMap* message_map) {
-    if (!message_map) return;
+template<typename T>
+void AddMessages(T coll, MessageMap* message_map) {
+  if (!message_map) return;
 
-    for (const auto& msg : coll)
-      AddMessage(msg, message_map);
-  }
+  for (const auto& msg : coll)
+    AddMessage(msg, message_map);
+}
 }  // namespace olap
 #endif  // OLCORE_MESSAGES_MESSAGE_INL_H_

@@ -22,58 +22,58 @@
 #include "boost/lexical_cast.hpp"
 
 namespace olap {
-  Out::Out()
-    : competitor_num_(0),
+Out::Out()
+  : competitor_num_(0),
     lap_num_(0),
     time_of_day_(LongInterval()),
     num_(0),
     time_(Interval()),
     total_time_(Interval()) {
-  }
+}
 
-  Out::~Out() {
-  }
+Out::~Out() {
+}
 
-  Message* Out::Clone() const { return new Out(*this); }
+Message* Out::Clone() const { return new Out(*this); }
 
-  Out::operator std::string() const {
-    std::stringstream ss;
-    ss << *this;
+Out::operator std::string() const {
+  std::stringstream ss;
+  ss << *this;
 
-    return ss.str();
-  }
+  return ss.str();
+}
 
-  Interval Out::time() const { return time_; }
-  LongInterval Out::time_of_day() const { return time_of_day_; }
+Interval Out::time() const { return time_; }
+LongInterval Out::time_of_day() const { return time_of_day_; }
 
-  int Out::lap_num() const { return lap_num_; }
-  void Out::set_lap_num(int val) { lap_num_ = val; }
+int Out::lap_num() const { return lap_num_; }
+void Out::set_lap_num(int val) { lap_num_ = val; }
 
-  void Out::Print(std::ostream& os) const {  // NOLINT
-    os << "out," << static_cast<LongInterval>(race_time_) << ","
-      << time_of_day_ << "," << competitor_num_ << "," << lap_num_ << ","
-      << num_ << "," << time_ << "," << total_time_ << std::endl;
-  }
+void Out::Print(std::ostream& os) const {  // NOLINT
+  os << "out," << static_cast<LongInterval>(race_time_) << ","
+     << time_of_day_ << "," << competitor_num_ << "," << lap_num_ << ","
+     << num_ << "," << time_ << "," << total_time_ << std::endl;
+}
 
-  std::istream& operator>>(std::istream& is, Out& out) {
-    std::string str;
+std::istream& operator>>(std::istream& is, Out& out) {
+  std::string str;
 
-    is >> out.competitor_num_, is.ignore();
-    is >> out.lap_num_, is.ignore();
+  is >> out.competitor_num_, is.ignore();
+  is >> out.lap_num_, is.ignore();
 
-    std::getline(is, str, ',');
-    out.time_of_day_ = boost::lexical_cast<LongInterval>(str);
+  std::getline(is, str, ',');
+  out.time_of_day_ = boost::lexical_cast<LongInterval>(str);
 
-    is >> out.num_, is.ignore();
+  is >> out.num_, is.ignore();
 
-    std::getline(is, str, ',');
-    out.time_ = boost::lexical_cast<LongInterval>(str);
-    // TODO(ds) op+=
-    out.time_of_day_ = LongInterval(out.time_of_day_ + out.time_);
+  std::getline(is, str, ',');
+  out.time_ = boost::lexical_cast<LongInterval>(str);
+  // TODO(ds) op+=
+  out.time_of_day_ = LongInterval(out.time_of_day_ + out.time_);
 
-    std::getline(is, str, ',');
-    out.total_time_ = boost::lexical_cast<LongInterval>(str);
+  std::getline(is, str, ',');
+  out.total_time_ = boost::lexical_cast<LongInterval>(str);
 
-    return is;
-  }
+  return is;
+}
 }  // namespace olap

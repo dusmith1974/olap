@@ -26,48 +26,48 @@
 #include "messages/message.h"
 
 namespace olap {
-  namespace mp = boost::multiprecision;
+namespace mp = boost::multiprecision;
 
-  typedef mp::number<mp::cpp_dec_float<3> > cpp_dec_float_3;
+typedef mp::number<mp::cpp_dec_float<3>> cpp_dec_float_3;
 
-  // The competitor message.
-  class Competitor final : public Message {
-  public:
-    Competitor();
+// The competitor message.
+class Competitor final : public Message {
+ public:
+  Competitor();
 
-    Message* Clone() const;
+  Message* Clone() const;
 
-    operator std::string() const;
+  operator std::string() const;
 
-    int grid_pos() const;
-    void set_grid_pos(int val);
+  int grid_pos() const;
+  void set_grid_pos(int val);
 
-    std::string name() const;
-    int num() const;
+  std::string name() const;
+  int num() const;
 
-    cpp_dec_float_3 sector_1_percent() const;
-    void set_sector_1_percent(cpp_dec_float_3 val);
+  cpp_dec_float_3 sector_1_percent() const;
+  void set_sector_1_percent(cpp_dec_float_3 val);
 
-    cpp_dec_float_3 sector_2_percent() const;
-    void set_sector_2_percent(cpp_dec_float_3 val);
+  cpp_dec_float_3 sector_2_percent() const;
+  void set_sector_2_percent(cpp_dec_float_3 val);
 
-    cpp_dec_float_3 sector_3_percent() const;
-    void set_sector_3_percent(cpp_dec_float_3 val);
+  cpp_dec_float_3 sector_3_percent() const;
+  void set_sector_3_percent(cpp_dec_float_3 val);
 
-  private:
-    friend std::istream& operator>>(std::istream& is, Competitor& competitor);
+ private:
+  friend std::istream& operator>> (std::istream& is, Competitor& competitor);
 
-    void Print(std::ostream& os) const override;  // NOLINT
+  void Print(std::ostream& os) const override; // NOLINT
 
-    int num_;
-    int grid_pos_;
-    std::string short_name_;
-    std::string name_;
-    std::string team_;
-    cpp_dec_float_3 sector_1_percent_;
-    cpp_dec_float_3 sector_2_percent_;
-    cpp_dec_float_3 sector_3_percent_;
-  };
+  int num_;
+  int grid_pos_;
+  std::string short_name_;
+  std::string name_;
+  std::string team_;
+  cpp_dec_float_3 sector_1_percent_;
+  cpp_dec_float_3 sector_2_percent_;
+  cpp_dec_float_3 sector_3_percent_;
+};
 }  // namespace olap
 
 #endif  // OLCORE_MESSAGES_COMPETITOR_H_

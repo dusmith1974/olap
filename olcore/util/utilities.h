@@ -25,8 +25,8 @@
 using boost::optional;
 
 namespace olap {
-  const optional<CompetitorMap::mapped_type&>
-  FindPole(CompetitorMap* competitors);
+const optional<CompetitorMap::mapped_type&>
+FindPole(CompetitorMap* competitors);
 }  // namespace olap
 
 #endif  // OLCORE_UTIL_UTILITIES_H_

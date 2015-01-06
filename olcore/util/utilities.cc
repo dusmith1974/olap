@@ -24,17 +24,17 @@
 #include "messages/competitor.h"
 
 namespace olap {
-  const optional<CompetitorMap::mapped_type&>
-  FindPole(CompetitorMap* competitors) {
-    if (!competitors) return optional<CompetitorMap::mapped_type&>();
+const optional<CompetitorMap::mapped_type&>
+FindPole(CompetitorMap* competitors) {
+  if (!competitors) return optional<CompetitorMap::mapped_type&>();
 
-    auto pole = std::find_if(competitors->begin(), competitors->end(),
-                             [](const std::pair<int, Competitor>& elem) {
-      return elem.second.grid_pos() == 1;
-    });
+  auto pole = std::find_if(competitors->begin(), competitors->end(),
+  [](const std::pair<int, Competitor>& elem) {
+    return elem.second.grid_pos() == 1;
+  });
 
-    return (pole == competitors->end())
-      ? optional<CompetitorMap::mapped_type&>()
-      : optional<CompetitorMap::mapped_type&>(pole->second);
-  }
+  return (pole == competitors->end())
+         ? optional<CompetitorMap::mapped_type&>()
+         : optional<CompetitorMap::mapped_type&>(pole->second);
+}
 }  // namespace olap

@@ -23,35 +23,35 @@
 #include "messages/message.h"
 
 namespace olap {
-  // The Out class.
-  class Out : public Message {
-  public:
-    Out();
-    virtual ~Out();
+// The Out class.
+class Out : public Message {
+ public:
+  Out();
+  virtual ~Out();
 
-    Message* Clone() const;
+  Message* Clone() const;
 
-    operator std::string() const;
+  operator std::string() const;
 
-    Interval time() const;
-    LongInterval time_of_day() const;
+  Interval time() const;
+  LongInterval time_of_day() const;
 
-    int lap_num() const;
-    void set_lap_num(int val);
+  int lap_num() const;
+  void set_lap_num(int val);
 
-  protected:
-    int competitor_num_;
-    int lap_num_;
-    LongInterval time_of_day_;
-    int num_;
-    Interval time_;
-    Interval total_time_;
+ protected:
+  int competitor_num_;
+  int lap_num_;
+  LongInterval time_of_day_;
+  int num_;
+  Interval time_;
+  Interval total_time_;
 
-  private:
-    friend std::istream& operator>>(std::istream& is, Out& out);
+ private:
+  friend std::istream& operator>>(std::istream& is, Out& out);
 
-    void Print(std::ostream& os) const override;  // NOLINT
-  };
+  void Print(std::ostream& os) const override;  // NOLINT
+};
 }  // namespace olap
 
 #endif  // OLCORE_MESSAGES_OUT_H_
