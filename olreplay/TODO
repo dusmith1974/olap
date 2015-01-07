@@ -1,10 +1,10 @@
-astyle after codemaid
-define POCO_LIBS and only use when required
-slow down retries if connect with no server
- (same as retries if server dies?)
-use -h if no args
-dont start server if bind to port is in use
+http://weblogs.asp.net/dwahlin/video-tutorial-angularjs-fundamentals-in-60-ish-minutes
+
 make timing.html available from websrv (fileshare or apache ws?)
+dyndns
+nameok.com
+
+mobile app - apache cordova/intel xdk
 
 log all program args in log header
 clean exit of client and server on ctrl-c
@@ -22,6 +22,7 @@ codeschool js, html paths, angular
 timing web page
 
 poco branching
+tidy osoa and olap (strip to current).
 
 autotest
 ---
@@ -37,7 +38,6 @@ easy debugging
  #define QUICK_RACE etc
   as app args (to be supplied by autorun)
 
-tidy osoa and olap (strip to current).
 
 swmr shared_lock on map (1 map per topic) - no need, ok for single writer
 build osoa olap as shared libs (as well as static lib).
