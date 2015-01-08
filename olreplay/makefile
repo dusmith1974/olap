@@ -63,9 +63,15 @@ $(OBJ_DIR)/%.d : %.cc
 -include $(DEPS)
 endif
 
-$(BIN_DIR)/olreplay: $(OBJS)
+.PHONY: osoa
+osoa:
 	$(MAKE) -C $(OSOA_DIR) $(MAKECMDGOALS)
+
+.PHONY: olcore
+olcore:
 	$(MAKE) -C $(OLCORE_DIR) $(MAKECMDGOALS)
+
+$(BIN_DIR)/olreplay: $(OBJS) osoa olcore
 	$(LINK.cc) $(OBJS) $(LIB_OLCORE) $(LIB_OSOA) -dynamic -lPocoUtild -lPocoNetd -lPocoXMLd -lPocoFoundationd -pthread -lboost_program_options -lboost_log_setup -lboost_log -lboost_system -lboost_thread -lboost_date_time -lboost_filesystem -lboost_regex -lboost_chrono $(OUTPUT_OPTION)
 	#ctags -R --c-kinds=+cdefglmnpstuvx --extra=+f
 	#cscope -Rb
