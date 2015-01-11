@@ -1,5 +1,6 @@
+-weffcc
+
 pump distcc dist pch
-make check chanes in sub-makes
 
 http://weblogs.asp.net/dwahlin/video-tutorial-angularjs-fundamentals-in-60-ish-minutes
 
@@ -9,8 +10,6 @@ nameokay.com
 
 mobile app - apache cordova/intel xdk
 
-write options file into log header
- 
 clean exit of client and server on ctrl-c
 cpplint/gsg/valgrind/vs static code analysis
 fix table headers

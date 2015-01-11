@@ -19,10 +19,12 @@
 #define OLREPLAY_REPLAY_REPLAY_H_
 
 #include <string>
+#include <thread>
 
 #include "boost/noncopyable.hpp"
 
 #include "osoa/service/service.h"
+#include "olcore/messages/messages.h"
 
 namespace olap {
 // The Replay class.
@@ -43,11 +45,13 @@ class Replay final : public osoa::Service, private boost::noncopyable {
   // specific to this service.
   osoa::Error Initialize(int argc, const char* argv[]) override;
 
-  // Starts the service, logs messages and connects to other services.
-  osoa::Error Start() override;
+  osoa::Error DoStart() override;
+  int Run();
+
+  void Play();
 
   // Stops the service.
-  osoa::Error Stop() override;
+  osoa::Error DoStop() override;
 
   void AddTopicMessage(const std::string& topic,
                        const std::string& message, int num);
@@ -57,9 +61,21 @@ class Replay final : public osoa::Service, private boost::noncopyable {
   void set_publishing(bool val);
 
  private:
+  void PublishMessage(const boost::system::error_code&,
+                      const std::string& message);
+
   typedef Service super;
 
+  std::atomic<bool> continue_replay_;
   bool publishing_;
+  MsgVec msgs_;
+  MessageMap message_map_;
+  CompetitorMap competitors_;
+  CompetitorLapMap lap_history_, lap_analysis_, all_laps_;
+  CompetitorSectorMap sectors_;
+
+  boost::asio::io_service io_service_;
+  std::thread replay_thread_;
 };
 }  // namespace olap
 
