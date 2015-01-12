@@ -60,9 +60,7 @@ void AddMessages(T coll, MessageMap* message_map) {
 }
 }  // namespace
 
-Replay::Replay() :
-  continue_replay_(false),
-  publishing_(false) {
+Replay::Replay() : continue_replay_(false) {
 }
 
 Replay::~Replay() {
@@ -71,9 +69,6 @@ Replay::~Replay() {
 // Add customizations specific to this particular service.
 Error Replay::Initialize(int argc, const char* argv[]) {
   Error result = super::Initialize(argc, argv);
-
-  if (!args()->listening_port().empty())
-    set_publishing(true);
 
   return result;
 }
@@ -292,13 +287,5 @@ void Replay::AddTopicMessage(const std::string& topic,
 void Replay::PublishMessage(const boost::system::error_code&,
                             const std::string& message) {
   AddTopicMessage("data", message, 1);
-}
-
-bool Replay::publishing() const {
-  return publishing_;
-}
-
-void Replay::set_publishing(bool val) {
-  publishing_ = val;
 }
 }  // namespace olap

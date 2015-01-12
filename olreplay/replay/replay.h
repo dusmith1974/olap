@@ -56,10 +56,6 @@ class Replay final : public osoa::Service, private boost::noncopyable {
   void AddTopicMessage(const std::string& topic,
                        const std::string& message, int num);
 
-  // TODO(ds) mv to base?
-  bool publishing() const;
-  void set_publishing(bool val);
-
  private:
   void PublishMessage(const boost::system::error_code&,
                       const std::string& message);
@@ -67,7 +63,6 @@ class Replay final : public osoa::Service, private boost::noncopyable {
   typedef Service super;
 
   std::atomic<bool> continue_replay_;
-  bool publishing_;
   MsgVec msgs_;
   MessageMap message_map_;
   CompetitorMap competitors_;
