@@ -1,8 +1,13 @@
--weffcc
-
-pump distcc dist pch
+pages
+ JQuery
+ JQWidgets
+ html5 placeholder text
+ contenteditable (select race)
+ play/pause/ffwd/rewind
+ canvas or grid for IN OUT timing lines etc P1
 
 http://weblogs.asp.net/dwahlin/video-tutorial-angularjs-fundamentals-in-60-ish-minutes
+MDN - HTML5
 
 make timing.html available from websrv (fileshare or apache ws?)
 dyndns

@@ -1,8 +1,8 @@
 #CC = distcc
 #CXX = distcc g++
 CXXFLAGS = -DBOOST_ALL_DYN_LINK
-CXXFLAGS += -Wall -Wextra -ansi -pedantic -Weffc++ -Wshadow -Werror -Wfatal-errors
-CXXFLAGS += -Wno-error=effc++ # for boost and other libs.
+CXXFLAGS += -Wall -Wextra -ansi -pedantic -Weffc++ -Wshadow -Werror #-Wfatal-errors
+#CXXFLAGS += -Wno-error=effc++ # for boost and other libs.
 CXXFLAGS += -std=c++11
 
 READERS = readers

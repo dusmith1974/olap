@@ -61,5 +61,8 @@
     <None Include="..\..\pages\mclaren.html">
       <Filter>web</Filter>
     </None>
+    <None Include="..\..\pages\timing2.html">
+      <Filter>web</Filter>
+    </None>
   </ItemGroup>
 </Project>

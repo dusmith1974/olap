@@ -60,7 +60,17 @@ void AddMessages(T coll, MessageMap* message_map) {
 }
 }  // namespace
 
-Replay::Replay() : continue_replay_(false) {
+Replay::Replay()
+  : continue_replay_(false),
+    msgs_{},
+    message_map_{},
+    competitors_{},
+    lap_history_{},
+    lap_analysis_{},
+    all_laps_{},
+    sectors_{},
+    io_service_{},
+    replay_thread_{} {
 }
 
 Replay::~Replay() {

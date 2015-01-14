@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <title>Timing</title>
+  <style type="text/css">
+    html, body, h1, h2, h3, p, ol, ul, li, a {
+      padding: 0;
+      border: 0;
+      margin: 0;
+    }
+
+    body {
+      padding: 20px 20px 20px 20px;
+    }
+
+    h1 {
+      margin: 10px 0px 10px 0px;
+    }
+
+    h2 {
+      margin: 10px 0px 20px 0px;
+    }
+
+    h3 {
+      margin: 15px 0px 15px 0px;
+      border-bottom: 1px solid #CCCCCC;
+      padding-bottom: 3px;
+    }
+
+    ul, ol {
+      padding: 0px 0px 0px 50px;
+    }
+
+    p {
+      text-decoration: underline;
+      color: red;
+    }
+
+    li {
+      font-size: medium;
+    }
+
+    ul li {
+      font-size: large;
+      display: inline;
+    }
+
+      ul li:first-child {
+        font-size: larger;
+        color: #00FF00;
+      }
+
+    a {
+      text-decoration: none;
+    }
+
+      a:hover {
+        text-decoration: underline;
+        color: darkred;
+      }
+
+    html {
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      width: 100%; /*required if using % width*/
+      height: 100%; /*required if using % height*/
+      margin: 0; /*required if using % width or height*/
+      padding: 0 20px 0 20px; /*purely aesthetic, not required*/
+      box-sizing: border-box;
+      /*required if using above declaration*/
+      /*text-align: center;*/ /*delete if using % width, or you don't want table centered*/
+    }
+
+    /* view-source:http://salzerdesign.com/test/fixedTable.html */
+    td {
+      border: 1px solid #ccc;
+      padding: 0px 5px 0px 5px;
+      text-align: left; /* IE */
+    }
+
+    /*td + td {
+        border-left: 1px solid #ccc;
+      }*/
+
+    th {
+      padding: 0px 5px 0px 5px);
+      text-align: left;
+      background-color: cornflowerblue;
+      width: auto;
+    }
+
+    tr:nth-child(even) {
+      background-color: gainsboro;
+    }
+
+    .fixed-table-container {
+      width: 40%;
+      height: 180px;
+      border: 1px solid #ccc;
+      margin: 10px auto;
+      background-color: white;
+      position: relative;
+      padding-top: 25px;
+    }
+
+    .fixed-table-container-inner {
+      overflow-x: hidden;
+      overflow-y: auto;
+      height: 100%;
+    }
+
+    .header-background {
+      background-color: cornflowerblue;
+      height: 25px;
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+    }
+
+    table {
+      background-color: white;
+      width: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
+      font-family: Verdana, Tahoma, sans-serif;
+      font-size: small;
+    }
+
+    .th-inner {
+      position: absolute;
+      top: 0;
+      line-height: 25px;
+      text-align: left;
+      border-left: 1px solid #ccc;
+      padding-left: 6px;
+      padding-right: 6px;
+      margin-left: -1px;
+      margin-right: -1px;
+      font-weight: 300;
+    }
+
+    .first .th-inner {
+      padding-left: 6px;
+      padding-right: 6px;
+    }
+  </style>
+  <script type="text/javascript">
+    function WebSocketTest() {
+      if ("WebSocket" in window) {
+        var ws = new WebSocket("ws://localhost:9980/ws");
+        ws.onopen = function () {
+          ws.send("START RACE");
+        };
+        ws.onmessage = function (evt) {
+          var msg = evt.data;
+          document.getElementById("lastMessage").innerHTML = msg;
+          document.getElementById("status").innerHTML = "Socket Open";
+
+          for (var n = 1, r = document.querySelector("tbody>tr"), p = r.parentNode; n--; p.appendChild(r.cloneNode(true)));
+          var table = document.getElementById("messages");
+
+          if (typeof WebSocketTest.counter == 'undefined')
+            WebSocketTest.counter = 0;
+
+          table.rows[table.rows.length - 1].cells[0].innerHTML = ++WebSocketTest.counter;
+          table.rows[table.rows.length - 1].cells[1].innerHTML = msg;
+
+          if (table.rows.length >= 25)
+            table.deleteRow(1);
+
+          var rows = table.getElementsByTagName("tr");
+          table.focus();
+          table.parentNode.scrollTop = rows[table.rows.length - 1].offsetTop - rows[0].offsetHeight;
+        };
+
+        ws.onclose = function () {
+          document.getElementById("status").innerHTML = "Socket Closed";
+          //alert("ws close.");
+        };
+
+        window.onbeforeunload = function () {
+          ws.onclose = function () { };
+          ws.close();
+        };
+      }
+      else {
+        alert("This browser does not support WebSockets.");
+      }
+    }
+  </script>
+</head>
+<body>
+  <h3>Live Timing</h3>
+  <p><a href="javascript:WebSocketTest()">Start Race</a></p>
+  <p id="status">Socket Closed</p>
+  <p id="lastMessage">...Last Message...</p>
+  <div class="fixed-table-container">
+    <div class="header-background"> </div>
+    <div class="fixed-table-container-inner">
+      <table id="messages" cellspacing="0">
+        <!--<caption>Live Timing</caption>-->
+        <thead>
+          <tr>
+            <th>
+              <div class="th-inner">No</div>
+            </th>
+            <th>
+              <div class="th-inner">Message</div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>0</td>
+            <td>Pitlane Open</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <h1>Australia GP</h1>
+  <h2>Timing Page</h2>
+  <p>Replay of the Australian GP</p>
+  <p>Top level navigation links here</p>
+  <h3>Drivers</h3>
+  <ul>
+    <li>HAM</li>
+    <li>ALO</li>
+    <li>BUT</li>
+  </ul>
+  <h3>Teams</h3>
+  <ol>
+    <li><a href="mclaren.html" target="_blank">McLaren</a></li>
+    <li>Ferrari</li>
+    <li>Mercedes</li>
+  </ol>
+</body>
+</html>

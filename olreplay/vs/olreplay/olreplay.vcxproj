@@ -134,6 +134,7 @@
     <None Include="..\..\pages\mclaren.html" />
     <None Include="..\..\pages\page1.html" />
     <None Include="..\..\pages\timing.html" />
+    <None Include="..\..\pages\timing2.html" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
