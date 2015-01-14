@@ -1,0 +1,95 @@
+tr:nth-child(even) {
+  background-color: gainsboro;
+}
+
+td {
+  border-bottom: 1px solid #ccc;
+  padding: 5px;
+  text-align: left;
+}
+
+  td + td {
+    border-left: 1px solid #ccc;
+  }
+
+th {
+  padding: 0 5px;
+  text-align: left;
+}
+
+.header-background {
+  border-bottom: 1px solid black;
+}
+
+.fixed-table-container {
+  width: 50%;
+  height: 210px;
+  border: 1px solid black;
+  margin: 10px auto;
+  background-color: white;
+  position: relative;
+  padding-top: 30px;
+}
+
+.fixed-table-container-inner {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.header-background {
+  background-color: cornflowerblue;
+  height: 30px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+}
+
+table {
+  background-color: white;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  font-family: Verdana, Tahoma, sans-serif;
+  font-size: smaller;
+}
+
+.th-inner {
+  position: absolute;
+  top: 0;
+  line-height: 30px;
+  text-align: left;
+  border-left: 1px solid black;
+  padding-left: 5px;
+  margin-left: -5px;
+}
+
+.first .th-inner {
+  border-left: none;
+  padding-left: 6px;
+}
+
+.extrawrap th {
+  text-align: center;
+}
+
+.extra-wrap {
+  width: 100%;
+}
+
+.hidden-head {
+  min-width: 530px;
+}
+
+.hidden-header .th-inner {
+  position: static;
+  overflow-y: hidden;
+  height: 0;
+  white-space: nowrap;
+  padding-right: 5px;
+}
+
+.header .th-inner {
+  background-color: #D5ECFF;
+}

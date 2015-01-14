@@ -13,8 +13,8 @@
     <Filter Include="www\html">
       <UniqueIdentifier>{790c2791-df9d-49e1-a010-042604360a9d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="www\css">
-      <UniqueIdentifier>{20e75e49-d195-40e9-9b33-63c83b337f2a}</UniqueIdentifier>
+    <Filter Include="www\html\css">
+      <UniqueIdentifier>{8513cf8d-9237-4c6e-a585-ac32e5fc9374}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -67,8 +67,11 @@
     <None Include="..\..\www\html\timing.html">
       <Filter>www\html</Filter>
     </None>
-    <None Include="..\..\www\css\timing.css">
-      <Filter>www\css</Filter>
+    <None Include="..\..\www\html\css\timing.css">
+      <Filter>www\html\css</Filter>
+    </None>
+    <None Include="..\..\www\html\css\table.css">
+      <Filter>www\html\css</Filter>
     </None>
   </ItemGroup>
 </Project>

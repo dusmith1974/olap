@@ -60,27 +60,27 @@ html {
 }
 
 body {
-  width: 100%; /*required if using % width*/
-  height: 100%; /*required if using % height*/
-  margin: 0; /*required if using % width or height*/
-  padding: 0 20px 0 20px; /*purely aesthetic, not required*/
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0 20px 0 20px;
   box-sizing: border-box;
-  /*required if using above declaration*/
-  /*text-align: center;*/ /*delete if using % width, or you don't want table centered*/
 }
 
-/* view-source:http://salzerdesign.com/test/fixedTable.html */
+/* view-source:http://salzerdesign.com/test/fixedTable.html
 td {
   border: 1px solid #ccc;
+  border: 0px 5px 0px 5px;
   padding: 0px 5px 0px 5px;
-  text-align: left; /* IE */
+  text-align: left;
 }
 
-/*td + td {
-        border-left: 1px solid #ccc;
-      }*/
+td + td {
+  border-left: 1px solid #ccc;
+}
 
 th {
+  border: 0px 5px 0px 5px;
   padding: 0px 5px 0px 5px;
   text-align: left;
   background-color: cornflowerblue;
@@ -131,14 +131,17 @@ table {
   line-height: 25px;
   text-align: left;
   border-left: 1px solid #ccc;
-  padding-left: 6px;
-  padding-right: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
   margin-left: -1px;
   margin-right: -1px;
   font-weight: 300;
 }
 
 .first .th-inner {
-  padding-left: 6px;
-  padding-right: 6px;
+  border-left: none;
+  padding-left: 2px;
+  padding-right: 5px;
 }
+
+*/
