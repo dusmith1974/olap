@@ -7,8 +7,14 @@
     <Filter Include="replay">
       <UniqueIdentifier>{69b5c115-7089-4887-aba9-42087ce35cf3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="web">
-      <UniqueIdentifier>{40f3c846-2aa0-476a-9235-4a4419b350b5}</UniqueIdentifier>
+    <Filter Include="www">
+      <UniqueIdentifier>{ae2f439d-eeaa-4ce3-8d9a-8ea2a1a10e9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="www\html">
+      <UniqueIdentifier>{790c2791-df9d-49e1-a010-042604360a9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="www\css">
+      <UniqueIdentifier>{20e75e49-d195-40e9-9b33-63c83b337f2a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -52,17 +58,17 @@
     <ClInclude Include="..\..\olreplay_pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\pages\page1.html">
-      <Filter>web</Filter>
+    <None Include="..\..\www\html\mclaren.html">
+      <Filter>www\html</Filter>
     </None>
-    <None Include="..\..\pages\timing.html">
-      <Filter>web</Filter>
+    <None Include="..\..\www\html\page1.html">
+      <Filter>www\html</Filter>
     </None>
-    <None Include="..\..\pages\mclaren.html">
-      <Filter>web</Filter>
+    <None Include="..\..\www\html\timing.html">
+      <Filter>www\html</Filter>
     </None>
-    <None Include="..\..\pages\timing2.html">
-      <Filter>web</Filter>
+    <None Include="..\..\www\css\timing.css">
+      <Filter>www\css</Filter>
     </None>
   </ItemGroup>
 </Project>

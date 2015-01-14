@@ -131,10 +131,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\pages\mclaren.html" />
-    <None Include="..\..\pages\page1.html" />
-    <None Include="..\..\pages\timing.html" />
-    <None Include="..\..\pages\timing2.html" />
+    <None Include="..\..\www\css\timing.css" />
+    <None Include="..\..\www\html\mclaren.html" />
+    <None Include="..\..\www\html\page1.html" />
+    <None Include="..\..\www\html\timing.html" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
