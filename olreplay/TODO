@@ -1,3 +1,20 @@
+angular timer (race time) sync to msgs
+vs2013 cordova
+
+toolbar
+ play, pause, restart race, slider for playback speed
+tabs
+ live timing, past races, year, event dropdowns
+grid for page-1
+table for raw msgs - collapsable
+
+deadline timer
+ cancel, expires_from_now +=, async wait for playback control
+
+msg-set (timers)
+for each client, id with session-key (int?)
+ share same msg-prep
+
 pages
  JQuery
  JQWidgets

@@ -4,7 +4,7 @@ tr:nth-child(even) {
 
 td {
   border-bottom: 1px solid #ccc;
-  padding: 5px;
+  padding: 0px 5px;
   text-align: left;
 }
 
@@ -13,7 +13,7 @@ td {
   }
 
 th {
-  padding: 0 5px;
+  padding: 0px 5px;
   text-align: left;
 }
 
@@ -23,12 +23,12 @@ th {
 
 .fixed-table-container {
   width: 50%;
-  height: 210px;
+  height: 150px;
   border: 1px solid black;
   margin: 10px auto;
   background-color: white;
   position: relative;
-  padding-top: 30px;
+  padding-top: 15px;
 }
 
 .fixed-table-container-inner {
@@ -39,7 +39,7 @@ th {
 
 .header-background {
   background-color: cornflowerblue;
-  height: 30px;
+  height: 15px;
   position: absolute;
   top: 0;
   right: 0;
@@ -52,22 +52,21 @@ table {
   overflow-x: hidden;
   overflow-y: auto;
   font-family: Verdana, Tahoma, sans-serif;
-  font-size: smaller;
 }
 
 .th-inner {
   position: absolute;
   top: 0;
-  line-height: 30px;
+  line-height: 15px;
   text-align: left;
   border-left: 1px solid black;
-  padding-left: 5px;
+  padding: 0px 5px;
   margin-left: -5px;
 }
 
 .first .th-inner {
   border-left: none;
-  padding-left: 6px;
+  padding: 0px 5px;
 }
 
 .extrawrap th {

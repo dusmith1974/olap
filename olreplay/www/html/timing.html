@@ -1,10 +1,25 @@
-<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8" />
   <title>Timing</title>
+
   <link rel="stylesheet" type="text/css" href="css/timing.css">
   <link rel="stylesheet" type="text/css" href="css/table.css">
+  <link rel="stylesheet" href="jquery-ui/jquery-ui-themes-1.11.2/themes/cupertino/jquery-ui.css">
+  <!--<style>
+    .ng-scope {
+      border: 1px solid red;
+    }
+
+    .ng-binding {
+      border: 1px solid red;
+    }
+  </style>-->
+
+  <script src="jquery-ui/jquery-ui-1.11.2/external/jquery/jquery.js"></script>
+  <script src="jquery-ui/jquery-ui-1.11.2/jquery-ui.js"></script>
+  <script src="angular-js/1.2/angular.min.js"></script>
+
   <script type="text/javascript">
     function WebSocketTest() {
       if ("WebSocket" in window) {
@@ -12,12 +27,12 @@
         ws.onopen = function () {
           ws.send("START RACE");
         };
+
         ws.onmessage = function (evt) {
           var msg = evt.data;
-          document.getElementById("lastMessage").innerHTML = msg;
           document.getElementById("status").innerHTML = "Socket Open";
 
-          for (var n = 1, r = document.querySelector("tbody>tr"), p = r.parentNode; n--; p.appendChild(r.cloneNode(true)));
+          for (var n = 1, r = document.querySelector("tbody.raw>tr"), p = r.parentNode; n--; p.appendChild(r.cloneNode(true)));
           var table = document.getElementById("messages");
 
           if (typeof WebSocketTest.counter == 'undefined')
@@ -32,11 +47,34 @@
           var rows = table.getElementsByTagName("tr");
           table.focus();
           table.parentNode.scrollTop = rows[table.rows.length - 1].offsetTop - rows[0].offsetHeight;
+
+          var $selector = angular.element(ms);
+          var $scope = $selector.scope();
+          //var controller = selector.controller();
+          //var injector = selector.injector();
+
+          var msgType = msg.split(",", 1)[0];
+          if (msgType == 'com') {
+            // Index with com message.
+            var COM_GRID_POS = 4;
+            var COM_RACE_NUM = 3;
+            var COM_SHORT_NAME = 5;
+            var COM_NAME = 6;
+            var COM_TEAM_NAME = 7;
+
+            var values = msg.split(",");
+
+            $scope.competitors[values[COM_GRID_POS] - 1] = new Competitor(values[COM_RACE_NUM], values[COM_GRID_POS], values[COM_SHORT_NAME], values[COM_NAME], values[COM_TEAM_NAME]);
+            $scope.positions[values[COM_GRID_POS] - 1].pos = values[COM_GRID_POS];
+            $scope.positions[values[COM_GRID_POS] - 1].num = values[COM_RACE_NUM];
+            $scope.positions[values[COM_GRID_POS] - 1].name = values[COM_NAME];
+          }
+
+          $scope.$apply();
         };
 
         ws.onclose = function () {
           document.getElementById("status").innerHTML = "Socket Closed";
-          //alert("ws close.");
         };
 
         window.onbeforeunload = function () {
@@ -49,51 +87,132 @@
       }
     }
   </script>
+  <script>
+    function TimingLine(pos, num, name, gap, lap, s1, s2, s3) {
+      this.pos = pos;
+      this.num = num;
+      this.name = name;
+      this.gap = gap;
+      this.lap = lap;
+      this.s1 = s1;
+      this.s2 = s2;
+      this.s3 = s3;
+    }
+
+    function Competitor(raceNum, gridNum, shortName, name, team) {
+      this.raceNum = raceNum;
+      this.gridNum = gridNum;
+      this.shortName = shortName;
+      this.name = name;
+      this.team = team;
+    }
+
+    function raceController($scope) {
+      $scope.trackStatus = { green: 'Green', scs: 'Safety Car Standby', scd: 'Safety Car Deployed', red: 'Red' };
+
+      $scope.positions = [new TimingLine(0, 0, '', '', '', '', '', '')];
+      for (j = 0; j < 21; ++j)
+        $scope.positions[$scope.positions.length] = new TimingLine(0, 0, '', '', '', '', '', '');
+
+      $scope.competitors = [new Competitor(0, 0, '', '', '')];
+      for (j = 0; j < 21; ++j)
+        $scope.competitors[$scope.competitors.length] = new Competitor(0, 0, '', '', '');
+    }
+  </script>
 </head>
 <body>
-  <h3>Live Timing</h3>
-  <p><a href="javascript:WebSocketTest()">Start Race</a></p>
-  <p id="status">Socket Closed</p>
-  <p id="lastMessage">...Last Message...</p>
-  <div class="fixed-table-container">
-    <div class="header-background"> </div>
-    <div class="fixed-table-container-inner">
-      <table id="messages" cellspacing="0">
-        <!--<caption>Live Timing</caption>-->
+  <h1>NeoLap</h1>
+  <!-- Accordion -->
+  <div id="accordion">
+    <h3>Motorsport</h3>
+    <div id="ms" ng-app="" ng-init="race=Aus 2014" ng-controller="raceController">
+      <p>Premier Racing League</p>
+      <!--var e = document.getElementById("ddlViewBy");
+      var strUser = e.options[e.selectedIndex].value;-->
+      <select id="race" ng-init="race = 'Silverstone'" ng-model="race">
+        <optgroup label="2014">
+          <option value="Australia">Australia</option>
+          <option value="Monaco">Monaco</option>
+          <option value="Monza">Monza</option>
+          <option value="Silverstone">Silverstone</option>
+        </optgroup>
+      </select>
+      <p><a href="javascript:WebSocketTest()">Start Race</a></p>
+      <p id="status">Socket Closed</p>
+      <h2>{{race}}</h2>
+      <!--<h3 ng-bind="race"></h3>-->
+      <table id="Page1" cellspacing="0">
         <thead>
           <tr>
-            <th class="first">
-              <div class="th-inner">No</div>
-            </th>
-            <th>
-              <div class="th-inner">Message</div>
-            </th>
+            <th>P</th>
+            <th></th>
+            <th>Name</th>
+            <th>Lap</th>
+            <th></th>
+            <th>S1</th>
+            <th>S2</th>
+            <th>S3</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>0</td>
-            <td>Pitlane Open</td>
+          <tr ng-repeat="x in positions">
+            <td>{{x.pos}}</td>
+            <td>{{x.num}}</td>
+            <td>{{x.name}}</td>
+            <td>{{x.gap}}</td>
+            <td>{{x.lap}}</td>
+            <td>{{x.s1}}</td>
+            <td>{{x.s2}}</td>
+            <td>{{x.s3}}</td>
           </tr>
         </tbody>
       </table>
+
+      <div class="fixed-table-container">
+        <div class="header-background"> </div>
+        <div class="fixed-table-container-inner">
+          <table id="messages" cellspacing="0">
+            <thead>
+              <tr>
+                <th class="first">
+                  <div class="th-inner">No</div>
+                </th>
+                <th>
+                  <div class="th-inner">Message</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="raw">
+              <tr>
+                <td>0</td>
+                <td>Pitlane Open</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!--<h1>Australia GP</h1>
+      <h2>Timing Page</h2>
+      <p>Replay of the Australian GP</p>
+      <p>Top level navigation links here</p>
+      <h3>Drivers</h3>
+      <ul>
+        <li>HAM</li>
+        <li>ALO</li>
+        <li>BUT</li>
+      </ul>
+      <h3>Teams</h3>
+      <ol>
+        <li><a href="mclaren.html" target="_blank">McLaren</a></li>
+        <li>Ferrari</li>
+        <li>Mercedes</li>
+      </ol>-->
     </div>
+    <h3>Running and Cycling</h3>
+    <div>10K Cross Country</div>
   </div>
-  <h1>Australia GP</h1>
-  <h2>Timing Page</h2>
-  <p>Replay of the Australian GP</p>
-  <p>Top level navigation links here</p>
-  <h3>Drivers</h3>
-  <ul>
-    <li>HAM</li>
-    <li>ALO</li>
-    <li>BUT</li>
-  </ul>
-  <h3>Teams</h3>
-  <ol>
-    <li><a href="mclaren.html" target="_blank">McLaren</a></li>
-    <li>Ferrari</li>
-    <li>Mercedes</li>
-  </ol>
+  <script>
+    $("#accordion").accordion();
+  </script>
 </body>
 </html>

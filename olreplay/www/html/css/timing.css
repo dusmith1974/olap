@@ -10,6 +10,7 @@ body {
 
 h1 {
   margin: 10px 0px 10px 0px;
+  border-bottom: solid black 1px;
 }
 
 h2 {
@@ -60,88 +61,58 @@ html {
 }
 
 body {
-  width: 100%;
-  height: 100%;
   margin: 0;
-  padding: 0 20px 0 20px;
   box-sizing: border-box;
 }
 
-/* view-source:http://salzerdesign.com/test/fixedTable.html
-td {
-  border: 1px solid #ccc;
-  border: 0px 5px 0px 5px;
-  padding: 0px 5px 0px 5px;
-  text-align: left;
-}
-
-td + td {
-  border-left: 1px solid #ccc;
-}
-
-th {
-  border: 0px 5px 0px 5px;
-  padding: 0px 5px 0px 5px;
-  text-align: left;
-  background-color: cornflowerblue;
-  width: auto;
-}
-
-tr:nth-child(even) {
-  background-color: gainsboro;
-}
-
-.fixed-table-container {
-  width: 40%;
-  height: 180px;
-  border: 1px solid #ccc;
-  margin: 10px auto;
-  background-color: white;
-  position: relative;
-  padding-top: 25px;
-}
-
-.fixed-table-container-inner {
-  overflow-x: hidden;
-  overflow-y: auto;
-  height: 100%;
-}
-
-.header-background {
-  background-color: cornflowerblue;
-  height: 25px;
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-}
-
-table {
-  background-color: white;
-  width: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
-  font-family: Verdana, Tahoma, sans-serif;
-  font-size: small;
-}
-
-.th-inner {
-  position: absolute;
-  top: 0;
-  line-height: 25px;
-  text-align: left;
-  border-left: 1px solid #ccc;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin-left: -1px;
-  margin-right: -1px;
-  font-weight: 300;
-}
-
-.first .th-inner {
-  border-left: none;
-  padding-left: 2px;
-  padding-right: 5px;
-}
-
+/* jQuery-UI Style
 */
+body {
+  font: 62.5% "Trebuchet MS", sans-serif;
+  margin: 50px;
+}
+
+.demoHeaders {
+  margin-top: 2em;
+}
+
+#dialog-link {
+  padding: .4em 1em .4em 20px;
+  text-decoration: none;
+  position: relative;
+}
+
+  #dialog-link span.ui-icon {
+    margin: 0 5px 0 0;
+    position: absolute;
+    left: .2em;
+    top: 50%;
+    margin-top: -8px;
+  }
+
+#icons {
+  margin: 0;
+  padding: 0;
+}
+
+  #icons li {
+    margin: 2px;
+    position: relative;
+    padding: 4px 0;
+    cursor: pointer;
+    float: left;
+    list-style: none;
+  }
+
+  #icons span.ui-icon {
+    float: left;
+    margin: 0 4px;
+  }
+
+.fakewindowcontain .ui-widget-overlay {
+  position: absolute;
+}
+
+select {
+  width: 200px;
+}
