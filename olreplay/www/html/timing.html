@@ -2,23 +2,14 @@
 <head>
   <meta charset="utf-8" />
   <title>Timing</title>
-
   <link rel="stylesheet" type="text/css" href="css/timing.css">
   <link rel="stylesheet" type="text/css" href="css/table.css">
   <link rel="stylesheet" href="jquery-ui/jquery-ui-themes-1.11.2/themes/cupertino/jquery-ui.css">
-  <!--<style>
-    .ng-scope {
-      border: 1px solid red;
-    }
-
-    .ng-binding {
-      border: 1px solid red;
-    }
-  </style>-->
 
   <script src="jquery-ui/jquery-ui-1.11.2/external/jquery/jquery.js"></script>
   <script src="jquery-ui/jquery-ui-1.11.2/jquery-ui.js"></script>
   <script src="angular-js/1.2/angular.min.js"></script>
+  <script src="angular-js/angular-timer-master/app/js/timer.js"></script>
 
   <script type="text/javascript">
     function WebSocketTest() {
@@ -52,6 +43,9 @@
           var $scope = $selector.scope();
           //var controller = selector.controller();
           //var injector = selector.injector();
+          if (WebSocketTest.counter == 1)
+            $scope.startTimer();
+          //$('timer')[0].start();
 
           var msgType = msg.split(",", 1)[0];
           if (msgType == 'com') {
@@ -68,7 +62,13 @@
             $scope.positions[values[COM_GRID_POS] - 1].pos = values[COM_GRID_POS];
             $scope.positions[values[COM_GRID_POS] - 1].num = values[COM_RACE_NUM];
             $scope.positions[values[COM_GRID_POS] - 1].name = values[COM_NAME];
+          } else if (msgType == 'sec') {
+            ProcessSectorMessage($scope, msg)
           }
+
+          //$scope.stopTimer();
+          //$scope.startTime = 5000;
+          //$scope.resumeTimer();
 
           $scope.$apply();
         };
@@ -86,9 +86,176 @@
         alert("This browser does not support WebSockets.");
       }
     }
+
+    function ProcessSectorMessage($scope, msg) {
+      var MSG_TYPE = 0;
+      var MSG_RACE_TIME = 1;
+      var MSG_TIME_OF_DAY = 2;
+      var MSG_SEC_RACE_NUM = 3;
+      var MSG_SEC_LAP_NUM = 4;
+      var MSG_SEC_SEC_NUM = 5;
+      var MSG_SEC_SEC_TIME = 6;
+
+      var values = msg.split(",");
+
+      var currentPos = GetCurrentPos($scope, values[MSG_SEC_RACE_NUM]);
+      var newPos = GetNewPos($scope, values[MSG_SEC_LAP_NUM], values[MSG_SEC_SEC_NUM]);
+
+      if (currentPos != newPos)
+        ChangeRaceOrder($scope.positions, currentPos, newPos);
+
+      var line = $scope.positions[newPos - 1];
+      line.gap = values[MSG_SEC_LAP_NUM];
+      line.lap = '';
+
+      switch (values[MSG_SEC_SEC_NUM]) {
+        case '1':
+          line.s1 = values[MSG_SEC_SEC_TIME];
+          line.s2 = '';
+          line.s3 = '';
+          break;
+        case '2':
+          line.s2 = values[MSG_SEC_SEC_TIME];
+          break;
+        case '3':
+          line.s3 = values[MSG_SEC_SEC_TIME];
+          break;
+      }
+
+      line.lapNum = values[MSG_SEC_LAP_NUM];
+    }
+
+    function ChangeRaceOrder(positions, currentPos, newPos) {
+      if (currentPos > newPos)
+        MoveCompetitorUp(positions, currentPos, newPos);
+      else
+        MoveCompetitorDown(positions, currentPos, newPos);
+    }
+
+    function MoveCompetitorUp(positions, currentPos, newPos) {
+      if (currentPos < newPos) return;
+
+      while (currentPos != newPos) {
+        SwapLines(positions, currentPos, currentPos - 1);
+        --currentPos;
+      }
+    }
+
+    function MoveCompetitorDown(positions, currentPos, newPos) {
+      if (currentPos > newPos) return;
+
+      while (currentPos != newPos) {
+        SwapLines(positions, currentPos, currentPos + 1);
+        ++currentPos;
+      }
+    }
+
+    function SwapLines(positions, lhs, rhs) {
+      var ll = positions[lhs - 1];
+      var rl = positions[rhs - 1];
+
+      var tmp = new TimingLine(ll.pos, ll.num, ll.name, ll.gap, ll.lap, ll.s1, ll.s2, ll.s3, ll.lapNum);
+
+      ll.num = rl.num;
+      ll.name = rl.name;
+      ll.gap = rl.gap;
+      ll.lap = rl.lap;
+      ll.s1 = rl.s1;
+      ll.s2 = rl.s2;
+      ll.s3 = rl.s3;
+      ll.lapNum = rl.LapNum;
+
+      rl.num = tmp.num;
+      rl.name = tmp.name;
+      rl.gap = tmp.gap;
+      rl.lap = tmp.lap;
+      rl.s1 = tmp.s1;
+      rl.s2 = tmp.s2;
+      rl.s3 = tmp.s3;
+      rl.LapNum = tmp.lapNum;
+    }
+
+    function GetCurrentPos($scope, raceNum) {
+      var positions = $scope.positions;
+      for (var j = 0; j < positions.length; ++j)
+        if (positions[j].num == raceNum)
+          return j + 1;
+
+      return 0;
+    }
+
+    // TODO(DS) Lapped drivers? Backmarkers?
+    function GetNewPos($scope, lapNum, secNum) {
+      var positions = $scope.positions;
+
+      var lead = positions[0];
+      var leadLap = lead.lapNum;
+      if (lapNum > leadLap)
+        return 1;
+
+      for (var j = 0; j < positions.length; ++j) {
+        var sector = positions[j].s1;
+
+        switch (secNum) {
+          case '2':
+            sector = positions[j].s2;
+            break;
+          case '3':
+            sector = positions[j].s3;
+            break;
+        }
+
+        // An empty slot?
+        if (!sector.trim())
+          return j + 1;
+
+        // Or a lower lap.
+        if (positions[j].lapNum < lapNum)
+          return j + 1;
+      }
+
+      return 0;
+    }
   </script>
   <script>
-    function TimingLine(pos, num, name, gap, lap, s1, s2, s3) {
+    angular.module('raceApp', ['timer']);
+    function raceController($scope) {
+      $scope.timerRunning = true;
+
+      $scope.startTimer = function () {
+        $scope.$broadcast('timer-start');
+        $scope.timerRunning = true;
+      };
+
+      $scope.stopTimer = function () {
+        $scope.$broadcast('timer-stop');
+        $scope.timerRunning = false;
+      };
+
+      $scope.resumeTimer = function () {
+        $scope.$broadcast('timer-resume');
+        $scope.timerRunning = true;
+      };
+
+      $scope.$on('timer-stopped', function (event, data) {
+        console.log('Timer Stopped - data = ', data);
+      });
+
+      $scope.trackStatus = { green: 'Green', scs: 'Safety Car Standby', scd: 'Safety Car Deployed', red: 'Red' };
+
+      $scope.positions = [new TimingLine(0, 0, '', '', '', '', '', '', '1')];
+      for (j = 0; j < 21; ++j)
+        $scope.positions[$scope.positions.length] = new TimingLine(0, 0, '', '', '', '', '', '', '1');
+
+      $scope.competitors = [new Competitor(0, 0, '', '', '')];
+      for (j = 0; j < 21; ++j)
+        $scope.competitors[$scope.competitors.length] = new Competitor(0, 0, '', '', '');
+
+    }
+
+    raceController.$inject = ['$scope'];
+
+    function TimingLine(pos, num, name, gap, lap, s1, s2, s3, lapNum) {
       this.pos = pos;
       this.num = num;
       this.name = name;
@@ -97,6 +264,7 @@
       this.s1 = s1;
       this.s2 = s2;
       this.s3 = s3;
+      this.lapNum = lapNum;
     }
 
     function Competitor(raceNum, gridNum, shortName, name, team) {
@@ -106,111 +274,107 @@
       this.name = name;
       this.team = team;
     }
-
-    function raceController($scope) {
-      $scope.trackStatus = { green: 'Green', scs: 'Safety Car Standby', scd: 'Safety Car Deployed', red: 'Red' };
-
-      $scope.positions = [new TimingLine(0, 0, '', '', '', '', '', '')];
-      for (j = 0; j < 21; ++j)
-        $scope.positions[$scope.positions.length] = new TimingLine(0, 0, '', '', '', '', '', '');
-
-      $scope.competitors = [new Competitor(0, 0, '', '', '')];
-      for (j = 0; j < 21; ++j)
-        $scope.competitors[$scope.competitors.length] = new Competitor(0, 0, '', '', '');
-    }
   </script>
 </head>
 <body>
   <h1>NeoLap</h1>
   <!-- Accordion -->
-  <div id="accordion">
-    <h3>Motorsport</h3>
-    <div id="ms" ng-app="" ng-init="race=Aus 2014" ng-controller="raceController">
-      <p>Premier Racing League</p>
-      <!--var e = document.getElementById("ddlViewBy");
-      var strUser = e.options[e.selectedIndex].value;-->
-      <select id="race" ng-init="race = 'Silverstone'" ng-model="race">
-        <optgroup label="2014">
-          <option value="Australia">Australia</option>
-          <option value="Monaco">Monaco</option>
-          <option value="Monza">Monza</option>
-          <option value="Silverstone">Silverstone</option>
-        </optgroup>
-      </select>
-      <p><a href="javascript:WebSocketTest()">Start Race</a></p>
-      <p id="status">Socket Closed</p>
-      <h2>{{race}}</h2>
-      <!--<h3 ng-bind="race"></h3>-->
-      <table id="Page1" cellspacing="0">
-        <thead>
-          <tr>
-            <th>P</th>
-            <th></th>
-            <th>Name</th>
-            <th>Lap</th>
-            <th></th>
-            <th>S1</th>
-            <th>S2</th>
-            <th>S3</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="x in positions">
-            <td>{{x.pos}}</td>
-            <td>{{x.num}}</td>
-            <td>{{x.name}}</td>
-            <td>{{x.gap}}</td>
-            <td>{{x.lap}}</td>
-            <td>{{x.s1}}</td>
-            <td>{{x.s2}}</td>
-            <td>{{x.s3}}</td>
-          </tr>
-        </tbody>
-      </table>
+  <!--<div id="accordion">-->
+  <h3>Motorsport</h3>
+  <div id="ms" ng-app="raceApp" ng-init="race=Aus 2014" ng-controller="raceController">
+    <p>Premier Racing League</p>
+    <select id="race" ng-init="race = 'Silverstone'" ng-model="race">
+      <optgroup label="2014">
+        <option value="Australia">Australia</option>
+        <option value="Monaco">Monaco</option>
+        <option value="Monza">Monza</option>
+        <option value="Silverstone">Silverstone</option>
+      </optgroup>
+    </select>
+    <p><a href="javascript:WebSocketTest()">Start Race</a></p>
+    <p id="status">Socket Closed</p>
+    <h2>{{race}}</h2>
+    <h3>
+      <!--<script>
+        var app = angular.module('raceApp', ['timer']);
+        app.filter('slice', function () {
+          return function (arr, start, end) {
+            return arr.slice(start, end);
+          };
+        });
+      </script>-->
+      <timer autostart="false">Race time: {{hours === 0 ? '' : hours + ':'}}{{minutes === 0 ? '' : minutes + ':'}}{{sseconds}}.{{millis % 1000}}</timer>
+    </h3>
 
-      <div class="fixed-table-container">
-        <div class="header-background"> </div>
-        <div class="fixed-table-container-inner">
-          <table id="messages" cellspacing="0">
-            <thead>
-              <tr>
-                <th class="first">
-                  <div class="th-inner">No</div>
-                </th>
-                <th>
-                  <div class="th-inner">Message</div>
-                </th>
-              </tr>
-            </thead>
-            <tbody class="raw">
-              <tr>
-                <td>0</td>
-                <td>Pitlane Open</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    <table id="Page1" cellspacing="0">
+      <thead>
+        <tr>
+          <th>P</th>
+          <th></th>
+          <th>Name</th>
+          <th>Lap</th>
+          <th></th>
+          <th>S1</th>
+          <th>S2</th>
+          <th>S3</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="x in positions">
+          <td>{{x.pos}}</td>
+          <td>{{x.num}}</td>
+          <td>{{x.name}}</td>
+          <td>{{x.gap}}</td>
+          <td>{{x.lap}}</td>
+          <td>{{x.s1}}</td>
+          <td>{{x.s2}}</td>
+          <td>{{x.s3}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="fixed-table-container">
+      <div class="header-background"> </div>
+      <div class="fixed-table-container-inner">
+        <table id="messages" cellspacing="0">
+          <thead>
+            <tr>
+              <th class="first">
+                <div class="th-inner">No</div>
+              </th>
+              <th>
+                <div class="th-inner">Message</div>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="raw">
+            <tr>
+              <td>0</td>
+              <td>Pitlane Open</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <!--<h1>Australia GP</h1>
-      <h2>Timing Page</h2>
-      <p>Replay of the Australian GP</p>
-      <p>Top level navigation links here</p>
-      <h3>Drivers</h3>
-      <ul>
-        <li>HAM</li>
-        <li>ALO</li>
-        <li>BUT</li>
-      </ul>
-      <h3>Teams</h3>
-      <ol>
-        <li><a href="mclaren.html" target="_blank">McLaren</a></li>
-        <li>Ferrari</li>
-        <li>Mercedes</li>
-      </ol>-->
     </div>
-    <h3>Running and Cycling</h3>
-    <div>10K Cross Country</div>
+    <!--<h1>Australia GP</h1>
+    <h2>Timing Page</h2>
+    <p>Replay of the Australian GP</p>
+    <p>Top level navigation links here</p>
+    <h3>Drivers</h3>
+    <ul>
+      <li>HAM</li>
+      <li>ALO</li>
+      <li>BUT</li>
+    </ul>
+    <h3>Teams</h3>
+    <ol>
+      <li><a href="mclaren.html" target="_blank">McLaren</a></li>
+      <li>Ferrari</li>
+      <li>Mercedes</li>
+    </ol>-->
   </div>
+  <h3>Running and Cycling</h3>
+  <div>10K Cross Country</div>
+  <!--</div>-->
   <script>
     $("#accordion").accordion();
   </script>
