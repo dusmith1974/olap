@@ -17,6 +17,34 @@ th {
   text-align: left;
 }
 
+table.Page1 {
+  background-color: black;
+  color: yellow;
+}
+
+  table.Page1 > tbody > tr:nth-child(even) {
+    background-color: black;
+  }
+
+  table.Page1 > thead > tr > th {
+    background-color: black;
+    color: lightgrey;
+  }
+
+  table.Page1 > tbody > tr > td {
+    border: none;
+  }
+
+  table.Page1 tr.default {
+    background-color: black;
+    color: yellow;
+  }
+
+  table.Page1 tr.recent {
+    background-color: black;
+    color: white;
+  }
+
 .header-background {
   border-bottom: 1px solid black;
 }

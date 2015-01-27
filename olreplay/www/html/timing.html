@@ -101,6 +101,11 @@
       var currentPos = GetCurrentPos($scope, values[MSG_SEC_RACE_NUM]);
       var newPos = GetNewPos($scope, values[MSG_SEC_LAP_NUM], values[MSG_SEC_SEC_NUM]);
 
+      if ($scope.recentWatermark == -1)
+        $scope.recentWatermark = 0;
+      else
+        $scope.recentWatermark = Math.max($scope.recentWatermark, newPos)
+
       if (currentPos != newPos)
         ChangeRaceOrder($scope.positions, currentPos, newPos);
 
@@ -232,15 +237,6 @@
         $scope.timerRunning = false;
       };
 
-      $scope.resumeTimer = function () {
-        $scope.$broadcast('timer-resume');
-        $scope.timerRunning = true;
-      };
-
-      $scope.$on('timer-stopped', function (event, data) {
-        console.log('Timer Stopped - data = ', data);
-      });
-
       $scope.trackStatus = { green: 'Green', scs: 'Safety Car Standby', scd: 'Safety Car Deployed', red: 'Red' };
 
       $scope.positions = [new TimingLine(0, 0, '', '', '', '', '', '', '1')];
@@ -281,7 +277,7 @@
   <!-- Accordion -->
   <!--<div id="accordion">-->
   <h3>Motorsport</h3>
-  <div id="ms" ng-app="raceApp" ng-init="race=Aus 2014" ng-controller="raceController">
+  <div id="ms" ng-app="raceApp" ng-init="recentWatermark = '-1'" ng-controller="raceController">
     <p>Premier Racing League</p>
     <select id="race" ng-init="race = 'Silverstone'" ng-model="race">
       <optgroup label="2014">
@@ -303,10 +299,10 @@
           };
         });
       </script>-->
-      <timer autostart="false">Race time: {{hours === 0 ? '' : hours + ':'}}{{minutes === 0 ? '' : minutes + ':'}}{{sseconds}}.{{millis % 1000}}</timer>
+      <timer autostart="false" starttime="5000">Race time: {{hours === 0 ? '' : hours + ':'}}{{minutes === 0 ? '' : minutes + ':'}}{{sseconds}}.{{millis % 1000}}</timer>
     </h3>
 
-    <table id="Page1" cellspacing="0">
+    <table class="Page1" id="Page1" cellspacing="0">
       <thead>
         <tr>
           <th>P</th>
@@ -320,7 +316,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="x in positions">
+        <tr ng-repeat="x in positions" ng-class="$index <= recentWatermark ? 'recent' : 'default'">
           <td>{{x.pos}}</td>
           <td>{{x.num}}</td>
           <td>{{x.name}}</td>
