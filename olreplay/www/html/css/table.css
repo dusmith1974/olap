@@ -45,6 +45,11 @@ table.Page1 {
     color: white;
   }
 
+  table.Page1 td.recent {
+    background-color: black;
+    color: white;
+  }
+
 .header-background {
   border-bottom: 1px solid black;
 }

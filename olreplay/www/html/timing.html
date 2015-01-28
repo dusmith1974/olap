@@ -5,13 +5,12 @@
   <link rel="stylesheet" type="text/css" href="css/timing.css">
   <link rel="stylesheet" type="text/css" href="css/table.css">
   <link rel="stylesheet" href="jquery-ui/jquery-ui-themes-1.11.2/themes/cupertino/jquery-ui.css">
-
   <script src="jquery-ui/jquery-ui-1.11.2/external/jquery/jquery.js"></script>
   <script src="jquery-ui/jquery-ui-1.11.2/jquery-ui.js"></script>
   <script src="angular-js/1.2/angular.min.js"></script>
   <script src="angular-js/angular-timer-master/app/js/timer.js"></script>
-
   <script type="text/javascript">
+    "use strict";
     function WebSocketTest() {
       if ("WebSocket" in window) {
         var ws = new WebSocket("ws://localhost:9980/ws");
@@ -101,10 +100,31 @@
       var currentPos = GetCurrentPos($scope, values[MSG_SEC_RACE_NUM]);
       var newPos = GetNewPos($scope, values[MSG_SEC_LAP_NUM], values[MSG_SEC_SEC_NUM]);
 
-      if ($scope.recentWatermark == -1)
+      /*if ($scope.recentWatermark == -1)
         $scope.recentWatermark = 0;
       else
-        $scope.recentWatermark = Math.max($scope.recentWatermark, newPos)
+        $scope.recentWatermark = Math.max($scope.recentWatermark, newPos)*/
+
+      $scope.competitorStyle[newPos - 1] = 'recent';
+      $scope.lapNumStyle[newPos - 1] = 'recent';
+
+      switch (values[MSG_SEC_SEC_NUM]) {
+        case '1':
+          $scope.s1Style[newPos - 1] = 'recent';
+          $scope.s2Style[newPos - 1] = 'default';
+          $scope.s3Style[newPos - 1] = 'default';
+          break;
+        case '2':
+          $scope.s2Style[newPos - 1] = 'recent';
+          $scope.s1Style[newPos - 1] = 'default';
+          $scope.s3Style[newPos - 1] = 'default';
+          break;
+        case '3':
+          $scope.s3Style[newPos - 1] = 'recent';
+          $scope.s1Style[newPos - 1] = 'default';
+          $scope.s2Style[newPos - 1] = 'default';
+          break;
+      }
 
       if (currentPos != newPos)
         ChangeRaceOrder($scope.positions, currentPos, newPos);
@@ -168,7 +188,7 @@
       ll.s1 = rl.s1;
       ll.s2 = rl.s2;
       ll.s3 = rl.s3;
-      ll.lapNum = rl.LapNum;
+      ll.lapNum = rl.lapNum;
 
       rl.num = tmp.num;
       rl.name = tmp.name;
@@ -177,7 +197,7 @@
       rl.s1 = tmp.s1;
       rl.s2 = tmp.s2;
       rl.s3 = tmp.s3;
-      rl.LapNum = tmp.lapNum;
+      rl.lapNum = tmp.lapNum;
     }
 
     function GetCurrentPos($scope, raceNum) {
@@ -210,11 +230,11 @@
             break;
         }
 
-        // An empty slot?
-        if (!sector.trim())
+        // An empty slot on the first lap?
+        if (!sector.trim() && positions[j].lapNum == 1)
           return j + 1;
 
-        // Or a lower lap.
+        // Or any lower lap.
         if (positions[j].lapNum < lapNum)
           return j + 1;
       }
@@ -223,6 +243,7 @@
     }
   </script>
   <script>
+    "use strict";
     angular.module('raceApp', ['timer']);
     function raceController($scope) {
       $scope.timerRunning = true;
@@ -240,13 +261,33 @@
       $scope.trackStatus = { green: 'Green', scs: 'Safety Car Standby', scd: 'Safety Car Deployed', red: 'Red' };
 
       $scope.positions = [new TimingLine(0, 0, '', '', '', '', '', '', '1')];
-      for (j = 0; j < 21; ++j)
+      for (var j = 0; j < 21; ++j)
         $scope.positions[$scope.positions.length] = new TimingLine(0, 0, '', '', '', '', '', '', '1');
 
       $scope.competitors = [new Competitor(0, 0, '', '', '')];
       for (j = 0; j < 21; ++j)
         $scope.competitors[$scope.competitors.length] = new Competitor(0, 0, '', '', '');
 
+      // Create the style arrays to dynamically colour the grid.
+      $scope.competitorStyle = ['default'];
+      for (j = 0; j < 21; ++j)
+        $scope.competitorStyle[$scope.competitorStyle.length] = 'default';
+
+      $scope.lapNumStyle = ['default'];
+      for (j = 0; j < 21; ++j)
+        $scope.lapNumStyle[$scope.lapNumStyle.length] = 'default';
+
+      $scope.s1Style = ['default'];
+      for (j = 0; j < 21; ++j)
+        $scope.s1Style[$scope.s1Style.length] = 'default';
+
+      $scope.s2Style = ['default'];
+      for (j = 0; j < 21; ++j)
+        $scope.s2Style[$scope.s2Style.length] = 'default';
+
+      $scope.s3Style = ['default'];
+      for (j = 0; j < 21; ++j)
+        $scope.s3Style[$scope.s3Style.length] = 'default';
     }
 
     raceController.$inject = ['$scope'];
@@ -301,7 +342,6 @@
       </script>-->
       <timer autostart="false" starttime="5000">Race time: {{hours === 0 ? '' : hours + ':'}}{{minutes === 0 ? '' : minutes + ':'}}{{sseconds}}.{{millis % 1000}}</timer>
     </h3>
-
     <table class="Page1" id="Page1" cellspacing="0">
       <thead>
         <tr>
@@ -316,15 +356,15 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="x in positions" ng-class="$index <= recentWatermark ? 'recent' : 'default'">
-          <td>{{x.pos}}</td>
-          <td>{{x.num}}</td>
-          <td>{{x.name}}</td>
-          <td>{{x.gap}}</td>
-          <td>{{x.lap}}</td>
-          <td>{{x.s1}}</td>
-          <td>{{x.s2}}</td>
-          <td>{{x.s3}}</td>
+        <tr ng-repeat="x in positions">
+          <td ng-class="competitorStyle[$index]">{{x.pos}}</td>
+          <td style="text-align:right" ng-class="competitorStyle[$index]">{{x.num}}</td>
+          <td ng-class="competitorStyle[$index]">{{x.name}}</td>
+          <td ng-class="lapNumStyle[$index]">{{x.gap}}</td>
+          <td ng-class="lapNumStyle[$index]">{{x.lap}}</td>
+          <td ng-class="s1Style[$index]">{{x.s1}}</td>
+          <td ng-class="s2Style[$index]">{{x.s2}}</td>
+          <td ng-class="s3Style[$index]">{{x.s3}}</td>
         </tr>
       </tbody>
     </table>
