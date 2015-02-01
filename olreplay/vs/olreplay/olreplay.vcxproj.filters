@@ -16,6 +16,9 @@
     <Filter Include="www\html\css">
       <UniqueIdentifier>{8513cf8d-9237-4c6e-a585-ac32e5fc9374}</UniqueIdentifier>
     </Filter>
+    <Filter Include="www\js">
+      <UniqueIdentifier>{62aff682-c879-4925-9a30-310a8f67d6aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\main.cc" />
@@ -72,6 +75,9 @@
     </None>
     <None Include="..\..\www\html\css\table.css">
       <Filter>www\html\css</Filter>
+    </None>
+    <None Include="..\..\www\html\js\timing.js">
+      <Filter>www\js</Filter>
     </None>
   </ItemGroup>
 </Project>

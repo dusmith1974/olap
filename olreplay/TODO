@@ -1,3 +1,10 @@
+closure compiler/lib
+jslint/hint
+lightworks
+mv timestamps before msg type
+send gap in sec msgs
+pos bugs on lap?
+
 custom timer based on 
  angular timer (race time) sync to msgs
 vs2013 cordova

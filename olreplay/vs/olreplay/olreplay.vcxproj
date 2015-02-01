@@ -133,6 +133,7 @@
   <ItemGroup>
     <None Include="..\..\www\html\css\table.css" />
     <None Include="..\..\www\html\css\timing.css" />
+    <None Include="..\..\www\html\js\timing.js" />
     <None Include="..\..\www\html\mclaren.html" />
     <None Include="..\..\www\html\page1.html" />
     <None Include="..\..\www\html\timing.html" />
