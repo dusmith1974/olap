@@ -1,13 +1,17 @@
-closure compiler/lib
-jslint/hint
-lightworks
+pos bugs on lap 2 sec 2
+personal best green
+session best magenta
+interval catching white, else yellow
+pits
+ red
 mv timestamps before msg type
 send gap in sec msgs
-pos bugs on lap?
 
 custom timer based on 
  angular timer (race time) sync to msgs
 vs2013 cordova
+closure compiler/lib
+jslint/hint
 
 toolbar
  play, pause, restart race, slider for playback speed
