@@ -91,6 +91,11 @@ table.Page1 {
       width: 90px;
     }
 
+    /* pit */
+    table.Page1 td:nth-of-type(10) {
+      width: 30px;
+    }
+
   table.Page1 tr.recent {
     background-color: black;
     color: white;
@@ -99,6 +104,16 @@ table.Page1 {
   table.Page1 td.recent {
     background-color: black;
     color: white;
+  }
+
+  table.Page1 td.personalBest {
+    background-color: black;
+    color: green;
+  }
+
+  table.Page1 td.sessionBest {
+    background-color: black;
+    color: magenta;
   }
 
 .header-background {

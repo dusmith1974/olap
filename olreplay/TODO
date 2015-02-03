@@ -1,4 +1,6 @@
-phidget 1024 usb + encs + cards
+clear prev session best
+l3 280 < 30, lexical compare? cast to float for relational operators
+color code lap and int
 
 HAM bug on l2 or 3, gap < prev (stopped on track?)
 personal best green
@@ -14,6 +16,8 @@ custom timer based on
 vs2013 cordova
 closure compiler/lib
 jslint/hint
+
+phidget 1024 usb + encs + cards
 
 toolbar
  play, pause, restart race, slider for playback speed

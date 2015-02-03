@@ -51,7 +51,8 @@ function WebSocketTest() {
 
         var values = msg.split(",");
 
-        $scope.competitors[values[COM_GRID_POS] - 1] = new Competitor(values[COM_RACE_NUM], values[COM_GRID_POS], values[COM_SHORT_NAME], values[COM_NAME], values[COM_TEAM_NAME]);
+        //$scope.competitors[values[COM_GRID_POS] - 1] = new Competitor(values[COM_RACE_NUM], values[COM_GRID_POS], values[COM_SHORT_NAME], values[COM_NAME], values[COM_TEAM_NAME]);
+        $scope.competitors[values[COM_RACE_NUM]] = new Competitor(values[COM_RACE_NUM], values[COM_GRID_POS], values[COM_SHORT_NAME], values[COM_NAME], values[COM_TEAM_NAME], [0, 0, 0], 0, 0);
         $scope.positions[values[COM_GRID_POS] - 1].pos = values[COM_GRID_POS];
         $scope.positions[values[COM_GRID_POS] - 1].num = values[COM_RACE_NUM];
         $scope.positions[values[COM_GRID_POS] - 1].name = values[COM_NAME];
@@ -134,7 +135,80 @@ function ProcessLapMessage($scope, msg) {
   $scope.competitorCrossedLineOnLap[raceNum] = line.lapNum;
 }
 
+function updateSectorOneStyle($scope, pos) {
+  if (!pos || pos < 1) return;
 
+  var line = $scope.positions[pos - 1];
+  var competitor = $scope.competitors[line.num];
+
+  if ($.isNumeric(line.s1)) {
+    if (line.s1.trim() && !line.s2.trim() && !line.s3.trim())
+      $scope.s1Style[pos - 1] = 'recent'
+     else
+       $scope.s1Style[pos - 1] = 'default';
+       
+    if (competitor.bestSectors[0] == 0 || line.s1 <= competitor.bestSectors[0]) {
+      competitor.bestSectors[0] = line.s1;
+      $scope.s1Style[pos - 1] = 'personalBest';
+    }
+
+    if ($scope.sessionBestSector[0] == 0 || line.s1 <= $scope.sessionBestSector[0]) {
+      $scope.sessionBestSector[0] = line.s1;
+      $scope.s1Style[pos - 1] = 'sessionBest';
+    }
+  }
+}
+
+// TODO(DS) generalize for s1..n (3)
+function updateSectorTwoStyle($scope, pos) {
+  if (!pos || pos < 1) return;
+
+  var line = $scope.positions[pos - 1];
+  var competitor = $scope.competitors[line.num];
+
+  if ($.isNumeric(line.s2)) {
+    if (line.s1.trim() && line.s2.trim() && !line.s3.trim())
+      $scope.s2Style[pos - 1] = 'recent'
+     else
+       $scope.s2Style[pos - 1] = 'default';
+       
+    if (competitor.bestSectors[1] == 0 || line.s2 <= competitor.bestSectors[1]) {
+      competitor.bestSectors[1] = line.s2;
+      $scope.s2Style[pos - 1] = 'personalBest';
+    }
+
+    if ($scope.sessionBestSector[1] == 0 || line.s2 <= $scope.sessionBestSector[1]) {
+      $scope.sessionBestSector[1] = line.s2;
+      $scope.s2Style[pos - 1] = 'sessionBest';
+    }
+  }
+}
+
+function updateSectorThreeStyle($scope, pos) {
+  if (!pos || pos < 1) return;
+
+  var line = $scope.positions[pos - 1];
+  var competitor = $scope.competitors[line.num];
+
+  if ($.isNumeric(line.s3)) {
+    if (line.s1.trim() && line.s2.trim() && line.s3.trim())
+      $scope.s3Style[pos - 1] = 'recent'
+     else
+       $scope.s3Style[pos - 1] = 'default';
+       
+    if (competitor.bestSectors[2] == 0 || line.s3 <= competitor.bestSectors[2]) {
+      competitor.bestSectors[2] = line.s3;
+      $scope.s3Style[pos - 1] = 'personalBest';
+    }
+
+    if ($scope.sessionBestSector[2] == 0 || line.s3 <= $scope.sessionBestSector[2]) {
+      $scope.sessionBestSector[2] = line.s3;
+      $scope.s3Style[pos - 1] = 'sessionBest';
+    }
+  }
+}
+
+// TODO(DS) camelCase function name.
 function ProcessSectorMessage($scope, msg) {
   var MSG_SEC_RACE_NUM = 3;
   var MSG_SEC_LAP_NUM = 4;
@@ -160,34 +234,25 @@ function ProcessSectorMessage($scope, msg) {
       line.s1 = values[MSG_SEC_SEC_TIME];
       if ($.isNumeric(line.s1))
         line.s1 = parseFloat(line.s1).toFixed(1);
-
-      $scope.s1Style[newPos - 1] = 'recent';
       line.s2 = '';
-      $scope.s2Style[newPos - 1] = 'default';
       line.s3 = '';
-      $scope.s3Style[newPos - 1] = 'default';
       break;
     case '2':
       line.s2 = values[MSG_SEC_SEC_TIME];
       if ($.isNumeric(line.s2))
         line.s2 = parseFloat(line.s2).toFixed(1);
-
-      $scope.s2Style[newPos - 1] = 'recent';
-      $scope.s1Style[newPos - 1] = 'default';
-      $scope.s3Style[newPos - 1] = 'default';
       break;
     case '3':
       line.s3 = values[MSG_SEC_SEC_TIME];
       if ($.isNumeric(line.s3))
         line.s3 = parseFloat(line.s3).toFixed(1);
-        
-      $scope.s3Style[newPos - 1] = 'recent';
-      $scope.s1Style[newPos - 1] = 'default';
-      $scope.s2Style[newPos - 1] = 'default';
-      
       $scope.competitorCrossedLineOnLap[raceNum] = line.lapNum;
       break;
   }
+
+  updateSectorOneStyle($scope, newPos);
+  updateSectorTwoStyle($scope, newPos);
+  updateSectorThreeStyle($scope, newPos);
 
   line.lapNum = values[MSG_SEC_LAP_NUM];
   line.raceTime = raceTime;
@@ -331,14 +396,17 @@ function raceController($scope) {
   };
 
   $scope.trackStatus = { green: 'Green', scs: 'Safety Car Standby', scd: 'Safety Car Deployed', red: 'Red' };
+  $scope.sessionBestSector = [0, 0, 0];
+  $scope.sessionBestLap = 0;
 
   $scope.positions = [new TimingLine(0, 0, '', '', '', '', '', '', '', '1', '0:00.000')];
   for (var j = 0; j < 21; ++j)
     $scope.positions[$scope.positions.length] = new TimingLine(0, 0, '', '', '', '', '', '', '', '1', '0:00.000');
 
-  $scope.competitors = [new Competitor(0, 0, '', '', '')];
+  /*$scope.competitors = [new Competitor(0, 0, '', '', '', [0, 0, 0], 0, 0)];
   for (j = 0; j < 21; ++j)
-    $scope.competitors[$scope.competitors.length] = new Competitor(0, 0, '', '', '');
+    $scope.competitors[$scope.competitors.length] = new Competitor(0, 0, '', '', '', [0, 0, 0], 0, 0);*/
+  $scope.competitors = new Object();
 
   $scope.competitorCrossedLineOnLap = new Object();
 
@@ -380,10 +448,13 @@ function TimingLine(pos, num, name, gap, int, lap, s1, s2, s3, lapNum, raceTime)
   this.raceTime = raceTime;
 }
 
-function Competitor(raceNum, gridNum, shortName, name, team) {
+function Competitor(raceNum, gridNum, shortName, name, team, bestSectors, bestLap, lastInterval) {
   this.raceNum = raceNum;
   this.gridNum = gridNum;
   this.shortName = shortName;
   this.name = name;
   this.team = team;
+  this.bestSectors = bestSectors;
+  this.bestLap = bestLap;
+  this.lastInterval = lastInterval;
 }
