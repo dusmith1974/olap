@@ -20,6 +20,8 @@ th {
 table.Page1 {
   background-color: black;
   color: yellow;
+  table-layout: fixed;
+  width: auto;
 }
 
   table.Page1 > tbody > tr:nth-child(even) {
@@ -39,6 +41,55 @@ table.Page1 {
     background-color: black;
     color: yellow;
   }
+
+  table.Page1 td {
+    overflow: hidden;
+  }
+
+    /* pos */
+    table.Page1 td:nth-of-type(1) {
+      width: 30px;
+    }
+
+    /* no */
+    table.Page1 td:nth-of-type(2) {
+      width: 30px;
+    }
+
+    /* name */
+    table.Page1 td:nth-of-type(3) {
+      width: 200px;
+    }
+
+    /* gap */
+    table.Page1 td:nth-of-type(4) {
+      width: 60px;
+    }
+
+    /* int */
+    table.Page1 td:nth-of-type(5) {
+      width: 60px;
+    }
+
+    /* lap */
+    table.Page1 td:nth-of-type(6) {
+      width: 90px;
+    }
+
+    /* s1 */
+    table.Page1 td:nth-of-type(7) {
+      width: 90px;
+    }
+
+    /* s2 */
+    table.Page1 td:nth-of-type(8) {
+      width: 90px;
+    }
+
+    /* s3 */
+    table.Page1 td:nth-of-type(9) {
+      width: 90px;
+    }
 
   table.Page1 tr.recent {
     background-color: black;

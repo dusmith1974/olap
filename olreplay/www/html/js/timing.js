@@ -1,5 +1,11 @@
 "use strict";
 
+var Page1 = {
+  MSG_TYPE: 0,
+  MSG_RACE_TIME: 1,
+  MSG_TIME_OF_DAY: 2
+};
+
 function WebSocketTest() {
   if ("WebSocket" in window) {
     var ws = new WebSocket("ws://localhost:9980/ws");
@@ -96,17 +102,24 @@ function ProcessLapMessage($scope, msg) {
 
   var raceNum = values[MSG_LAP_RACE_NUM];
   var lapNum = values[MSG_LAP_NUM];
+  var raceTime = values[Page1.MSG_RACE_TIME];
 
   var newPos = CheckRaceOrder($scope, raceNum, lapNum, '3');
-  var line = $scope.positions[newPos - 1];
-
+  
   $scope.competitorStyle[newPos - 1] = 'recent';
   $scope.lapNumStyle[newPos - 1] = 'recent';
 
-  if (newPos > 1)
-    line.gap = values[MSG_LAP_GAP];
-
+  var line = $scope.positions[newPos - 1];
   line.lap = values[MSG_LAP_TIME];
+  line.lapNum = lapNum;
+  line.raceTime = raceTime;
+
+  if (newPos > 1) {
+    line.gap = values[MSG_LAP_GAP];
+    if ($.isNumeric(line.gap))
+      line.gap = parseFloat(line.gap).toFixed(1);
+  }
+
 
   if ($scope.positions[0].num == raceNum) {
     line.int = lapNum;
@@ -117,6 +130,7 @@ function ProcessLapMessage($scope, msg) {
       $scope.competitorStyle[j] = 'default';
   }
 
+  updateGaps($scope, newPos);
   $scope.competitorCrossedLineOnLap[raceNum] = line.lapNum;
 }
 
@@ -132,6 +146,7 @@ function ProcessSectorMessage($scope, msg) {
   var raceNum = values[MSG_SEC_RACE_NUM];
   var lapNum = values[MSG_SEC_LAP_NUM];
   var secNum = values[MSG_SEC_SEC_NUM];
+  var raceTime = values[Page1.MSG_RACE_TIME];
 
   var newPos = CheckRaceOrder($scope, raceNum, lapNum, secNum);
 
@@ -143,6 +158,9 @@ function ProcessSectorMessage($scope, msg) {
   switch (values[MSG_SEC_SEC_NUM]) {
     case '1':
       line.s1 = values[MSG_SEC_SEC_TIME];
+      if ($.isNumeric(line.s1))
+        line.s1 = parseFloat(line.s1).toFixed(1);
+
       $scope.s1Style[newPos - 1] = 'recent';
       line.s2 = '';
       $scope.s2Style[newPos - 1] = 'default';
@@ -151,12 +169,18 @@ function ProcessSectorMessage($scope, msg) {
       break;
     case '2':
       line.s2 = values[MSG_SEC_SEC_TIME];
+      if ($.isNumeric(line.s2))
+        line.s2 = parseFloat(line.s2).toFixed(1);
+
       $scope.s2Style[newPos - 1] = 'recent';
       $scope.s1Style[newPos - 1] = 'default';
       $scope.s3Style[newPos - 1] = 'default';
       break;
     case '3':
       line.s3 = values[MSG_SEC_SEC_TIME];
+      if ($.isNumeric(line.s3))
+        line.s3 = parseFloat(line.s3).toFixed(1);
+        
       $scope.s3Style[newPos - 1] = 'recent';
       $scope.s1Style[newPos - 1] = 'default';
       $scope.s2Style[newPos - 1] = 'default';
@@ -166,6 +190,34 @@ function ProcessSectorMessage($scope, msg) {
   }
 
   line.lapNum = values[MSG_SEC_LAP_NUM];
+  line.raceTime = raceTime;
+}
+
+function updateGaps($scope, pos) {
+  if (pos == 1) return;
+
+  var leadersLine = $scope.positions[0];  
+  if (!$.isNumeric(leadersLine.int)) return;
+
+  var thisLine = $scope.positions[pos - 1];  
+  if (pos == 2) {
+    thisLine.int = thisLine.gap;
+    return;
+  }
+  
+  var prevLine = $scope.positions[pos - 2];
+  thisLine.int = timeDiff(thisLine.gap, prevLine.gap);
+}
+
+function timeDiff(lhs, rhs) {
+  // lhs and rhs need to be in decimal for e.g. 72.01 not 1:12.01
+  // TODO(ds) make the conversion on a copy and use that.
+
+  var diff = '';
+  if ($.isNumeric(lhs) && $.isNumeric(rhs))
+    diff = (lhs - rhs).toFixed(1);
+
+  return diff;
 }
 
 function ChangeRaceOrder(positions, currentPos, newPos) {
@@ -197,7 +249,7 @@ function SwapLines(positions, lhs, rhs) {
   var ll = positions[lhs - 1];
   var rl = positions[rhs - 1];
 
-  var tmp = new TimingLine(ll.pos, ll.num, ll.name, ll.gap, ll.int, ll.lap, ll.s1, ll.s2, ll.s3, ll.lapNum);
+  var tmp = new TimingLine(ll.pos, ll.num, ll.name, ll.gap, ll.int, ll.lap, ll.s1, ll.s2, ll.s3, ll.lapNum, ll.raceTime);
 
   ll.num = rl.num;
   ll.name = rl.name;
@@ -208,6 +260,7 @@ function SwapLines(positions, lhs, rhs) {
   ll.s2 = rl.s2;
   ll.s3 = rl.s3;
   ll.lapNum = rl.lapNum;
+  ll.raceTime = rl.raceTime;
 
   rl.num = tmp.num;
   rl.name = tmp.name;
@@ -218,6 +271,7 @@ function SwapLines(positions, lhs, rhs) {
   rl.s2 = tmp.s2;
   rl.s3 = tmp.s3;
   rl.lapNum = tmp.lapNum;
+  rl.raceTime = tmp.raceTime;
 }
 
 function GetCurrentPos($scope, raceNum) {
@@ -251,7 +305,7 @@ function GetNewPos($scope, lapNum, secNum) {
     }
 
     // An empty slot on the first lap?
-    if (!sector.trim() && positions[j].lapNum == 1)
+    if (!sector.trim() && positions[j].lapNum <= lapNum)
       return j + 1;
 
     // Or any lower lap.
@@ -278,9 +332,9 @@ function raceController($scope) {
 
   $scope.trackStatus = { green: 'Green', scs: 'Safety Car Standby', scd: 'Safety Car Deployed', red: 'Red' };
 
-  $scope.positions = [new TimingLine(0, 0, '', '', '', '', '', '', '', '1')];
+  $scope.positions = [new TimingLine(0, 0, '', '', '', '', '', '', '', '1', '0:00.000')];
   for (var j = 0; j < 21; ++j)
-    $scope.positions[$scope.positions.length] = new TimingLine(0, 0, '', '', '', '', '', '', '', '1');
+    $scope.positions[$scope.positions.length] = new TimingLine(0, 0, '', '', '', '', '', '', '', '1', '0:00.000');
 
   $scope.competitors = [new Competitor(0, 0, '', '', '')];
   for (j = 0; j < 21; ++j)
@@ -312,7 +366,7 @@ function raceController($scope) {
 
 raceController.$inject = ['$scope'];
 
-function TimingLine(pos, num, name, gap, int, lap, s1, s2, s3, lapNum) {
+function TimingLine(pos, num, name, gap, int, lap, s1, s2, s3, lapNum, raceTime) {
   this.pos = pos;
   this.num = num;
   this.name = name;
@@ -323,6 +377,7 @@ function TimingLine(pos, num, name, gap, int, lap, s1, s2, s3, lapNum) {
   this.s2 = s2;
   this.s3 = s3;
   this.lapNum = lapNum;
+  this.raceTime = raceTime;
 }
 
 function Competitor(raceNum, gridNum, shortName, name, team) {
