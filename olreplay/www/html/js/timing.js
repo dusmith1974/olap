@@ -153,9 +153,37 @@ function updateSectorOneStyle($scope, pos) {
     }
 
     if ($scope.sessionBestSector[0] == 0 || line.s1 <= $scope.sessionBestSector[0]) {
+      ClearPreviousSessionBest($scope, 1)
       $scope.sessionBestSector[0] = line.s1;
+      $scope.previousSessionBestSectorStyle[0] = $scope.s1Style[pos - 1];
       $scope.s1Style[pos - 1] = 'sessionBest';
     }
+  }
+}
+
+function ClearPreviousSessionBest($scope, sector) {
+  var styleArray;
+  var previousStyle = 'default';
+  switch (sector) {
+    case 1:
+      styleArray = $scope.s1Style;
+      previousStyle = $scope.previousSessionBestSectorStyle[0];
+      break;
+
+    case 2:
+      styleArray = $scope.s2Style;
+      previousStyle = $scope.previousSessionBestSectorStyle[1];
+      break;
+
+    case 3:
+      styleArray = $scope.s3Style;
+      previousStyle = $scope.previousSessionBestSectorStyle[2];
+      break;
+  }
+
+  for (var j = 0; j < styleArray.length; ++j) {
+    if (styleArray[j] == 'sessionBest')
+      styleArray[j] = previousStyle;
   }
 }
 
@@ -178,7 +206,9 @@ function updateSectorTwoStyle($scope, pos) {
     }
 
     if ($scope.sessionBestSector[1] == 0 || line.s2 <= $scope.sessionBestSector[1]) {
+      ClearPreviousSessionBest($scope, 2)
       $scope.sessionBestSector[1] = line.s2;
+      $scope.previousSessionBestSectorStyle[1] = $scope.s2Style[pos - 1];
       $scope.s2Style[pos - 1] = 'sessionBest';
     }
   }
@@ -202,7 +232,9 @@ function updateSectorThreeStyle($scope, pos) {
     }
 
     if ($scope.sessionBestSector[2] == 0 || line.s3 <= $scope.sessionBestSector[2]) {
+      ClearPreviousSessionBest($scope, 3)
       $scope.sessionBestSector[2] = line.s3;
+      $scope.previousSessionBestSectorStyle[2] = $scope.s3Style[pos - 1];
       $scope.s3Style[pos - 1] = 'sessionBest';
     }
   }
@@ -397,6 +429,7 @@ function raceController($scope) {
 
   $scope.trackStatus = { green: 'Green', scs: 'Safety Car Standby', scd: 'Safety Car Deployed', red: 'Red' };
   $scope.sessionBestSector = [0, 0, 0];
+  $scope.previousSessionBestSectorStyle = ['', '', ''];
   $scope.sessionBestLap = 0;
 
   $scope.positions = [new TimingLine(0, 0, '', '', '', '', '', '', '', '1', '0:00.000')];
