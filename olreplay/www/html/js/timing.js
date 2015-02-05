@@ -51,7 +51,6 @@ function WebSocketTest() {
 
         var values = msg.split(",");
 
-        //$scope.competitors[values[COM_GRID_POS] - 1] = new Competitor(values[COM_RACE_NUM], values[COM_GRID_POS], values[COM_SHORT_NAME], values[COM_NAME], values[COM_TEAM_NAME]);
         $scope.competitors[values[COM_RACE_NUM]] = new Competitor(values[COM_RACE_NUM], values[COM_GRID_POS], values[COM_SHORT_NAME], values[COM_NAME], values[COM_TEAM_NAME], [0, 0, 0], 0, 0);
         $scope.positions[values[COM_GRID_POS] - 1].pos = values[COM_GRID_POS];
         $scope.positions[values[COM_GRID_POS] - 1].num = values[COM_RACE_NUM];
@@ -107,8 +106,8 @@ function ProcessLapMessage($scope, msg) {
 
   var newPos = CheckRaceOrder($scope, raceNum, lapNum, '3');
   
-  $scope.competitorStyle[newPos - 1] = 'recent';
-  $scope.lapNumStyle[newPos - 1] = 'recent';
+  //$scope.competitorStyle[newPos - 1] = 'recent';
+  //$scope.lapNumStyle[newPos - 1] = 'recent';
 
   var line = $scope.positions[newPos - 1];
   line.lap = values[MSG_LAP_TIME];
@@ -124,14 +123,16 @@ function ProcessLapMessage($scope, msg) {
 
   if ($scope.positions[0].num == raceNum) {
     line.int = lapNum;
-    for (var j = 1; j < $scope.competitorStyle.length; ++j)
+    for (var j = 1; j < $scope.competitorStyle.length; ++j) {
       $scope.competitorStyle[j] = 'default';
-
-     for (j = 1; j < $scope.lapNumStyle.length; ++j)
-      $scope.competitorStyle[j] = 'default';
+      $scope.lapNumStyle[j] = 'default';
+    }
   }
 
   updateGaps($scope, newPos);
+  updateIntervalStyle($scope, newPos);
+  updateLaptimeStyle($scope, newPos);
+  
   $scope.competitorCrossedLineOnLap[raceNum] = line.lapNum;
 }
 
@@ -153,7 +154,7 @@ function updateSectorOneStyle($scope, pos) {
     }
 
     if ($scope.sessionBestSector[0] == 0 || line.s1 <= $scope.sessionBestSector[0]) {
-      ClearPreviousSessionBest($scope, 1)
+      ClearPreviousSessionBestSector($scope, 1)
       $scope.sessionBestSector[0] = line.s1;
       $scope.previousSessionBestSectorStyle[0] = $scope.s1Style[pos - 1];
       $scope.s1Style[pos - 1] = 'sessionBest';
@@ -161,7 +162,79 @@ function updateSectorOneStyle($scope, pos) {
   }
 }
 
-function ClearPreviousSessionBest($scope, sector) {
+function durationToSecs(duration) {
+  if (!duration.trim()) return;
+
+  // Less than a minute, e.g. 34.123
+  if ($.isNumeric(duration))
+    return duration;
+
+  // Over a minute, over an hour?
+  var hours = 0;
+  var mins = 0;
+  var secs = 0;
+
+  var colons = duration.match(/:/g).length;
+  if (colons > 0) {
+    var parts = duration.split(':');
+    switch (colons) {
+      case 2:
+        hours = parts[0];
+        mins = parts[1];
+        secs = parts[2];
+        break;
+
+      case 1:
+        mins = parts[0];
+        secs = parts[1];
+        break;
+    }
+  } else {
+    return;
+  }
+
+  return parseFloat(hours) * 3600 + parseFloat(mins) * 60 + parseFloat(secs);
+}
+
+function updateLaptimeStyle($scope, pos) {
+  if (!pos || pos < 1) return;
+
+  var line = $scope.positions[pos - 1];
+  var competitor = $scope.competitors[line.num];
+
+  var secs = durationToSecs(line.lap);
+  if (secs) {
+    if (competitor.bestLap == 0 || secs <= competitor.bestLap) {
+      $scope.lapNumStyle[pos - 1] = 'personalBest';
+      competitor.bestLap = secs;
+    } else {
+      if (line.s3.trim())
+        $scope.lapNumStyle[pos - 1] = 'recent';
+      else
+        $scope.lapNumStyle[pos - 1] = 'default';
+    }
+
+    if ($scope.sessionBestLap == 0 || secs <= $scope.sessionBestLap) {
+      ClearPreviousSessionBestLap($scope)
+      $scope.sessionBestLap = secs;
+      $scope.previousSessionBestLapStyle = $scope.lapNumStyle[pos - 1];
+      $scope.lapNumStyle[pos - 1] = 'sessionBest';
+    }
+  }
+}
+
+function ClearPreviousSessionBestLap($scope) {
+  var styleArray;
+  var previousStyle = 'default';
+
+  for (var j = 0; j < $scope.lapNumStyle.length; ++j) {
+    if ($scope.lapNumStyle[j] == 'sessionBest')
+      $scope.lapNumStyle[j] = $scope.previousSessionBestLapStyle;
+  }
+}
+
+
+function ClearPreviousSessionBestSector($scope, sector) {
   var styleArray;
   var previousStyle = 'default';
   switch (sector) {
@@ -206,7 +279,7 @@ function updateSectorTwoStyle($scope, pos) {
     }
 
     if ($scope.sessionBestSector[1] == 0 || line.s2 <= $scope.sessionBestSector[1]) {
-      ClearPreviousSessionBest($scope, 2)
+      ClearPreviousSessionBestSector($scope, 2)
       $scope.sessionBestSector[1] = line.s2;
       $scope.previousSessionBestSectorStyle[1] = $scope.s2Style[pos - 1];
       $scope.s2Style[pos - 1] = 'sessionBest';
@@ -232,12 +305,28 @@ function updateSectorThreeStyle($scope, pos) {
     }
 
     if ($scope.sessionBestSector[2] == 0 || line.s3 <= $scope.sessionBestSector[2]) {
-      ClearPreviousSessionBest($scope, 3)
+      ClearPreviousSessionBestSector($scope, 3)
       $scope.sessionBestSector[2] = line.s3;
       $scope.previousSessionBestSectorStyle[2] = $scope.s3Style[pos - 1];
       $scope.s3Style[pos - 1] = 'sessionBest';
     }
   }
+}
+
+function updateIntervalStyle($scope, pos) {
+  if (!pos || pos < 2) return;
+
+  var line = $scope.positions[pos - 1];
+  var competitor = $scope.competitors[line.num];
+
+  if ($.isNumeric(line.int)) {
+    if (competitor.lastInterval != 0 && line.int < competitor.lastInterval)
+      $scope.intervalStyle[pos - 1] = 'recent';
+    else
+      $scope.intervalStyle[pos - 1] = 'default';
+  }
+
+  $scope.competitors[line.num].lastInterval = line.int;
 }
 
 // TODO(DS) camelCase function name.
@@ -256,8 +345,10 @@ function ProcessSectorMessage($scope, msg) {
 
   var newPos = CheckRaceOrder($scope, raceNum, lapNum, secNum);
 
-  $scope.competitorStyle[newPos - 1] = 'recent';
-  $scope.lapNumStyle[newPos - 1] = 'recent';
+  if (secNum == 3) {
+    $scope.competitorStyle[newPos - 1] = 'recent';
+    //$scope.lapNumStyle[newPos - 1] = 'recent';
+  }
 
   var line = $scope.positions[newPos - 1];
   
@@ -285,6 +376,7 @@ function ProcessSectorMessage($scope, msg) {
   updateSectorOneStyle($scope, newPos);
   updateSectorTwoStyle($scope, newPos);
   updateSectorThreeStyle($scope, newPos);
+  updateLaptimeStyle($scope, newPos);
 
   line.lapNum = values[MSG_SEC_LAP_NUM];
   line.raceTime = raceTime;
@@ -436,9 +528,6 @@ function raceController($scope) {
   for (var j = 0; j < 21; ++j)
     $scope.positions[$scope.positions.length] = new TimingLine(0, 0, '', '', '', '', '', '', '', '1', '0:00.000');
 
-  /*$scope.competitors = [new Competitor(0, 0, '', '', '', [0, 0, 0], 0, 0)];
-  for (j = 0; j < 21; ++j)
-    $scope.competitors[$scope.competitors.length] = new Competitor(0, 0, '', '', '', [0, 0, 0], 0, 0);*/
   $scope.competitors = new Object();
 
   $scope.competitorCrossedLineOnLap = new Object();
@@ -451,6 +540,10 @@ function raceController($scope) {
   $scope.lapNumStyle = ['recent'];
   for (j = 0; j < 21; ++j)
     $scope.lapNumStyle[$scope.lapNumStyle.length] = 'recent';
+
+  $scope.intervalStyle = ['default'];
+  for (j = 0; j < 21; ++j)
+    $scope.intervalStyle[$scope.intervalStyle.length] = 'default';
 
   $scope.s1Style = ['default'];
   for (j = 0; j < 21; ++j)
